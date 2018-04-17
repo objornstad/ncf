@@ -1,3 +1,5 @@
+1.2-3: Rewrote source to be devtools/roxygen compatible (thanks to Jun Cai). Fixed a silly error in summary.Sncf. Linked source to github: https://github.com/bjornsta/ncf
+
 1.2-2: DOIs added. Fixed calculations with latlon data
 
 1.2-1: New plot.cc.offset-function. Fixed a stupid double loop (and vectorized gcdist).
