@@ -1,0 +1,185 @@
+1.2-2: DOIs added. Fixed calculations with latlon data
+
+1.2-1: New plot.cc.offset-function. Fixed a stupid double loop (and vectorized gcdist).
+	Vectorized spherical correlation function (added circ.cor2) to greatly speed calculations.
+	Prettied up the progress counters and turn defaut for quiet back to FALSE. Major under-the-hood re-code to ease maintenance.
+
+1.1-8: Plotting functions for Spline.correlogs and Sncf changed 
+       Default for 'quiet' switched to TRUE
+       print.Sncf and print.spline.correlog added.
+       Bit of code tidying and CRAN compatibility fixing.
+
+1.1-7: Small changes to plot.lisa.nc, plot.lisa and spatial.plot.
+       Bugs in correlog and correlog.nc when latlon=TRUE fixed
+
+1.1-6: Added a new function to calculate mantel.correlog()rams,
+      updated lisa and lisa.nc, added a new spatial.plot() function.
+      Compliant with new CRAN checks
+
+1.1-5: Some minor changes to three plotting functions
+
+1.1-4: The auxcilliary function cor2() was changed
+
+1.1-3: error in partial.mantel.test corrected
+
+1.1-2: Sncf tweaked so that the cross-covariance function will use the
+       predicted y-intercept if z and w are sampled at different locations.
+       Otherwise the mean of the diagonal of the cross-correlation matrix
+       is used (as before).
+       
+       quiet argument added to all functions to surpress bootstrap counter
+       (if desired)
+
+1.1-1: R-2.6 compliant, cran compliant
+
+1.1-0: Added lisa, added fixed bug in correlog
+       (when resamp=0). nc.correlog and nc.lisa renamed correolg.nc and lisa.nc,
+       and appropriate permutation tests implemented.
+       Various minor fixes in documentation
+
+1.0-9: Calculation of distance classes corrected in
+       correlog and nc.correlog to make it consistent with spdep
+       (thanks to Ingolf Kuhn)
+
+       Correct some grammatical errors in the documentation.
+
+1.0-8: A function for partial Mante test added
+
+1.0-7: Jitter argument included in Sncf.srf
+
+1.0-6: Documentation w.r.t. latlong argument corrected
+       (thanks to Amit Vora)
+
+1.0-5: A 'circ' argument was added to Sncf and mSynch functions
+       to allow calculations with angular data (in radians);
+       cor2 function updated for 1.9
+
+       Some inconsequential garbage in the code was cleaned up.
+
+       Compliant with R 1.9
+
+       Deleted some old obsolete functions (oldSncf2D, inner.na)
+
+1.0-4: Two functions (spline.correlog.2d, plot.cc.offset)
+       and one data-seet (lbm) added
+
+1.0-3: cor2 auxilliary function changed in response to R-1.8
+       changes in cor-syntax
+
+1.0-2: FF-filtering fixed (thanks to Ben Bolker)
+
+1.0-0: First propper R packaging
+
+Previous Version History:
+June 16, 2003: spline.correlog enhanced to calculate
+    e-intercepts
+
+June 16, 2003: rmvn.spa updated to take an optional nugget.
+
+April 26, 2003: spline.correlog.2d the unvariate analogue to m2d
+    currently in beta testing.
+
+October 11, 2002: m2d an alternative to Sncf2d incorporated in
+    core source.
+
+March 21, 2002: A couple of R/S+ inconsistencies corrected.
+    (atan of S+ subsumes atan2 of R). library(modreg) is
+    automatically called under R.
+
+
+March 17, 2002: A number of problems corrected to ensure
+    S4 compliance. (functions now run under S-plus 6,
+    and R 1.4)
+
+March 17, 2002: x-intercept calculation updated in all
+    functions to ensure more meaningful calculations
+    under cross-correlation (and under other cases of
+    locally negative correlation) (as suggested by Eric
+    Seabloom)
+
+March 17, 2002: a permutation test for significance added
+    to correlog. A new function mantel.test for a
+    permutation based mantel test added [currently in beta]
+
+March 17, 2002: gcdist and inner.na functions written as separate
+    functions.
+
+October 10, 2001: Install page rewritten
+
+September 20, 2001: Error in calculations of cross-correlation
+    corrected  across all functions. (Thanks to Patrick Tobin).
+
+September 2, 2001: Incorporated code of Tim Keitt for numerically
+    improved  algorithm for calculating spatial distances for
+    latitude/longitude data
+
+September 1, 2001: error fixed in calculation of cross-correlation
+    function for Sncf.srf.
+
+August 12, 2001: mSynch have the added ability to calculate
+    cross-correlation
+
+August 5-13, 2001: Sncf2D made R-compliant.
+
+July 10-13, 2001: Recoded to be R compliant. All functions (except
+    Sncf2D) are fully R compliant!
+
+May-June, 2001: All functions have the added ability to calculate
+    cross-correlation, cross-correlograms, cross-covariances, etc.
+
+April 24, 2001: corrected bug in sncf.q file
+
+March 22, 2001: nc.lisa added. rmvn.spa added.
+
+March 21, 2001: Reformating and recompilation of the help-files.
+
+October 08, 2000: An option 'latlon' was added to Sncf allowing
+    geographic coordinates to be given in latitude and longitude.
+    The correct distance matrix (in km) is calculated.
+
+August 16, 2000: Sncf.na consolidated with Sncf; Sncf2D.na consolidated
+    with Sncf2D. Code branches to pairwise deletion of missing
+    values (if na.omit = T)
+
+August 16, 2000: coded mSync to calculate the mean regional correlation
+    (with a  bootstrap CI) from a spatiotemporal data-panel.
+
+July 17, 2000: Sncf2d (and Sncf2D.na) for the anisotropic correlation
+    functions have been included in the core distribution. Sncf.cc
+    to calculate the cross-correlation functions of sympatric
+    data-panels. ncf (and related) are, now, deleted from the
+    distribution.
+
+June 13, 2000: rewrite and recode with perticular reference to html
+    help files. Sncf, Sncf.srf, and Sncf.na is now distributed as
+    part of the core library.
+
+April 19, 2000: coded Sncf.srf which is like Sncf, but for spatiotemporal
+    data-panels  from stationary random field (marginal expectation
+    and variance identical for n*p random variates). [Currently
+    distributed in in beta]
+
+April 18, 2000: coded Sncf.na which is like Sncf, but handles (through
+    pair-wise deletion) spatiotemporal data-panels with missing
+    data. [Currently distributed in beta]
+
+April 18, 2000: coded Sncf (eventually to replace ncf) which have the
+    added funcionality of calculating regional synchrony ('cbar'
+    with CI), and cbar-intercept (the distance at which synchrony
+    decends to the region wide average). [Currently distributed in
+    beta: sncf.q]
+
+February 14, 2000: a error in the ncf-function description was corrected
+
+January 21, 2000: An error in the newton search for the x-intercept and
+    e-intercept was corrected. (Thanks to Ole Chr. Lingjaere)
+
+January 20, 2000: An error in the fourier filter was corrected.
+    (Thanks to Ole Chr. Lingjaere)
+
+January 20, 2000: An error in the bootstrap algorithm was corrected.
+    (Thanks to Peter Thrall)
+
+December 07, 1999: An error in the bootstrap algorithm was corrected
+
+November 12, 1999: Initial code uploaded

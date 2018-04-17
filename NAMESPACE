@@ -1,0 +1,63 @@
+export(
+       rmvn.spa,
+       Sncf,
+       gather,
+       Sncf.srf,
+       spline.correlog,
+       correlog,
+       correlog.nc,
+       mSynch,
+       mantel.test,
+       partial.mantel.test,
+       lisa,
+       lisa.nc,
+       rmvn.spa,
+       gcdist,
+       Sncf2D,
+       cc.offset,
+       spline.correlog.2D,
+       circ.cor2,
+       cor2,
+       ff.filter,
+       plot.Sncf,
+       print.Sncf,
+       summary.Sncf,
+       plot.Sncf.cov,
+       plot.spline.correlog,
+       print.spline.correlog,
+       summary.spline.correlog,
+       plot.correlog,
+       print.mSynch,
+       plot.lisa,
+       plot.lisa.nc,
+       print.Sncf2D,
+       plot.Sncf2D,
+       summary.Sncf2D,
+       plot.cc.offset,
+       spatial.plot,
+       mantel.correlog
+       )
+
+importFrom("graphics", "lines", "par", "plot", "points", "symbols",
+             "title", "polygon", "abline", "text")
+importFrom("stats", "cor", "fft", "lm", "na.omit", "predict",
+             "quantile", "rnorm", "sd", "smooth.spline", "var", "uniroot")
+importFrom("grDevices", "gray")
+importFrom("utils", "flush.console")
+S3method(print,Sncf)
+S3method(plot,Sncf)
+S3method(summary,Sncf)
+S3method(plot,Sncf.cov)
+S3method(plot,spline.correlog)
+S3method(print,spline.correlog)
+S3method(summary,spline.correlog)
+S3method(plot,correlog)
+S3method(print,mSynch)
+S3method(plot,lisa)
+S3method(plot,lisa.nc)
+S3method(print,Sncf2D)
+S3method(plot,Sncf2D)
+S3method(summary,Sncf2D)
+S3method(plot,cc.offset)
+
+
