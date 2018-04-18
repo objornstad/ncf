@@ -90,7 +90,7 @@ mantel.test <- function(M1 = NULL, M2 = NULL, x = NULL, y = NULL, z = NULL,
     
     for (i in 1:resamp) {
       whn <- pretty(c(1, resamp), n = 10)
-      if (!quiet & any(i == whn)) {
+      if (quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
         flush.console()
       }
@@ -177,7 +177,7 @@ partial.mantel.test <- function(M1, M2, M3, resamp = 1000, method = 'pearson',
   
   for (i in 1:resamp) {
     whn <- pretty(c(1, resamp), n = 10)
-    if (!quiet & any(i == whn)) {
+    if (quiet & any(i == whn)) {
       cat(i, " of ", resamp, "\r")
       flush.console()
     }
