@@ -55,7 +55,7 @@ z <- cbind(
 
 # lisa.nc analysis
 fit1 <- lisa.nc(x = x, y = y, z = z, neigh = 3)
-\dontrun{plot.lisa.nc(fit1)}
+\dontrun{plot(fit1)}
 }
 \references{
 Anselin, L. 1995. Local indicators of spatial association - LISA. Geographical Analysis 27:93-115. \url{https://doi.org/10.1111/j.1538-4632.1995.tb00338.x}

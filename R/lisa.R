@@ -29,7 +29,7 @@
 #' 
 #' # lisa analysis
 #' fit1 <- lisa(x = x, y = y, z = z, neigh = 3, resamp = 500)
-#' \dontrun{plot.lisa(fit1, negh.mean=FALSE)}
+#' \dontrun{plot(fit1, negh.mean=FALSE)}
 #' @keywords spatial
 #' @export
 ################################################################################
@@ -180,7 +180,7 @@ plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
 #' 
 #' # lisa.nc analysis
 #' fit1 <- lisa.nc(x = x, y = y, z = z, neigh = 3)
-#' \dontrun{plot.lisa.nc(fit1)}
+#' \dontrun{plot(fit1)}
 #' @keywords spatial
 #' @export
 ################################################################################

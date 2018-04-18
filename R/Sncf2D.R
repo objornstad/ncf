@@ -51,7 +51,7 @@
 #'   )
 #' # anisotorpic nonparametric covariance function at 30 and 60 degrees
 #' fit1 <- Sncf2D(x = x, y = y, z = z, resamp = 0, angle = c(30, 60))
-#' \dontrun{plot.Sncf2D(fit1)}
+#' \dontrun{plot(fit1)}
 #' summary(fit1)
 #' 
 #' # What distance is the peak in correlation
@@ -316,7 +316,10 @@ plot.Sncf2D <- function(x, xmax = 0, ylim = c(-1, 1), detail = FALSE, ...) {
   lines(c(-max(x$real[[1]]$predict$x), max(x$real[[1]]$predict$x)), c(0, 0))
   lines(c(-max(x$real[[1]]$predict$x), max(x$real[[1]]$predict$x)), 
         c(x$real$cbar, x$real$cbar))
-  
+for(i in 1:L){
+     lines(x$real[[i]]$predict$x, x$real[[i]]$predict$y)
+ }
+
   if (detail) {
     par(mfrow = c(ceiling(sqrt(L)), ceiling(sqrt(L))))
     
@@ -325,10 +328,11 @@ plot.Sncf2D <- function(x, xmax = 0, ylim = c(-1, 1), detail = FALSE, ...) {
            ylim = ylim, type = "l", xlab = "Distance", ylab = "Correlation")
       
       if (!is.null(x$boot[[i]]$boot.summary)) {
-        polygon(c(x$boot[[i]]$boot.summary$predicted$x, 
+        xy=na.omit(data.frame(x=c(x$boot[[i]]$boot.summary$predicted$x, 
                   rev(x$boot[[i]]$boot.summary$predicted$x)), 
-                c(x$boot[[i]]$boot.summary$predicted$y["0.025", ], 
-                  rev(x$boot[[i]]$boot.summary$predicted$y["0.975", ])), 
+                  y=c(x$boot[[i]]$boot.summary$predicted$y["0.025", ], 
+                  rev(x$boot[[i]]$boot.summary$predicted$y["0.975", ]))))
+        polygon(xy$x, xy$y, 
                 col = gray(0.8), lty = 0)
       }	
       lines(x$real[[i]]$predict$x, x$real[[i]]$predict$y)
@@ -408,7 +412,7 @@ summary.Sncf2D <- function(object, ...) {
 ################################################################################
 cc.offset <- function(object, xmax = NULL) {
   ##############################################################################
-  # calculates offsets in Sncf2D cross-correltions
+  # calculates offsets in Sncf2D cross-correlations
   ##############################################################################
   L <- length(object$angle)
   

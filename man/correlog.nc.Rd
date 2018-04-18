@@ -62,7 +62,7 @@ w <- cbind(
 
 # noncentered (Mantel) correlogram 
 fit1 <- correlog.nc(x = x, y = y, z = z, increment = 2, resamp = 500)
-\dontrun{plot.correlog(fit1)}
+\dontrun{plot(fit1)}
 }
 \references{
 Bjornstad, O.N., Ims, R.A. & Lambin, X. (1999) Spatial population dynamics: Analysing patterns and processes of population synchrony. Trends in Ecology and Evolution, 11, 427-431. \url{https://doi.org/10.1016/S0169-5347(99)01677-8}

@@ -13,6 +13,9 @@
 
 \item{\dots}{other arguments}
 }
+\value{
+A plot of the nonparametric spatial covariance function (with CI's if boostrapps are available)
+}
 \description{
 `plot' method for class "Sncf.cov".
 }

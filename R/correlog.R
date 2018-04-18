@@ -264,7 +264,7 @@ plot.correlog <- function(x, ...) {
 #' 
 #' # noncentered (Mantel) correlogram 
 #' fit1 <- correlog.nc(x = x, y = y, z = z, increment = 2, resamp = 500)
-#' \dontrun{plot.correlog(fit1)}
+#' \dontrun{plot(fit1)}
 #' @keywords spatial
 #' @export
 ################################################################################

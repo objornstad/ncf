@@ -1,4 +1,4 @@
-1.2-3: Rewrote source to be devtools/roxygen compatible (thanks to Jun Cai). Fixed a silly error in summary.Sncf. Changed name of spline.correlog.2D to spline.correlog2D for consistency (hope this wont cause trouble). Linked source to github: https://github.com/bjornsta/ncf
+1.2-3: Rewrote source to use devtools/roxygen (thanks to Jun Cai). Fixed a silly error in summary.Sncf. Changed name of spline.correlog.2D to spline.correlog2D for consistency (hope this wont cause trouble). Linked source to github: https://github.com/bjornsta/ncf
 
 1.2-2: DOIs added. Fixed calculations with latlon data
 

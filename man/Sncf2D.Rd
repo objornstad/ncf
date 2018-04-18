@@ -82,7 +82,7 @@ z <- cbind(
   )
 # anisotorpic nonparametric covariance function at 30 and 60 degrees
 fit1 <- Sncf2D(x = x, y = y, z = z, resamp = 0, angle = c(30, 60))
-\dontrun{plot.Sncf2D(fit1)}
+\dontrun{plot(fit1)}
 summary(fit1)
 
 # What distance is the peak in correlation

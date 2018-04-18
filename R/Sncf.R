@@ -67,7 +67,7 @@
 #' 
 #' # multivariate nonparametric cross-covariance function
 #' fit2 <- Sncf(x = x, y = y, z = z, w = w, resamp = 0)
-#' \dontrun{plot.Sncf(fit2)}
+#' \dontrun{plot(fit2)}
 #' summary(fit2)
 #' @keywords smooth regression spatial
 #' @export
@@ -560,6 +560,7 @@ Sncf.srf <- function(x, y, z, w = NULL, avg = NULL, avg2 = NULL, corr = TRUE,
 #' @param x an object of class "Sncf.cov", usually, as a result of a call to \code{Sncf.srf} (with \code{corr} = FALSE).
 #' @param xmax the maximal distance to be plotted on the x-axis. If set to zero the maximum distance in the data will be used.
 #' @param \dots other arguments
+#' @return A plot of the nonparametric spatial covariance function (with CI's if boostrapps are available)
 #' @seealso \code{\link{Sncf.srf}}, \code{\link{plot.Sncf}}
 #' @keywords smooth regression
 #' @export

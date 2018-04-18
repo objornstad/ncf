@@ -88,7 +88,7 @@ summary(fit1)
 
 # multivariate nonparametric cross-covariance function
 fit2 <- Sncf(x = x, y = y, z = z, w = w, resamp = 0)
-\dontrun{plot.Sncf(fit2)}
+\dontrun{plot(fit2)}
 summary(fit2)
 }
 \references{
