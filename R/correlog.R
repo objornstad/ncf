@@ -434,12 +434,12 @@ correlog.nc <- function(x, y, z, w = NULL, increment, resamp = 1000, na.rm = FAL
 #' 
 #' # Mantel correlogram 
 #' fit1 <- mantel.correlog(dmat = dmat, zmat = zmat, increment = 2, quiet = TRUE, 
-#' resamp = 0)
+#'                         resamp = 0)
 #' \dontrun{plot(fit1)}
 #' 
 #' # Mantel cross-correlogram 
 #' fit2 <- mantel.correlog(dmat = dmat, zmat = zmat, wmat = wmat, increment = 2, 
-#' quiet = TRUE, resamp = 0)
+#'                         quiet = TRUE, resamp = 0)
 #' \dontrun{plot(fit2)}
 #' @keywords spatial
 #' @export
@@ -506,7 +506,7 @@ mantel.correlog <- function(dmat, zmat, wmat = NULL, increment, resamp = 1000,
       perm[i, ] <- sapply(split(mor, dkl), mean, na.rm = TRUE)
       
       whn <- pretty(c(1, resamp), n = 10)
-      if (!quiet & any(i == whn)) {
+      if (quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
         flush.console()}
     }

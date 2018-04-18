@@ -59,12 +59,12 @@ dmat <- sqrt(outer(x, x, "-")^2 + outer(y, y, "-")^2)
 
 # Mantel correlogram 
 fit1 <- mantel.correlog(dmat = dmat, zmat = zmat, increment = 2, quiet = TRUE, 
-resamp = 0)
+                        resamp = 0)
 \dontrun{plot(fit1)}
 
 # Mantel cross-correlogram 
 fit2 <- mantel.correlog(dmat = dmat, zmat = zmat, wmat = wmat, increment = 2, 
-quiet = TRUE, resamp = 0)
+                        quiet = TRUE, resamp = 0)
 \dontrun{plot(fit2)}
 }
 \seealso{
