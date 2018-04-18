@@ -69,7 +69,7 @@ lisa <- function(x, y, z, neigh, resamp = 1000, latlon = FALSE, quiet = FALSE) {
     
     for (i in 1:resamp) {
       whn <- pretty(c(1, resamp), n = 10)
-      if (!quiet & any(i == whn)) {
+      if (quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
         flush.console()
       }
@@ -226,7 +226,7 @@ lisa.nc <- function(x, y, z, neigh, na.rm = FALSE, resamp = 1000, latlon = FALSE
     
     for (i in 1:resamp) {
       whn <- pretty(c(1, resamp), n = 10)
-      if (!quiet & any(i == whn)) {
+      if (quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
         flush.console()
       }
