@@ -64,145 +64,129 @@
 #' @importFrom graphics lines par plot points polygon symbols text title
 #' @importFrom stats cor fft lm na.omit predict quantile rnorm sd smooth.spline uniroot var
 #' @importFrom utils flush.console
-##############################################################################################
-correlog<-function(x, y, z, w=NULL, increment, resamp = 1000, latlon = FALSE, na.rm = FALSE, quiet=FALSE){
-  ##############################################################################################
-  #correlog estimates the spatial correlogram (if z is univariate)
-  #or the Mantel correlogram (if z is multivariate), or the (uni-/multivariate)
-  #cross-correlogram (if the optional w data set is given).
-  #######################################################################################
-  
+################################################################################
+correlog <- function(x, y, z, w = NULL, increment, resamp = 1000, latlon = FALSE, 
+                     na.rm = FALSE, quiet = FALSE) {
+  ##############################################################################
+  # correlog estimates the spatial correlogram (if z is univariate)
+  # or the Mantel correlogram (if z is multivariate), or the (uni-/multivariate)
+  # cross-correlogram (if the optional w data set is given).
+  ##############################################################################
   NAO <- FALSE
   
-  #check for missing values
-  if(any(!is.finite(unlist(z)))) {
-    if(na.rm){
+  # check for missing values
+  if (any(!is.finite(unlist(z)))) {
+    if (na.rm) {
       warning("Missing values exist; Pairwise deletion will be used")
       NAO <- TRUE
-    }
-    else {
+    } else {
       stop("Missing values exist; use na.rm = TRUE for pairwise deletion")
     }
   }
   
-  
   multivar <- !is.null(dim(z))		#test whether z is univariate or multivariate
   
-  if(multivar == TRUE) {
+  if (multivar == TRUE) {
     warning("Response is multivariate: the correlation matrix will be centered on zero. Use correlog.nc() for the non-centered correlogram")
     n <- length(z[, 1])
     p <- length(z[1,  ])
-    z <- as.matrix(z)+0
+    z <- as.matrix(z) + 0
     
-    if(is.null(w)){
-      moran <- cor2(t(z), circ=FALSE)
+    if (is.null(w)) {
+      moran <- cor2(t(z), circ = FALSE)
       moran <- moran[lower.tri(moran)]
-      moran <- moran - mean(moran, na.rm= TRUE)
+      moran <- moran - mean(moran, na.rm = TRUE)
+    } else {
+      w <- as.matrix(w) + 0
+      moran <- cor2(t(z), t(w), circ = FALSE)
+      zero <- mean(diag(moran), na.rm = TRUE)
+      moran <- moran[row(moran) != col(moran)]
+      moran <- moran - mean(moran, na.rm = TRUE)
     }
-    
-    else {
-      w <- as.matrix(w)+0
-      moran <- cor2(t(z), t(w), circ=FALSE)
-      zero <- mean(diag(moran), na.rm= TRUE)
-      moran <- moran[row(moran)!=col(moran)]
-      moran <- moran - mean(moran, na.rm= TRUE)
-    }
-  }
-  
-  else {
+  } else {
     n <- length(z)
-    z <- as.vector(z)+0
-    zscal <- (scale(z, center = TRUE, scale = TRUE)[, 1])/(sqrt((n-1)/n))
+    z <- as.vector(z) + 0
+    zscal <- (scale(z, center = TRUE, scale = TRUE)[, 1])/(sqrt((n - 1)/n))
     
-    if(is.null(w)){
+    if (is.null(w)) {
       moran <- t(outer(zscal, zscal))
       moran <- moran[lower.tri(moran)]
-    }
-    
-    else {
-      wscal <- (scale(w, center = TRUE, scale = TRUE)[, 1])/(sqrt((n-1)/n))
-      zw <- c(zscal,wscal)
-      #this may be a slight hack
-      moran <- t(outer(zw, zw))[1:n,(n+1):(2*n)]
-      zero <- mean(diag(moran), na.rm= TRUE)
-      moran <- moran[row(moran)!=col(moran)]
+    } else {
+      wscal <- (scale(w, center = TRUE, scale = TRUE)[, 1])/(sqrt((n - 1)/n))
+      zw <- c(zscal, wscal)
+      # this may be a slight hack
+      moran <- t(outer(zw, zw))[1:n,(n + 1):(2*n)]
+      zero <- mean(diag(moran), na.rm = TRUE)
+      moran <- moran[row(moran) != col(moran)]
     }
   }
   
-  
-  #then generating geographic distances
-  if(latlon){
-    #these are geographic distances from lat-lon coordinates
-    dmat <- gcdist(x,y)
+  # then generating geographic distances
+  if (latlon) {
+    # these are geographic distances from lat-lon coordinates
+    dmat <- gcdist(x, y)
+  } else{
+    # these are geographic distances from euclidian coordinates
+    dmat <- sqrt(outer(x, x, "-")^2+outer(y, y, "-")^2)
   }
   
-  else{
-    #these are geographic distances from euclidian coordinates
-    dmat <- sqrt(outer(x,x, "-")^2+outer(y,y,"-")^2)
-  }
-  
-  if(resamp != 0){
+  if (resamp != 0) {
     dmat2 <- dmat
     moran2 <- moran
   }
   
-  if(is.null(w)){
+  if (is.null(w)) {
     dmat <- dmat[lower.tri(dmat)]
-  }
-  else {
-    dmat <- dmat[row(dmat)!=col(dmat)]
+  } else {
+    dmat <- dmat[row(dmat) != col(dmat)]
   }
   
-  dkl <- ceiling(dmat/increment) 	#generates the distance matrices
+  dkl <- ceiling(dmat/increment) 	# generates the distance matrices
   nlok <- sapply(split(moran, dkl), length)
   dmean <- sapply(split(dmat, dkl), mean, na.rm = TRUE)
   moran <- sapply(split(moran, dkl), mean, na.rm = TRUE)
   ly <- 1:length(dmean)
   x <- c(dmean[ly[moran < 0][1]], dmean[ly[moran < 0][1] - 1])
   y <- c(moran[ly[moran < 0][1] - 1], moran[ly[moran < 0][1]])
-  if(moran[1] < 0) {
+  if (moran[1] < 0) {
     tmp <- 0
-  }
-  else {
+  } else {
     tmp <- lm(x ~ y)[[1]][1]
   }
   
-  p<-NULL
+  p <- NULL
   
-  if(resamp != 0){
-    
+  if (resamp != 0) {
     perm <- matrix(NA, ncol = length(moran), nrow = resamp)
-    
-    for(i in 1:resamp){
-      whn=pretty(c(1,resamp), n=10)
-      if(! quiet & any(i==whn)){
+    for (i in 1:resamp) {
+      whn <- pretty(c(1, resamp), n = 10)
+      if (!quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
-        flush.console()}
+        flush.console()
+      }
       
-      
-      trekk <-sample(1:n)
-      dma <- dmat2[trekk,trekk]
+      trekk <- sample(1:n)
+      dma <- dmat2[trekk, trekk]
       mor <- moran2
       
-      if(is.null(w)){
+      if (is.null(w)) {
         dma <- dma[lower.tri(dma)]
-      }
-      else {
-        dma <- dma[row(dma)!=col(dma)]
+      } else {
+        dma <- dma[row(dma) != col(dma)]
       }
       
-      dkl <- ceiling(dma/increment)	#generates the distance matrices
-      perm[i,] <- sapply(split(mor, dkl), mean, na.rm = TRUE)
+      dkl <- ceiling(dma/increment)	# generates the distance matrices
+      perm[i, ] <- sapply(split(mor, dkl), mean, na.rm = TRUE)
     }
     
-    p=(apply(moran<=t(perm),1,sum))/(resamp+1)
-    p=apply(cbind(p, 1-p), 1, min) + 1/(resamp+1)
+    p <- (apply(moran <= t(perm),1,sum))/(resamp + 1)
+    p <- apply(cbind(p, 1 - p), 1, min) + 1/(resamp + 1)
   }
   
   res <- list(n = nlok, mean.of.class = dmean, correlation = moran,
-              x.intercept = tmp, p=p, call=deparse(match.call()))
+              x.intercept = tmp, p = p, call = deparse(match.call()))
   
-  if(!is.null(w)){
+  if (!is.null(w)) {
     res$corr0 <- zero
   }
   class(res) <- "correlog"
@@ -219,16 +203,18 @@ correlog<-function(x, y, z, w=NULL, increment, resamp = 1000, latlon = FALSE, na
 #' @seealso \code{\link{correlog}}, \code{\link{correlog.nc}}
 #' @keywords spatial
 #' @export
-#########################################################################################
-plot.correlog<-function(x, ...){
-  ##############################################################################################
-  #this is the generic plot function for correlog objects
-  #sigificant values are represented by filled cirles
-  ##############################################################################################
-  plot(x$mean.of.class, x$correlation, ylab='correlation', xlab='distance (mean-of-class)')
+################################################################################
+plot.correlog <- function(x, ...) {
+  ##############################################################################
+  # this is the generic plot function for correlog objects
+  # sigificant values are represented by filled cirles
+  ##############################################################################
+  plot(x$mean.of.class, x$correlation, ylab = 'correlation', 
+       xlab = 'distance (mean-of-class)')
   lines(x$mean.of.class, x$correlation)
-  if(!is.null(x$p)){
-    points(x$mean.of.class[x$p<0.025], x$correlation[x$p<0.025], pch=21, bg="black")
+  if (!is.null(x$p)) {
+    points(x$mean.of.class[x$p < 0.025], x$correlation[x$p < 0.025], pch = 21, 
+           bg = "black")
   }
   title("Correlogram")
 }
@@ -281,76 +267,70 @@ plot.correlog<-function(x, ...){
 #' \dontrun{plot.correlog(fit1)}
 #' @keywords spatial
 #' @export
-##############################################################################################
-correlog.nc<-function(x, y, z, w=NULL, increment, resamp = 1000, na.rm = FALSE, latlon=FALSE, quiet=FALSE){
-  ##############################################################################################
-  #correlog.nc estimates the noncentred correlogram
-  #and cross-correlogram. Bjornstad et al. (1999; Trends in Ecology and
-  #Evolution 14:427-431)
-  #The function requires mulitple observations at each location (use
-  #correlog otherwise).
-  #######################################################################################
-  
+################################################################################
+correlog.nc <- function(x, y, z, w = NULL, increment, resamp = 1000, na.rm = FALSE, 
+                        latlon = FALSE, quiet = FALSE){
+  ##############################################################################
+  # correlog.nc estimates the noncentred correlogram
+  # and cross-correlogram. Bjornstad et al. (1999; Trends in Ecology and
+  # Evolution 14:427-431)
+  # The function requires mulitple observations at each location (use
+  # correlog otherwise).
+  ##############################################################################
   NAO <- FALSE
   
-  #check for missing values
-  if(any(!is.finite(unlist(z)))) {
-    if(na.rm){
+  # check for missing values
+  if (any(!is.finite(unlist(z)))) {
+    if (na.rm) {
       warning("Missing values exist; Pairwise deletion will be used")
       NAO <- TRUE
-    }
-    else {
+    } else {
       stop("Missing values exist; use na.rm = TRUE for pairwise deletion")
     }
   }
   
-  #then generating geographic distances
-  if(latlon){
-    #these are geographic distances from lat-lon coordinates
-    dmat <- gcdist(x,y)
+  # then generating geographic distances
+  if (latlon) {
+    # these are geographic distances from lat-lon coordinates
+    dmat <- gcdist(x, y)
+  } else{
+    # these are geographic distances from euclidian coordinates
+    dmat <- sqrt(outer(x, x, "-")^2 + outer(y, y, "-")^2)
   }
   
-  else{
-    #these are geographic distances from euclidian coordinates
-    dmat <- sqrt(outer(x,x, "-")^2+outer(y,y,"-")^2)
-  }
-  
-  if(is.null(w)){
+  if (is.null(w)) {
     n <- dim(z)[1]
     p <- dim(z)[2]
-    z <- as.matrix(z)+0
+    z <- as.matrix(z) + 0
     
-    moran <- cor2(t(z), circ=FALSE)
-  }
-  
-  else {
-    #This generates the moran distances for cross-correlation
-    #the odd adding of zero is just to ensure that all vectors
-    #are treated as numeric
+    moran <- cor2(t(z), circ = FALSE)
+  } else {
+    # This generates the moran distances for cross-correlation
+    # the odd adding of zero is just to ensure that all vectors
+    # are treated as numeric
     n <- dim(z)[1]
     p <- dim(z)[2]
-    z <- as.matrix(z)+0
-    w <- as.matrix(w)+0
+    z <- as.matrix(z) + 0
+    w <- as.matrix(w) + 0
     
-    moran <- cor2(t(z), t(w), circ=FALSE)
+    moran <- cor2(t(z), t(w), circ = FALSE)
   }
   
-  if(resamp != 0){
+  if (resamp != 0) {
     dmat2 <- dmat
     #moran2 <- moran
   }
   
-  if(is.null(w)){
+  if (is.null(w)) {
     dmat <- dmat[lower.tri(dmat)]
     moran <- moran[lower.tri(moran)]
-  }
-  else {
-    dmat <- dmat[row(dmat)!=col(dmat)]
-    zero <- mean(diag(moran), na.rm= TRUE)
-    moran <- moran[row(moran)!=col(moran)]
+  } else {
+    dmat <- dmat[row(dmat) != col(dmat)]
+    zero <- mean(diag(moran), na.rm = TRUE)
+    moran <- moran[row(moran) != col(moran)]
   }
   
-  if(resamp != 0){
+  if (resamp != 0) {
     #dmat2 <- dmat
     moran2 <- moran
   }
@@ -363,53 +343,49 @@ correlog.nc<-function(x, y, z, w=NULL, increment, resamp = 1000, na.rm = FALSE, 
   x <- c(dmean[ly[moran < 0][1]], dmean[ly[moran < 0][1] - 1])
   y <- c(moran[ly[moran < 0][1] - 1], moran[ly[moran < 0][1]])
   
-  if(moran[1] < 0) {
+  if (moran[1] < 0) {
     tmp <- 0
-  }
-  else {
-    if(sum(moran<0)>0){
+  } else {
+    if (sum(moran < 0) > 0) {
       tmp <- lm(x ~ y)[[1]][1]
-    }
-    else{
+    } else{
       tmp <- NA
     }
   }
   
-  p<-NULL
+  p <- NULL
   
-  if(resamp != 0){
+  if (resamp != 0) {
     perm <- matrix(NA, ncol = length(moran), nrow = resamp)
     
-    for(i in 1:resamp){
-      whn=pretty(c(1,resamp), n=10)
-      if(! quiet & any(i==whn)){
+    for (i in 1:resamp) {
+      whn <- pretty(c(1, resamp), n = 10)
+      if (!quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
-        flush.console()}
+        flush.console()
+      }
       
-      
-      
-      trekk <-sample(1:n)
-      dma <- dmat2[trekk,trekk]
+      trekk <- sample(1:n)
+      dma <- dmat2[trekk, trekk]
       mor <- moran2
       
-      if(is.null(w)){
+      if (is.null(w)) {
         dma <- dma[lower.tri(dma)]
-      }
-      else {
-        dma <- dma[row(dma)!=col(dma)]
+      } else {
+        dma <- dma[row(dma) != col(dma)]
       }
       
-      dkl <- ceiling(dma/increment)	#generates the distance matrices
-      perm[i,] <- sapply(split(mor, dkl), mean, na.rm = TRUE)
+      dkl <- ceiling(dma/increment)	# generates the distance matrices
+      perm[i, ] <- sapply(split(mor, dkl), mean, na.rm = TRUE)
     }
     
-    p=(apply(moran<=t(perm),1,sum))/(resamp+1)
-    p=apply(cbind(p, 1-p), 1, min) + 1/(resamp+1)
+    p <- (apply(moran <= t(perm), 1, sum))/(resamp + 1)
+    p <- apply(cbind(p, 1 - p), 1, min) + 1/(resamp + 1)
   }
   
   res <- list(n = nlok, mean.of.class = dmean, correlation = moran,
-              x.intercept = tmp, p = p, call=deparse(match.call()))
-  if(!is.null(w)){
+              x.intercept = tmp, p = p, call = deparse(match.call()))
+  if (!is.null(w)) {
     res$corr0 <- zero
   }
   class(res) <- "correlog"
@@ -467,10 +443,9 @@ correlog.nc<-function(x, y, z, w=NULL, increment, resamp = 1000, na.rm = FALSE, 
 #' \dontrun{plot(fit2)}
 #' @keywords spatial
 #' @export
-##############################################################################################
-mantel.correlog <- function(dmat, zmat, wmat = NULL, increment, resamp = 1000, quiet = FALSE) {
-  ##############################################################################################
-  
+################################################################################
+mantel.correlog <- function(dmat, zmat, wmat = NULL, increment, resamp = 1000, 
+                            quiet = FALSE) {
   if (is.null(wmat)) {
     moran <- zmat[lower.tri(zmat)]
   }
