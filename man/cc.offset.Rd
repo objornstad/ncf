@@ -7,7 +7,7 @@
 cc.offset(object, xmax = NULL)
 }
 \arguments{
-\item{object}{an object of class "Sncf2D", usually, as a result of a call to \code{Sncf2D} or \code{spline.correlog.2D}.}
+\item{object}{an object of class "Sncf2D", usually, as a result of a call to \code{Sncf2D} or \code{spline.correlog2D}.}
 
 \item{xmax}{the maximum distance to consider (default is no upper limit).}
 }

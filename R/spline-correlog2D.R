@@ -1,5 +1,5 @@
 #' @title Anisotropic nonparametric (cross-)correlation function for univariate spatial data
-#' @description \code{spline.correlog.2D} is the function to estimate the anisotropic nonparametric correlation function in 8 (or arbitrary) directions (North - Southeast) for univariate data. Correlation functions are calculated for each different bearing. The function assumes univariate observations at each location. (use \code{\link{Sncf2D}} otherwise).
+#' @description \code{spline.correlog2D} is the function to estimate the anisotropic nonparametric correlation function in 8 (or arbitrary) directions (North - Southeast) for univariate data. Correlation functions are calculated for each different bearing. The function assumes univariate observations at each location. (use \code{\link{Sncf2D}} otherwise).
 #' @param x vector of length n representing the x coordinates.
 #' @param y vector of length n representing the y coordinates.
 #' @param z vector of length n representing the observation at each location.
@@ -23,12 +23,13 @@
 #'   Humston, R., Mortensen, D. and Bjornstad, O.N. 2005. Anthropogenic forcing on the spatial dynamics of an agricultural weed: the case of the common sunflower. Journal of Applied Ecology 42: 863-872. \url{https://doi.org/10.1111/j.1365-2664.2005.01066.x}
 #' @seealso \code{\link{Sncf2D}}
 #' @keywords smooth regression
-##############################################################################################
-spline.correlog.2D <- function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 1000, npoints = 300,
+#' @export
+###############################################################################################
+spline.correlog2D <- function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 1000, npoints = 300,
                                save = FALSE, max.it=25, xmax=FALSE, na.rm = FALSE, jitter=FALSE, quiet=FALSE,
                                angle=c(0,22.5,45,67.5,90,112.5,135,157.5)){
   ##############################################################################################
-  #spline.correlog.2D is the function to estimate the anisotropic nonparametric covariance function
+  #spline.correlog2D is the function to estimate the anisotropic nonparametric covariance function
   #(using a smoothing spline as an equivalent kernel) in 8 (or arbitrary) directions (North - Southeast) 
   #through calculateing projected distances onto the different bearings (i.e. all data are used for each 
   #direction = 0,22.5,45,67.5,90,112.5,135,157.5)

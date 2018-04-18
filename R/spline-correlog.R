@@ -34,7 +34,7 @@
 #'   Missing values are allowed -- values are assumed missing at random.
 #' @references Bjornstad, O.N. & Falck, W. (2001) Nonparametric spatial covariance functions: estimation and testing. Environmental and Ecological Statistics, 8:53-70. \url{https://doi.org/10.1023/A:1009601932481}
 #' @author Ottar N. Bjornstad \email{onb1@psu.edu}
-#' @seealso \code{\link{summary.spline.correlog}}, \code{\link{plot.spline.correlog}}, \code{\link{Sncf}}, \code{\link{spline.correlog.2D}}, \code{\link{correlog}}
+#' @seealso \code{\link{summary.spline.correlog}}, \code{\link{plot.spline.correlog}}, \code{\link{Sncf}}, \code{\link{spline.correlog2D}}, \code{\link{correlog}}
 #' @examples 
 #' # first generate some sample data
 #' x <- expand.grid(1:20, 1:5)[, 1]
@@ -55,19 +55,20 @@
 #' # univariate spline correlogram
 #' fit1 <- spline.correlog(x = x, y = y, z = z[, 1], resamp = 100)
 #' \dontrun{plot.spline.correlog(fit1)}
-#' summary.spline.correlog(fit1)
+#' summary(fit1)
 #' 
 #' # multivariate spline correlogram
 #' fit2 <- spline.correlog(x = x, y = y, z = z, resamp = 100)
 #' \dontrun{plot.spline.correlog(fit2)}
-#' summary.spline.correlog(fit2)
+#' summary(fit2)
 #' 
 #' # multivariate spline cross-correlogram
 #' fit3 <- spline.correlog(x = x, y = y, z = z, w = w, resamp = 100)
 #' \dontrun{plot.spline.correlog(fit3)}
-#' summary.spline.correlog(fit3)
+#' summary(fit3)
 #' @keywords smooth spatial
-##############################################################################################
+#' @export
+###############################################################################################
 spline.correlog<-function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 1000, npoints = 300, save = FALSE, 
                           filter = FALSE, fw=0, max.it=25, xmax = FALSE, latlon = FALSE, na.rm = FALSE, quiet=FALSE){
   ##############################################################################################
@@ -264,7 +265,8 @@ spline.correlog<-function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 10
 #' @return A plot of the spline correlogram function against distance is produced. 95\% pointwise confidence (or null) envelopes are superimposed (if available).
 #' @seealso \code{\link{spline.correlog}}, \code{\link{summary.spline.correlog}}
 #' @keywords smooth regression
-##############################################################################################
+#' @export
+###############################################################################################
 plot.spline.correlog<-function(x, xmax = 0, ylim=c(-1,1), ...){
   ##############################################################################################
   #this is the generic plot function for spline.correlog objects
@@ -291,7 +293,8 @@ plot.spline.correlog<-function(x, xmax = 0, ylim=c(-1,1), ...){
 #' \item{quantiles}{a matrix summarizing the quantiles in the bootstrap (or null) distributions of the benchmark statistics.}
 #' @seealso \code{\link{spline.correlog}}, \code{\link{plot.spline.correlog}}
 #' @keywords smooth regression
-##############################################################################################
+#' @export
+###############################################################################################
 summary.spline.correlog<-function(object, ...){
   ##############################################################################################
   #this is the generic summary function for spline.correlog objects
@@ -316,7 +319,8 @@ summary.spline.correlog<-function(object, ...){
 #' @param \dots other arguments
 #' @return The function-call is printed to screen.
 #' @seealso \code{\link{spline.correlog}}
-##############################################################################################
+#' @export
+###############################################################################################
 print.spline.correlog<-function(x, ...){
   ##############################################################################################
   cat("This is an object of class spline.correlog produced by the call:\n\n", x$call, "\n\n Use summary() or plot() for inspection,  (or print.default() to see all the gory details).")}

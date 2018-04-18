@@ -59,6 +59,7 @@ spatial.plot<-function(x, y, z, ctr=TRUE, add=FALSE, inches=0.2, ...){
 #' @author Ottar N. Bjornstad \email{onb1@psu.edu}
 #' @seealso \code{\link{mSynch}}
 #' @keywords smooth regression
+#' @export
 ##############################################################################################
 rmvn.spa <- function(x, y, p, method = "exp", nugget = 1){
   ##############################################################################################

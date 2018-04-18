@@ -84,12 +84,12 @@ w <- cbind(
 # multivariate nonparametric covariance function
 fit1 <- Sncf(x = x, y = y, z = z, resamp = 0)
 \dontrun{plot.Sncf(fit1)}
-summary.Sncf(fit1)
+summary(fit1)
 
 # multivariate nonparametric cross-covariance function
 fit2 <- Sncf(x = x, y = y, z = z, w = w, resamp = 0)
 \dontrun{plot.Sncf(fit2)}
-summary.Sncf(fit2)
+summary(fit2)
 }
 \references{
 Hall, P. & Patil, P. (1994) Properties of nonparametric estimators of autocovariance for stationary random fields. Probability Theory and Related Fields, 99:399-424. \url{https://doi.org/10.1007/BF01199899}

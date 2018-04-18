@@ -1,10 +1,11 @@
 Package: ncf
 Version: 1.2-3
-Date: 2018-04-12
+Date: 2018-04-17
 Title: Spatial Nonparametric Covariance Functions
 Authors@R: c(person(c("Ottar", "N."), "Bjornstad", role = c("aut", "cre"),
                      email = "onb1@psu.edu"))
-Author: Ottar N. Bjornstad [aut, cre]
+Author: Ottar N. Bjornstad [aut, cre],
+		Jun Cai [ctb]
 Maintainer: Ottar N. Bjornstad <onb1@psu.edu>
 Depends: R (>= 2.8.0)
 Description: R functions for analyzing spatial (cross-)covariance: the

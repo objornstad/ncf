@@ -1,5 +1,5 @@
 #' @title Anisotropic nonparametric (cross-)correlation function for spatio-temporal data
-#' @description \code{Sncf2D} is the function to estimate the anisotropic nonparametric correlation function in 8 (or arbitrary) directions (North - Southeast). Correlation functions are calculated for each different bearing. The function requires multiple observations at each location. (use \code{\link{spline.correlog.2D}} otherwise).
+#' @description \code{Sncf2D} is the function to estimate the anisotropic nonparametric correlation function in 8 (or arbitrary) directions (North - Southeast). Correlation functions are calculated for each different bearing. The function requires multiple observations at each location. (use \code{\link{spline.correlog2D}} otherwise).
 #' @param x vector of length n representing the x coordinates.
 #' @param y vector of length n representing the y coordinates.
 #' @param z matrix of dimension n x p representing p observation at each location.
@@ -39,7 +39,7 @@
 #' @note The function to estimate the anisotropic nonparametric (cross-)correlation function in arbitrary directions. In particular it was developed to calculate the lagged cross-correlation function (Bjornstad et al. 2002).
 #' @references Bjornstad, O. N., M. Peltonen, A. M. Liebhold, and W. Baltensweiler. 2002. Waves of larch budmoth outbreaks in the European Alps. Science 298:1020-1023. \url{https://doi.org/10.1126/science.1075182}
 #' @author Ottar N. Bjornstad \email{onb1@psu.edu}
-#' @seealso \code{\link{summary.Sncf2D}}, \code{\link{plot.Sncf2D}}, \code{\link{cc.offset}} , \code{\link{Sncf}}, \code{\link{spline.correlog.2D}}
+#' @seealso \code{\link{summary.Sncf2D}}, \code{\link{plot.Sncf2D}}, \code{\link{cc.offset}} , \code{\link{Sncf}}, \code{\link{spline.correlog2D}}
 #' @examples 
 #' # first generate some sample data
 #' x <- expand.grid(1:20, 1:5)[, 1]
@@ -52,12 +52,13 @@
 #' # anisotorpic nonparametric covariance function at 30 and 60 degrees
 #' fit1 <- Sncf2D(x = x, y = y, z = z, resamp = 0, angle = c(30, 60))
 #' \dontrun{plot.Sncf2D(fit1)}
-#' summary.Sncf2D(fit1)
+#' summary(fit1)
 #' 
 #' # What distance is the peak in correlation
 #' cc.offset(fit1)
 #' @keywords smooth regression
-##############################################################################################
+#' @export
+###############################################################################################
 Sncf2D <- function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 1000, npoints = 300,
                    save = FALSE, max.it=25, xmax= FALSE, na.rm = FALSE, jitter= FALSE, quiet=FALSE,
                    angle=c(0,22.5,45,67.5,90,112.5,135,157.5)){
@@ -290,11 +291,12 @@ Sncf2D <- function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 1000, npo
 
 #' @title Print function for Sncf2D objects
 #' @description `print' method for class "Sncf2D".
-#' @param x an object of class "Sncf2D", usually, as a result of a call to \code{Sncf2D} or \code{spline.correlog.2D}).
+#' @param x an object of class "Sncf2D", usually, as a result of a call to \code{Sncf2D} or \code{spline.correlog2D}).
 #' @param \dots other arguments
 #' @return The function-call is printed to screen.
 #' @seealso \code{\link{Sncf2D}}
-##############################################################################################
+#' @export
+###############################################################################################
 print.Sncf2D=function(x, ...){
   ##############################################################################################
   cat("This is an object of class Sncf2D produced by the call:\n\n", x$call, "\n\n Use summary() or plot() for inspection,  (or print.default() to see all the gory details).")}
@@ -309,7 +311,8 @@ print.Sncf2D=function(x, ...){
 #' @return A plot or panel-plot results. These represents the xy-plot of distance against spatial (cross-)correlation for each cardinal direction.
 #' @seealso \code{\link{Sncf2D}}, \code{\link{plot.Sncf}}
 #' @keywords smooth regression
-##############################################################################################
+#' @export
+###############################################################################################
 plot.Sncf2D <- function(x, xmax = 0, ylim=c(-1,1), detail = FALSE, ...){
   ##############################################################################################
   #this is the generic plot function for Sncf2D objects
@@ -347,7 +350,8 @@ plot.Sncf2D <- function(x, xmax = 0, ylim=c(-1,1), detail = FALSE, ...){
 #' @return A list summarizing the nonparametric covariance function in each cardinal direction results, each with the entires as in \code{\link{summary.Sncf}}.
 #' @seealso \code{\link{Sncf2D}}, \code{\link{cc.offset}}, \code{\link{summary.Sncf}}
 #' @keywords smooth regression
-##############################################################################################
+#' @export
+###############################################################################################
 summary.Sncf2D<-function(object, ...){
   ##############################################################################################
   #this is the generic summary function for Sncf objects
@@ -395,7 +399,7 @@ summary.Sncf2D<-function(object, ...){
 
 #' @title Function to calculate the distance at which the cross-correlation peaks for Sncf objects
 #' @description Alternative `summary' method for class "Sncf2D".
-#' @param object an object of class "Sncf2D", usually, as a result of a call to \code{Sncf2D} or \code{spline.correlog.2D}.
+#' @param object an object of class "Sncf2D", usually, as a result of a call to \code{Sncf2D} or \code{spline.correlog2D}.
 #' @param xmax the maximum distance to consider (default is no upper limit).
 #' @return An matrix of class "cc.offset" is returned with columns:
 #' \item{angle}{the cardinal angle (in degrees).}
@@ -403,7 +407,8 @@ summary.Sncf2D<-function(object, ...){
 #' \item{correlation}{the correlation at the mode (with CI) for each of the cardinal angles.}
 #' @seealso \code{\link{Sncf2D}}, \code{\link{summary.Sncf2D}}, \code{\link{plot.cc.offset}}
 #' @keywords smooth regression
-##############################################################################################
+#' @export
+###############################################################################################
 cc.offset<-function(object, xmax=NULL){
   ##############################################################################################
   #calculates offsets in Sncf2D cross-correltions
@@ -452,7 +457,8 @@ cc.offset<-function(object, xmax=NULL){
 #' @param \dots other arguments
 #' @return A radial `symbol' plot results. The radius represents the distance to peak correlation (the mode) of the correlation function (in the positive direction). The size of the symbol represents the magnitude of the correlation at the mode for the given cardinal direction.
 #' @seealso \code{\link{cc.offset}}, \code{\link{Sncf2D}}, \code{\link{plot.Sncf2D}}
-##############################################################################################
+#' @export
+###############################################################################################
 plot.cc.offset <- function(x, dmax=NULL, inches=NULL, ...){
   ##############################################################################################
   #this is the generic plot function for cc.offset objects

@@ -85,23 +85,23 @@ w <- cbind(
 # univariate spline correlogram
 fit1 <- spline.correlog(x = x, y = y, z = z[, 1], resamp = 100)
 \dontrun{plot.spline.correlog(fit1)}
-summary.spline.correlog(fit1)
+summary(fit1)
 
 # multivariate spline correlogram
 fit2 <- spline.correlog(x = x, y = y, z = z, resamp = 100)
 \dontrun{plot.spline.correlog(fit2)}
-summary.spline.correlog(fit2)
+summary(fit2)
 
 # multivariate spline cross-correlogram
 fit3 <- spline.correlog(x = x, y = y, z = z, w = w, resamp = 100)
 \dontrun{plot.spline.correlog(fit3)}
-summary.spline.correlog(fit3)
+summary(fit3)
 }
 \references{
 Bjornstad, O.N. & Falck, W. (2001) Nonparametric spatial covariance functions: estimation and testing. Environmental and Ecological Statistics, 8:53-70. \url{https://doi.org/10.1023/A:1009601932481}
 }
 \seealso{
-\code{\link{summary.spline.correlog}}, \code{\link{plot.spline.correlog}}, \code{\link{Sncf}}, \code{\link{spline.correlog.2D}}, \code{\link{correlog}}
+\code{\link{summary.spline.correlog}}, \code{\link{plot.spline.correlog}}, \code{\link{Sncf}}, \code{\link{spline.correlog2D}}, \code{\link{correlog}}
 }
 \author{
 Ottar N. Bjornstad \email{onb1@psu.edu}

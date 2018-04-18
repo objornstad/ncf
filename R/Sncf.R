@@ -63,13 +63,14 @@
 #' # multivariate nonparametric covariance function
 #' fit1 <- Sncf(x = x, y = y, z = z, resamp = 0)
 #' \dontrun{plot.Sncf(fit1)}
-#' summary.Sncf(fit1)
+#' summary(fit1)
 #' 
 #' # multivariate nonparametric cross-covariance function
 #' fit2 <- Sncf(x = x, y = y, z = z, w = w, resamp = 0)
 #' \dontrun{plot.Sncf(fit2)}
-#' summary.Sncf(fit2)
+#' summary(fit2)
 #' @keywords smooth regression spatial
+#' @export
 ##############################################################################################
 Sncf<-function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 1000, npoints = 300, save = FALSE,
                filter = FALSE, fw = 0, max.it=25, xmax = FALSE, na.rm = FALSE, latlon = FALSE, circ=FALSE, quiet=FALSE){
@@ -251,6 +252,7 @@ Sncf<-function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 1000, npoints
 #' @return A plot of the nonparametric spatial covariance function (with CI's if boostrapps are available)
 #' @seealso \code{\link{Sncf}}, \code{\link{plot.Sncf}}, \code{\link{Sncf.srf}}, \code{\link{summary.Sncf}}
 #' @keywords smooth regression
+#' @export
 ##############################################################################################
 plot.Sncf=function (x, xmax = 0, ylim=c(-1,1), add = FALSE, ...) 
   ##############################################################################################
@@ -259,7 +261,7 @@ plot.Sncf=function (x, xmax = 0, ylim=c(-1,1), add = FALSE, ...)
   cbar <- x$real$cbar
   if (!add) {
     plot(x$real$predicted$x, x$real$predicted$y, xlim = c(0, 
-                                                          xmax), ylim = ylim, type = "l", xlab = "Distance", 
+         xmax), ylim = ylim, type = "l", xlab = "Distance", 
          ylab = "Correlation")
   }
   if (!is.null(x$boot$boot.summary)) {
@@ -276,6 +278,7 @@ plot.Sncf=function (x, xmax = 0, ylim=c(-1,1), add = FALSE, ...)
 #' @param \dots other arguments
 #' @return The function-call is printed to screen.
 #' @seealso \code{\link{Sncf}}
+#' @export
 ##############################################################################################
 print.Sncf=function(x, ...){
   ##############################################################################################
@@ -296,6 +299,7 @@ print.Sncf=function(x, ...){
 #' \item{quantiles}{a matrix summarizing the quantiles in the bootstrap (or null) distributions of the benchmark statistics.}
 #' @seealso \code{\link{Sncf}}, \code{\link{plot.Sncf}}
 #' @keywords smooth regression
+#' @export
 ##############################################################################################
 summary.Sncf<-function(object, ...){
   ##############################################################################################
@@ -380,6 +384,7 @@ summary.Sncf<-function(object, ...){
 #' \dontrun{plot(fit2)} 
 #' summary(fit2)
 #' @keywords smooth regression
+#' @export
 ##############################################################################################
 Sncf.srf <- function(x, y, z, w=NULL, avg=NULL, avg2=NULL, corr= TRUE, df = NULL, type = "boot", resamp = 0, 
                      npoints = 300, save = FALSE, filter = FALSE, fw = 0, max.it=25, xmax = FALSE, jitter = FALSE, quiet=FALSE){
@@ -560,6 +565,7 @@ Sncf.srf <- function(x, y, z, w=NULL, avg=NULL, avg2=NULL, corr= TRUE, df = NULL
 #' @param \dots other arguments
 #' @seealso \code{\link{Sncf.srf}}, \code{\link{plot.Sncf}}
 #' @keywords smooth regression
+#' @export
 ##############################################################################################
 plot.Sncf.cov <- function(x, xmax = 0, ...){
   ##############################################################################################

@@ -57,7 +57,7 @@ An object of class "Sncf2D" is returned, consisting of a list of estimates for e
 \item{max.distance}{the maximum spatial distance.}
 }
 \description{
-\code{Sncf2D} is the function to estimate the anisotropic nonparametric correlation function in 8 (or arbitrary) directions (North - Southeast). Correlation functions are calculated for each different bearing. The function requires multiple observations at each location. (use \code{\link{spline.correlog.2D}} otherwise).
+\code{Sncf2D} is the function to estimate the anisotropic nonparametric correlation function in 8 (or arbitrary) directions (North - Southeast). Correlation functions are calculated for each different bearing. The function requires multiple observations at each location. (use \code{\link{spline.correlog2D}} otherwise).
 }
 \details{
 Correlation functions are calculated on projected distances onto the different bearings so ALL data are used for each direction. The (obsolete?) \code{oldncf2D} used the alternative of slizing up the data like pieces of a pie.
@@ -83,7 +83,7 @@ z <- cbind(
 # anisotorpic nonparametric covariance function at 30 and 60 degrees
 fit1 <- Sncf2D(x = x, y = y, z = z, resamp = 0, angle = c(30, 60))
 \dontrun{plot.Sncf2D(fit1)}
-summary.Sncf2D(fit1)
+summary(fit1)
 
 # What distance is the peak in correlation
 cc.offset(fit1)
@@ -92,7 +92,7 @@ cc.offset(fit1)
 Bjornstad, O. N., M. Peltonen, A. M. Liebhold, and W. Baltensweiler. 2002. Waves of larch budmoth outbreaks in the European Alps. Science 298:1020-1023. \url{https://doi.org/10.1126/science.1075182}
 }
 \seealso{
-\code{\link{summary.Sncf2D}}, \code{\link{plot.Sncf2D}}, \code{\link{cc.offset}} , \code{\link{Sncf}}, \code{\link{spline.correlog.2D}}
+\code{\link{summary.Sncf2D}}, \code{\link{plot.Sncf2D}}, \code{\link{cc.offset}} , \code{\link{Sncf}}, \code{\link{spline.correlog2D}}
 }
 \author{
 Ottar N. Bjornstad \email{onb1@psu.edu}

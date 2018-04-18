@@ -59,6 +59,11 @@
 #' fit3 <- correlog(x = x, y = y, z = z, w = w, increment = 2, resamp = 0) 
 #' \dontrun{plot(fit3)}
 #' @keywords spatial
+#' @export
+#' @importFrom grDevices gray
+#' @importFrom graphics lines par plot points polygon symbols text title
+#' @importFrom stats cor fft lm na.omit predict quantile rnorm sd smooth.spline uniroot var
+#' @importFrom utils flush.console
 ##############################################################################################
 correlog<-function(x, y, z, w=NULL, increment, resamp = 1000, latlon = FALSE, na.rm = FALSE, quiet=FALSE){
   ##############################################################################################
@@ -213,6 +218,7 @@ correlog<-function(x, y, z, w=NULL, increment, resamp = 1000, latlon = FALSE, na
 #'   If a permutation test was performed, values significant at a nominal (two-sided) 5\%-level will be respresented by filled circles and non-significant values by open circles.
 #' @seealso \code{\link{correlog}}, \code{\link{correlog.nc}}
 #' @keywords spatial
+#' @export
 #########################################################################################
 plot.correlog<-function(x, ...){
   ##############################################################################################
@@ -274,6 +280,7 @@ plot.correlog<-function(x, ...){
 #' fit1 <- correlog.nc(x = x, y = y, z = z, increment = 2, resamp = 500)
 #' \dontrun{plot.correlog(fit1)}
 #' @keywords spatial
+#' @export
 ##############################################################################################
 correlog.nc<-function(x, y, z, w=NULL, increment, resamp = 1000, na.rm = FALSE, latlon=FALSE, quiet=FALSE){
   ##############################################################################################
@@ -459,6 +466,7 @@ correlog.nc<-function(x, y, z, w=NULL, increment, resamp = 1000, na.rm = FALSE, 
 #' quiet = TRUE, resamp = 0)
 #' \dontrun{plot(fit2)}
 #' @keywords spatial
+#' @export
 ##############################################################################################
 mantel.correlog<-function(dmat, zmat, wmat=NULL, increment, resamp = 1000, quiet=FALSE){
   ##############################################################################################
@@ -546,3 +554,5 @@ mantel.correlog<-function(dmat, zmat, wmat=NULL, increment, resamp = 1000, quiet
   class(res) <- "correlog"
   res
 }
+
+

@@ -7,7 +7,7 @@
 \method{print}{Sncf2D}(x, ...)
 }
 \arguments{
-\item{x}{an object of class "Sncf2D", usually, as a result of a call to \code{Sncf2D} or \code{spline.correlog.2D}).}
+\item{x}{an object of class "Sncf2D", usually, as a result of a call to \code{Sncf2D} or \code{spline.correlog2D}).}
 
 \item{\dots}{other arguments}
 }

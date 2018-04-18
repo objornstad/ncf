@@ -31,6 +31,7 @@
 #' fit1 <- lisa(x = x, y = y, z = z, neigh = 3, resamp = 500)
 #' \dontrun{plot.lisa(fit1, negh.mean=FALSE)}
 #' @keywords spatial
+#' @export
 ##############################################################################################
 lisa<-function(x, y, z, neigh, resamp=1000, latlon = FALSE, quiet=FALSE){
   ##############################################################################################
@@ -109,9 +110,9 @@ lisa<-function(x, y, z, neigh, resamp=1000, latlon = FALSE, quiet=FALSE){
 #'   If a permutation test was performed, observations for which the associated LISA statistic is positive and significant at a nominal (two-sided) 5\%-level will be respresented by filled symbols and non-significant values by open symbols. Thus spatial hot-spots are represented by red filled circles and cold-spots by black filled squares.
 #' @seealso \code{\link{lisa}}, \code{\link{lisa.nc}}
 #' @keywords spatial
+#' @export
 ##############################################################################################
-plot.lisa<-function(x, neigh.mean=FALSE, add=FALSE, inches=0.2, ...){
-  ##############################################################################################
+plot.lisa<-function(x, neigh.mean=FALSE, add=FALSE, inches=0.2, ...){##############################################################################################
   if(neigh.mean){
     z <- x$mean
   }
@@ -188,6 +189,7 @@ plot.lisa<-function(x, neigh.mean=FALSE, add=FALSE, inches=0.2, ...){
 #' fit1 <- lisa.nc(x = x, y = y, z = z, neigh = 3)
 #' \dontrun{plot.lisa.nc(fit1)}
 #' @keywords spatial
+#' @export
 ##############################################################################################
 lisa.nc<-function(x, y, z, neigh, na.rm = FALSE, resamp=1000, latlon = FALSE, quiet=FALSE){
   ##############################################################################################
@@ -269,6 +271,7 @@ lisa.nc<-function(x, y, z, neigh, na.rm = FALSE, resamp=1000, latlon = FALSE, qu
 #'   If a permutation test was performed, values significant at a nominal (two-sided) 5\%-level will be respresented by filled symbols and non-significant values by open symbols. Thus areas of significant positive (or above-average) correlation have  filled red circles and areas of significant negative (or below-average) correlation have filled black squares.
 #' @seealso \code{\link{lisa}}, \code{\link{lisa.nc}}
 #' @keywords spatial
+#' @export
 ##############################################################################################
 plot.lisa.nc<-function(x, ctr = FALSE, add=FALSE, inches=0.2, ...){
   ##############################################################################################

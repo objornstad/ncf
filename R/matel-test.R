@@ -35,6 +35,7 @@
 #' # the Mantel test
 #' mantel.test(x = x, y = y, z = z[, 1], resamp = 500)
 #' @keywords spatial
+#' @export
 ##############################################################################################
 mantel.test<-function(M1=NULL, M2=NULL, x=NULL, y=NULL, z=NULL, resamp = 1000, latlon = FALSE, quiet=FALSE){
   ##############################################################################################
@@ -149,6 +150,7 @@ mantel.test<-function(M1=NULL, M2=NULL, x=NULL, y=NULL, z=NULL, resamp = 1000, l
 #' 
 #' partial.mantel.test(M1 = M1, M2 = M2, M3 = M3, resamp = 500)
 #' @keywords spatial
+#' @export
 ##############################################################################################
 partial.mantel.test<-function(M1, M2, M3, resamp = 1000, method='pearson', quiet=FALSE){
   ##############################################################################################
