@@ -30,86 +30,79 @@
 #' print(fit1)
 #' @keywords spatial
 #' @export
-##############################################################################################
-mSynch<-function(x, y=NULL, resamp = 1000, na.rm = FALSE, circ=FALSE, quiet=FALSE){
-  ##############################################################################################
-  #mSynch is a function to estimate the mean (cross-)correlation with bootstrapp CI for one
-  #or two panels of spatiotemporal data
-  ############################################################################################
-  
+################################################################################
+mSynch <- function(x, y = NULL, resamp = 1000, na.rm = FALSE, circ = FALSE, 
+                   quiet = FALSE) {
+  ##############################################################################
+  # mSynch is a function to estimate the mean (cross-)correlation with bootstrapp 
+  # CI for one or two panels of spatiotemporal data
+  ##############################################################################
   NAO <- FALSE
   
-  #check for missing values
-  if(any(!is.finite(x))) {
-    if(na.rm){
+  # check for missing values
+  if (any(!is.finite(x))) {
+    if (na.rm) {
       warning("Missing values exist; Pairwise deletion will be used")
       NAO <- TRUE
-    }
-    else {
+    } else {
       stop("Missing values exist; use na.rm = TRUE for pairwise deletion")
     }
   }
   
-  #the following sets up the output:
+  # the following sets up the output:
   Sbar <- list(real = NA)
   
-  #first generates the correlations
-  #the odd adding of zero is just to ensure that all vectors 
-  #are treated as numeric
+  # first generates the correlations
+  # the odd adding of zero is just to ensure that all vectors 
+  # are treated as numeric
   n <- dim(x)[1]
   p <- dim(x)[2]
-  x <- as.matrix(x)+0
+  x <- as.matrix(x) + 0
   
-  if(!is.null(y)){
+  if (!is.null(y)) {
     m <- dim(y)[1]
-    y <- as.matrix(y)+0
+    y <- as.matrix(y) + 0
   }
   
-  if(!is.null(y)){
-    synch <- cor2(t(x), t(y), circ=circ)
-  }
-  else{
-    synch <- cor2(t(x), circ=circ)
+  if (!is.null(y)) {
+    synch <- cor2(t(x), t(y), circ = circ)
+  } else {
+    synch <- cor2(t(x), circ = circ)
   }
   
-  if(is.null(y)){
+  if (is.null(y)) {
     triang <- lower.tri(synch)
     v <- synch[triang]
-  }
-  else{
+  } else {
     v <- synch
   }
   
-  Sbar$real <- mean(v, na.rm= TRUE)
-  
+  Sbar$real <- mean(v, na.rm = TRUE)
   #End of real fit
   
   Sbar$boot <- NULL
-  
-  if(resamp != 0) {
-    Sbar$boot<-matrix(NA, nrow = resamp, ncol = 1)
-    for(i in 1:resamp) {
-      whn=pretty(c(1,resamp), n=10)
-      if(! quiet & any(i==whn)){
+  if (resamp != 0) {
+    Sbar$boot <- matrix(NA, nrow = resamp, ncol = 1)
+    for (i in 1:resamp) {
+      whn <- pretty(c(1, resamp), n = 10)
+      if (!quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
-        flush.console()}
+        flush.console()
+      }
       
-      #here is the bootstrapping/randomization
+      # here is the bootstrapping/randomization
       trekkx <- sample(1:n, replace = TRUE)
-      
-      if(!is.null(y)){
+      if (!is.null(y)) {
         trekky <- sample(1:m, replace = TRUE)
         synchb <- synch[trekkx,trekky]
-      }
-      
-      else{
+      } else {
         trekky <- trekkx
-        synchb <- synch[trekkx,trekkx][diag(n)[trekkx,trekkx]!=1]
+        synchb <- synch[trekkx, trekkx][diag(n)[trekkx, trekkx] != 1]
       }
       
-      Sbar$boot[i,1] <- mean(synchb, na.rm= TRUE)
+      Sbar$boot[i, 1] <- mean(synchb, na.rm = TRUE)
     }
-    #end of bootstrap loop!
+    # end of bootstrap loop!
   }
   res <- Sbar
   class(res) <- "mSynch"
@@ -126,22 +119,22 @@ mSynch<-function(x, y=NULL, resamp = 1000, na.rm = FALSE, circ=FALSE, quiet=FALS
 #' \item{Squantile}{the quantile distribution from the resampling for the regional correlation.}
 #' @seealso \code{\link{mSynch}}
 #' @keywords smooth regression
-##############################################################################################
-"print.mSynch" <- function(x, verbose = FALSE, ...){
-  ##############################################################################################
-  #this is the generic print function for mSynch objects
+################################################################################
+"print.mSynch" <- function(x, verbose = FALSE, ...) {
+  ##############################################################################
+  # this is the generic print function for mSynch objects
   #
-  #ARGUMENTS
-  #verbose   If TRUE, the raw list is echoed
-  ##############################################################################################
-  if(!verbose) {
-    Sbard <- quantile(x$boot, probs = c(0, 0.025, 0.25, 0.5,
-                                        0.75, 0.975, 1), na.rm= TRUE)
-    out <- list(mean=x$real, Squantile = Sbard)
+  # ARGUMENTS
+  # verbose   If TRUE, the raw list is echoed
+  ##############################################################################
+  if (!verbose) {
+    Sbard <- quantile(x$boot, probs = c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), 
+                      na.rm = TRUE)
+    out <- list(mean = x$real, Squantile = Sbard)
     print(out)
-    cat("\n\nFor a raw listing use print(x, verbose= TRUE)\n")
+    cat("\n\nFor a raw listing use print(x, verbose = TRUE)\n")
   }
-  if(verbose) {
+  if (verbose) {
     print.default(x)
   }
 }
