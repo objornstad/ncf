@@ -66,7 +66,7 @@ Sncf2D <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
   ##############################################################################
   # Sncf2D is the function to estimate the anisotropic nonparametric covariance function 
   # (using a smoothing spline as an equivalent kernel) in 8 (or arbitrary) directions (North - Southeast) 
-  # through calculateing projected distances onto the different bearings (i.e. all data are used for each direction = 0,22.5,45,67.5,90,112.5,135,157.5)
+  # through calculateing projected distances onto the different bearings (i.e. all data are used for each direction = 0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5)
   ##############################################################################
   
   # the following sets up the output:
@@ -91,7 +91,7 @@ Sncf2D <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
     
     for (i in 1:length(angle)) {
       boot[[i]] <- list(boot.summary = list(
-        cbar = matrix(NA, ncol=1, nrow = resamp),
+        cbar = matrix(NA, ncol = 1, nrow = resamp),
         x.intercept = matrix(NA, ncol = 1, nrow = resamp),
         e.intercept = matrix(NA, ncol = 1, nrow = resamp),
         y.intercept = matrix(NA, ncol = 1, nrow = resamp),
@@ -200,7 +200,7 @@ Sncf2D <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
       
       for (i in 1:resamp) {
         whn <- pretty(c(1, resamp), n = 10)
-        if (!quiet & any(i == whn)) {
+        if (quiet & any(i == whn)) {
           cat(i, " of ", resamp, "(direction", d, "of ", length(ang), ")\r")
           flush.console()
         }
@@ -240,8 +240,8 @@ Sncf2D <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
         v <- v[u <= maxdist]
         u <- u[u <= maxdist]
         
-        out <- gather(u = u, v = v, w = w, moran = moranb, df = df, xpoints = xpoints, 
-                      filter = FALSE, fw = 0)
+        out <- gather(u = u, v = v, w = w, moran = moranb, df = df, 
+                      xpoints = xpoints, filter = FALSE, fw = 0)
         boot[[d]]$boot.summary$cbar[i, 1] <- mean(v)		
         
         if (is.null(w)) {
@@ -348,10 +348,10 @@ plot.Sncf2D <- function(x, xmax = 0, ylim = c(-1, 1), detail = FALSE, ...) {
 #' @keywords smooth regression
 #' @export
 ################################################################################
-summary.Sncf2D<-function(object, ...){
+summary.Sncf2D <- function(object, ...) {
   ##############################################################################
   # this is the generic summary function for Sncf objects
-  ###############################################################################
+  ##############################################################################
   L <- length(object$angle)
   
   xy <- matrix(NA, ncol = L, nrow = 4)
@@ -406,7 +406,7 @@ summary.Sncf2D<-function(object, ...){
 #' @keywords smooth regression
 #' @export
 ################################################################################
-cc.offset<-function(object, xmax=NULL){
+cc.offset <- function(object, xmax = NULL) {
   ##############################################################################
   # calculates offsets in Sncf2D cross-correltions
   ##############################################################################
@@ -456,11 +456,11 @@ cc.offset<-function(object, xmax=NULL){
 #' @seealso \code{\link{cc.offset}}, \code{\link{Sncf2D}}, \code{\link{plot.Sncf2D}}
 #' @export
 ################################################################################
-plot.cc.offset <- function(x, dmax=NULL, inches=NULL, ...){
+plot.cc.offset <- function(x, dmax = NULL, inches = NULL, ...) {
   ##############################################################################
   # this is the generic plot function for cc.offset objects
   ##############################################################################
-  theta <- 2*pi*x[,"angle"]/360
+  theta <- 2*pi*x[, "angle"]/360
   x2 <- x[, "distance"]*sin(theta)
   y <- x[, "distance"]*cos(theta)
   inc <- inches
