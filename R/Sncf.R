@@ -71,64 +71,59 @@
 #' summary(fit2)
 #' @keywords smooth regression spatial
 #' @export
-##############################################################################################
-Sncf<-function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 1000, npoints = 300, save = FALSE,
-               filter = FALSE, fw = 0, max.it=25, xmax = FALSE, na.rm = FALSE, latlon = FALSE, circ=FALSE, quiet=FALSE){
-  ##############################################################################################
+################################################################################
+Sncf <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000, 
+                 npoints = 300, save = FALSE, filter = FALSE, fw = 0, max.it = 25, 
+                 xmax = FALSE, na.rm = FALSE, latlon = FALSE, circ = FALSE, 
+                 quiet = FALSE) {
+  ##############################################################################
   NAO <- FALSE
   
-  #check for missing values
-  if(any(!is.finite(unlist(z)))) {
-    if(na.rm){
+  # check for missing values
+  if (any(!is.finite(unlist(z)))) {
+    if (na.rm) {
       warning("Missing values exist; Pairwise deletion will be used")
       NAO <- TRUE
-    }
-    else {
+    } else {
       stop("Missing values exist; use na.rm = TRUE for pairwise deletion")
     }
   }
   
-  if(is.null(w)){
-    #This generates correlations
+  if (is.null(w)) {
+    # This generates correlations
     n <- dim(z)[1]
     p <- dim(z)[2]
-    z <- as.matrix(z)+0
-    moran <- cor2(t(z), circ=circ)
-  }
-  
-  else {
-    #This generates cross-correlations
+    z <- as.matrix(z) + 0
+    moran <- cor2(t(z), circ = circ)
+  } else {
+    # This generates cross-correlations
     n <- dim(z)[1]
     p <- dim(z)[2]
-    z <- as.matrix(z)+0
-    w <- as.matrix(w)+0
-    moran <- cor2(t(z), t(w), circ=circ)
+    z <- as.matrix(z) + 0
+    w <- as.matrix(w) + 0
+    moran <- cor2(t(z), t(w), circ = circ)
   }
   
-  if(is.null(df)){
+  if (is.null(df)) {
     df <- sqrt(n)
   }
   
   
-  #then generating geographic distances
-  if(latlon){
-    #these are geographic distances from lat-lon coordinates
-    xdist <- gcdist(x,y)
-  }
-  
-  else{
-    #these are geographic distances from euclidian coordinates
-    xdist <- sqrt(outer(x,x, "-")^2+outer(y,y,"-")^2)
+  # then generating geographic distances
+  if (latlon) {
+    # these are geographic distances from lat-lon coordinates
+    xdist <- gcdist(x, y)
+  } else {
+    # these are geographic distances from euclidian coordinates
+    xdist <- sqrt(outer(x, x, "-")^2 + outer(y, y, "-")^2)
   }
   
   maxdist <- ifelse(!xmax, max(na.omit(xdist)), xmax)
   
-  #The spline function
-  if(is.null(w)){
+  # The spline function
+  if (is.null(w)) {
     triang <- lower.tri(xdist)
-  }
-  
-  else {
+  } else {
     triang <- is.finite(xdist)
   }
   
@@ -140,57 +135,58 @@ Sncf<-function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 1000, npoints
   v <- v[u <= maxdist]
   u <- u[u <= maxdist]
   
-  xpoints=seq(0, maxdist, length=npoints)
-  out=gather(u=u,v=v,w=w, moran=moran, df=df, xpoints=xpoints, filter=filter, fw=fw)
-  #End of spline fit
-  real <- list(cbar = out$cbar, x.intercept = out$xint, e.intercept = out$eint, y.intercept = out$yint, cbar.intercept = out$cint,
+  xpoints  <- seq(0, maxdist, length = npoints)
+  out <- gather(u = u, v = v, w = w, moran = moran, df = df, xpoints = xpoints, 
+                filter = filter, fw = fw)
+  # End of spline fit
+  real <- list(cbar = out$cbar, x.intercept = out$xint, e.intercept = out$eint, 
+               y.intercept = out$yint, cbar.intercept = out$cint,
                predicted = list(x = matrix(out$x, nrow = 1),
                                 y = matrix(out$y, nrow = 1)))
   
-  ###
   boot <- list(NULL)
   boot$boot.summary <- list(NULL)
-  if(resamp != 0) {
-    #here is the bootstrapping/randomization
+  if (resamp != 0) {
+    # here is the bootstrapping/randomization
     boot$boot.summary$x.intercept <- matrix(NA, nrow = resamp, ncol = 1)
     boot$boot.summary$y.intercept <- matrix(NA, nrow = resamp, ncol = 1)
     boot$boot.summary$e.intercept <- matrix(NA, nrow = resamp, ncol = 1)
     boot$boot.summary$cbar.intercept <- matrix(NA, nrow = resamp, ncol = 1)
     boot$boot.summary$cbar <- matrix(NA, nrow = resamp, ncol = 1)
-    predicted <- list(x = matrix(NA, nrow = 1, ncol = npoints), y = matrix(NA, nrow = resamp, ncol = npoints))
-    type <- charmatch(type, c("boot", "perm"),
-                      nomatch = NA)
-    if(is.na(type))
+    predicted <- list(x = matrix(NA, nrow = 1, ncol = npoints), 
+                      y = matrix(NA, nrow = resamp, ncol = npoints))
+    type <- charmatch(type, c("boot", "perm"), nomatch = NA)
+    if (is.na(type))
       stop("method should be \"boot\", or \"perm\"")
-    for(i in 1:resamp) {
-      whn=pretty(c(1,resamp), n=10)
-      if(! quiet & any(i==whn))	{
+    for (i in 1:resamp) {
+      whn <- pretty(c(1, resamp), n = 10)
+      if (!quiet & any(i == whn))	{
         cat(i, " of ", resamp, "\r")
-        flush.console()}
-      if(type == 1) {
+        flush.console()
+      }
+      
+      if (type == 1) {
         trekkx <- sample(1:n, replace = TRUE)
         trekky <- trekkx
       }
       
-      if(type == 2) {
+      if (type == 2) {
         trekky <- sample(1:n, replace = FALSE)
         trekkx <- 1:n
       }
       
       xdistb <- xdist[trekkx, trekkx]
       
-      if(is.null(w)){
+      if (is.null(w)) {
         triang <- lower.tri(xdistb)
-      }
-      
-      else {
+      } else {
         triang <- is.finite(xdistb)
       }
       
       xdistb <- xdistb[triang]
       moranb <- moran[trekky, trekky][triang]
       
-      if(type == 1&is.null(w)) {
+      if (type == 1 & is.null(w)) {
         moranb <- moranb[!(xdistb == 0)]
         xdistb <- xdistb[!(xdistb == 0)]
       }
@@ -203,41 +199,40 @@ Sncf<-function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 1000, npoints
       v <- v[u <= maxdist]
       u <- u[u <= maxdist]
       
-      out=gather(u=u,v=v,w=w, moran=moranb, df=df, xpoints=xpoints, filter=filter, fw=fw)
+      out <- gather(u = u, v = v, w = w, moran = moranb, df = df, xpoints = xpoints, 
+                    filter = filter, fw = fw)
       
-      boot$boot.summary$cbar[i,1] =out$cbar
-      boot$boot.summary$y.intercept[i,1] <- out$yint
-      boot$boot.summary$x.intercept[i,1] <- out$xint
-      boot$boot.summary$e.intercept[i,1] <- out$eint
-      boot$boot.summary$cbar.intercept[i,1] <- out$cint
-      predicted$x[1,] <- out$x
-      predicted$y[i,] <- out$y
+      boot$boot.summary$cbar[i, 1] <- out$cbar
+      boot$boot.summary$y.intercept[i, 1] <- out$yint
+      boot$boot.summary$x.intercept[i, 1] <- out$xint
+      boot$boot.summary$e.intercept[i, 1] <- out$eint
+      boot$boot.summary$cbar.intercept[i, 1] <- out$cint
+      predicted$x[1, ] <- out$x
+      predicted$y[i, ] <- out$y
       
     }
-    #end of bootstrap loop!
+    # end of bootstrap loop!
     
-    if(save == TRUE) {
+    if (save == TRUE) {
       boot$boot <- list(predicted = predicted)
-    }
-    else {
+    } else {
       boot$boot <- NULL
     }
     
     ty <- apply(predicted$y, 2, quantile, probs = c(0, 0.025, 0.05, 0.1, 0.25, 0.5,
-                                                    0.75, 0.9, 0.95, 0.975, 1), na.rm = TRUE)
-    dimnames(ty) <- list(c(0, 0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975, 1), NULL)
+                                                    0.75, 0.9, 0.95, 0.975, 1), 
+                na.rm = TRUE)
+    dimnames(ty) <- list(c(0, 0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975, 1), 
+                         NULL)
     tx <- predicted$x
     boot$boot.summary$predicted <- list(x = tx,y = ty)
-  }
-  
-  #The following else is if resamp=0
-  
-  else {
+  } else { # The following else is if resamp = 0
     boot <- NULL
     boot.summary <- NULL
   }
   
-  res <- list(real = real, boot = boot, max.distance = maxdist, call=deparse(match.call()))
+  res <- list(real = real, boot = boot, max.distance = maxdist, 
+              call = deparse(match.call()))
   class(res) <- "Sncf"
   res
 }
@@ -253,19 +248,20 @@ Sncf<-function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 1000, npoints
 #' @seealso \code{\link{Sncf}}, \code{\link{plot.Sncf}}, \code{\link{Sncf.srf}}, \code{\link{summary.Sncf}}
 #' @keywords smooth regression
 #' @export
-##############################################################################################
-plot.Sncf=function (x, xmax = 0, ylim=c(-1,1), add = FALSE, ...) 
-  ##############################################################################################
-{
+################################################################################
+plot.Sncf <- function(x, xmax = 0, ylim = c(-1, 1), add = FALSE, ...) {
+  ##############################################################################
   xmax <- ifelse(xmax == 0, x$max.distance, xmax)
   cbar <- x$real$cbar
   if (!add) {
-    plot(x$real$predicted$x, x$real$predicted$y, xlim = c(0, 
-         xmax), ylim = ylim, type = "l", xlab = "Distance", 
-         ylab = "Correlation")
+    plot(x$real$predicted$x, x$real$predicted$y, xlim = c(0, xmax), 
+         ylim = ylim, type = "l", xlab = "Distance", ylab = "Correlation")
   }
   if (!is.null(x$boot$boot.summary)) {
-    polygon(c(x$boot$boot.summary$predicted$x,rev(x$boot$boot.summary$predicted$x)), c(x$boot$boot.summary$predicted$y["0.025",], rev(x$boot$boot.summary$predicted$y["0.975",])), col=gray(0.8), lty=0)
+    polygon(c(x$boot$boot.summary$predicted$x, rev(x$boot$boot.summary$predicted$x)), 
+            c(x$boot$boot.summary$predicted$y["0.025", ], 
+              rev(x$boot$boot.summary$predicted$y["0.975", ])), col = gray(0.8), 
+            lty = 0)
   }
   lines(x$real$predicted$x, x$real$predicted$y)
   lines(c(0, max(x$real$predicted$x)), c(0, 0))
@@ -279,10 +275,13 @@ plot.Sncf=function (x, xmax = 0, ylim=c(-1,1), add = FALSE, ...)
 #' @return The function-call is printed to screen.
 #' @seealso \code{\link{Sncf}}
 #' @export
-##############################################################################################
-print.Sncf=function(x, ...){
-  ##############################################################################################
-  cat("This is an object of class Sncf produced by the call:\n\n", x$call, "\n\n Use summary() or plot() for inspection,  (or print.default() to see all the gory details).")}
+################################################################################
+print.Sncf <- function(x, ...) {
+  ##############################################################################
+  cat("This is an object of class Sncf produced by the call:\n\n", x$call, 
+      "\n\n Use summary() or plot() for inspection,  
+      (or print.default() to see all the gory details).")
+}
 
 #' @title Summarizing nonparametric spatial correlation-functions
 #' @description `summary' method for class "Sncf".
@@ -300,31 +299,36 @@ print.Sncf=function(x, ...){
 #' @seealso \code{\link{Sncf}}, \code{\link{plot.Sncf}}
 #' @keywords smooth regression
 #' @export
-##############################################################################################
-summary.Sncf<-function(object, ...){
-  ##############################################################################################
-  #this is the generic summary function for Sncf objects
-  ##############################################################################################
-  xy <- cbind(object$real$x.intercept, object$real$e.intercept,object$real$y.intercept,object$real$cbar.intercept)
+################################################################################
+summary.Sncf <- function(object, ...) {
+  ##############################################################################
+  # this is the generic summary function for Sncf objects
+  ##############################################################################
+  xy <- cbind(object$real$x.intercept, object$real$e.intercept, 
+              object$real$y.intercept, object$real$cbar.intercept)
   dimnames(xy) <- list(c("intercepts"), c("x", "e","y", "cbar"))
-  if(!is.null(object$boot$boot.summary)){
-    yd <- apply(object$boot$boot.summary$y.intercept, 2, quantile, probs = c(0, 0.025, 0.25, 0.5,
-                                                                             0.75, 0.975, 1), na.rm= TRUE)
-    xd <- apply(object$boot$boot.summary$x.intercept, 2, quantile, probs = c(0, 0.025, 0.25, 0.5,
-                                                                             0.75, 0.975, 1), na.rm= TRUE)
-    ed <- apply(object$boot$boot.summary$e.intercept, 2, quantile, probs = c(0, 0.025, 0.25, 0.5,
-                                                                             0.75, 0.975, 1), na.rm= TRUE)
-    synchd <- quantile(object$boot$boot.summary$cbar[,1], probs = c(0, 0.025, 0.25, 0.5,
-                                                                    0.75, 0.975, 1), na.rm= TRUE)
-    cbard <- quantile(object$boot$boot.summary$cbar.intercept[,1], probs = c(0, 0.025, 0.25, 0.5,
-                                                                             0.75, 0.975, 1), na.rm= TRUE)
+  if (!is.null(object$boot$boot.summary)) {
+    yd <- apply(object$boot$boot.summary$y.intercept, 2, quantile, 
+                probs = c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), na.rm = TRUE)
+    xd <- apply(object$boot$boot.summary$x.intercept, 2, quantile, 
+                probs = c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), na.rm = TRUE)
+    ed <- apply(object$boot$boot.summary$e.intercept, 2, quantile, 
+                probs = c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), na.rm = TRUE)
+    synchd <- quantile(object$boot$boot.summary$cbar[, 1], 
+                       probs = c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), na.rm = TRUE)
+    cbard <- quantile(object$boot$boot.summary$cbar.intercept[, 1], 
+                      probs = c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), na.rm = TRUE)
     xyd <- cbind(xd, ed, yd, cbard)
-    dimnames(xyd) <- list(c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), c("x", "e", "y", "cbar"))}
-  if(is.null(object$boot$boot.summary)){
+    dimnames(xyd) <- list(c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), c("x", "e", "y", "cbar"))
+  }
+  
+  if (is.null(object$boot$boot.summary)) {
     synchd <- NULL
     xyd <- NULL	
   }
-  res <- list(call = object$call, Regional.synch = object$real$cbar, Squantile = synchd, estimates = xy, quantiles = xyd)
+  
+  res <- list(call = object$call, Regional.synch = object$real$cbar, Squantile = synchd, 
+              estimates = xy, quantiles = xyd)
   res
 }
 
@@ -385,173 +389,166 @@ summary.Sncf<-function(object, ...){
 #' summary(fit2)
 #' @keywords smooth regression
 #' @export
-##############################################################################################
-Sncf.srf <- function(x, y, z, w=NULL, avg=NULL, avg2=NULL, corr= TRUE, df = NULL, type = "boot", resamp = 0, 
-                     npoints = 300, save = FALSE, filter = FALSE, fw = 0, max.it=25, xmax = FALSE, jitter = FALSE, quiet=FALSE){
-  ##############################################################################################
-  #Sncf.srf is the function to estimate the nonparametric covariance function for a 
-  #stationary random field (expectation and variance identical). The function uses a
-  #smoothing spline as an equivalent kernel) as discussed in 
-  #Bjornstad et al. (1999; Trends in Ecology and Evolution 14:427-431)
-  ############################################################################################
+################################################################################
+Sncf.srf <- function(x, y, z, w = NULL, avg = NULL, avg2 = NULL, corr = TRUE, 
+                     df = NULL, type = "boot", resamp = 0, npoints = 300, 
+                     save = FALSE, filter = FALSE, fw = 0, max.it = 25, 
+                     xmax = FALSE, jitter = FALSE, quiet = FALSE) {
+  ##############################################################################
+  # Sncf.srf is the function to estimate the nonparametric covariance function for a 
+  # stationary random field (expectation and variance identical). The function uses a
+  # smoothing spline as an equivalent kernel) as discussed in 
+  # Bjornstad et al. (1999; Trends in Ecology and Evolution 14:427-431)
+  ##############################################################################
   
   p <- dim(z)[2]
   n <- dim(z)[1]
   
-  
-  if(is.null(df)){
+  if (is.null(df)) {
     df <- sqrt(n)
   }
   
-  
-  if(is.null(avg)){
-    avg <- mean(as.vector(z), na.rm= TRUE)
+  if (is.null(avg)) {
+    avg <- mean(as.vector(z), na.rm = TRUE)
     
-    if(!is.null(w)){
-      avg2 <- mean(as.vector(w), na.rm= TRUE)
+    if (!is.null(w)) {
+      avg2 <- mean(as.vector(w), na.rm = TRUE)
     }
   }
   
   sca <- 1
   sca2 <- 1
-  if(corr == TRUE){
+  if (corr == TRUE) {
     sca <- sqrt(var(as.vector(z)))
     
-    if(!is.null(w)){
+    if (!is.null(w)) {
       sca2 <- sqrt(var(as.vector(w)))
     }
-    
   }
   
-  #generates distance matrices
-  xdist <- sqrt(outer(x,x, "-")^2+outer(y,y,"-")^2)
+  # generates distance matrices
+  xdist <- sqrt(outer(x, x, "-")^2 + outer(y, y, "-")^2)
   
-  if(jitter == TRUE) {
-    #xdist <- jitter(xdist)
-    xdist<-apply(xdist,2,jitter)
+  if (jitter == TRUE) {
+    # xdist <- jitter(xdist)
+    xdist <- apply(xdist, 2, jitter)
   }
   
-  if(is.null(w)){
+  if (is.null(w)) {
     moran <- crossprod((t(z) - avg)/(sca))/p
-  }
-  
-  else {
+  } else {
     moran <- crossprod((t(z) - avg)/(sca), (t(w) - avg2)/(sca2))/p
   }
   
-  maxdist <- ifelse(!xmax,max(xdist),xmax)
+  maxdist <- ifelse(!xmax, max(xdist), xmax)
   
-  #Spline fit
+  # Spline fit
   
-  #The spline function
-  if(is.null(w)){
+  # The spline function
+  if (is.null(w)) {
     triang <- lower.tri(xdist)
-  }
-  
-  else {
+  } else {
     triang <- is.finite(xdist)
   }
   
   u <- xdist[triang]
   v <- moran[triang]
-  v <- v[u<=maxdist]	
-  u <- u[u<=maxdist]
+  v <- v[u <= maxdist]	
+  u <- u[u <= maxdist]
   
-  xpoints=seq(0, maxdist, length=npoints)
-  out=gather(u=u,v=v,w=w, moran=moran, df=df, xpoints=xpoints, filter=filter, fw=fw)
-  #End of spline fit
-  real <- list(cbar = out$cbar, x.intercept = out$xint, e.intercept = out$eint, y.intercept = out$yint, cbar.intercept = out$cint,
+  xpoints <- seq(0, maxdist, length = npoints)
+  out <- gather(u = u, v = v, w = w, moran = moran, df = df, xpoints = xpoints, 
+                filter = filter, fw = fw)
+  # End of spline fit
+  real <- list(cbar = out$cbar, x.intercept = out$xint, e.intercept = out$eint, 
+               y.intercept = out$yint, cbar.intercept = out$cint,
                predicted = list(x = matrix(out$x, nrow = 1),
                                 y = matrix(out$y, nrow = 1)))
   
-  ####
   boot <- list(NULL)
   boot$boot.summary <- list(NULL)
-  if(resamp != 0) {
-    #here is the bootstrapping/randomization
+  if (resamp != 0) {
+    # here is the bootstrapping/randomization
     boot$boot.summary$x.intercept <- matrix(NA, nrow = resamp, ncol = 1)
     boot$boot.summary$y.intercept <- matrix(NA, nrow = resamp, ncol = 1)
     boot$boot.summary$e.intercept <- matrix(NA, nrow = resamp, ncol = 1)
     boot$boot.summary$cbar.intercept <- matrix(NA, nrow = resamp, ncol = 1)
     boot$boot.summary$cbar <- matrix(NA, nrow = resamp, ncol = 1)
-    predicted <- list(x = matrix(NA, nrow = 1, ncol = npoints), y = matrix(NA, nrow = resamp, ncol = npoints))
-    type <- charmatch(type, c("boot", "perm"), 
-                      nomatch = NA)
-    if(is.na(type))
+    predicted <- list(x = matrix(NA, nrow = 1, ncol = npoints), 
+                      y = matrix(NA, nrow = resamp, ncol = npoints))
+    type <- charmatch(type, c("boot", "perm"), nomatch = NA)
+    if (is.na(type))
       stop("method should be \"boot\", or \"perm\"")
-    for(i in 1:resamp) {
-      whn=pretty(c(1,resamp), n=10)
-      if(! quiet & any(i==whn))	{
+    for (i in 1:resamp) {
+      whn <- pretty(c(1, resamp), n = 10)
+      if (!quiet & any(i == whn))	{
         cat(i, " of ", resamp, "\r")
-        flush.console()}
+        flush.console()
+      }
       
-      if(type == 1) {
+      if (type == 1) {
         trekkx <- sample(1:n, replace = TRUE)
         trekky <- trekkx
       }
       
-      if(type == 2) {
+      if (type == 2) {
         trekky <- sample(1:n, replace = FALSE)
         trekkx <- 1:n
       }
       
       xdistb <- xdist[trekkx, trekkx]
       
-      if(is.null(w)){
+      if (is.null(w)) {
         triang <- lower.tri(xdistb)
-      }
-      
-      else {
+      } else {
         triang <- is.finite(xdistb)
       }
       
       xdistb <- xdistb[triang]
       moranb <- moran[trekky, trekky][triang]
       
-      if(type == 1&is.null(w)) {
+      if (type == 1 & is.null(w)) {
         moranb <- moranb[!(xdistb == 0)]
         xdistb <- xdistb[!(xdistb == 0)]
       }
       
       u <- xdistb
       v <- moranb
-      v <- v[u<=maxdist]	
-      u <- u[u<=maxdist]
-      out=gather(u=u,v=v,w=w, moran=moranb, df=df, xpoints=xpoints, filter=filter, fw=fw)
+      v <- v[u <= maxdist]	
+      u <- u[u <= maxdist]
+      out <- gather(u = u, v = v, w = w, moran = moranb, df = df, xpoints = xpoints, 
+                    filter = filter, fw = fw)
       
-      boot$boot.summary$cbar[i,1] =out$cbar
-      boot$boot.summary$y.intercept[i,1] <- out$yint
-      boot$boot.summary$x.intercept[i,1] <- out$xint
-      boot$boot.summary$e.intercept[i,1] <- out$eint
-      boot$boot.summary$cbar.intercept[i,1] <- out$cint
-      predicted$x[1,] <- out$x
-      predicted$y[i,] <- out$y
-      
+      boot$boot.summary$cbar[i, 1]  <- out$cbar
+      boot$boot.summary$y.intercept[i, 1] <- out$yint
+      boot$boot.summary$x.intercept[i, 1] <- out$xint
+      boot$boot.summary$e.intercept[i, 1] <- out$eint
+      boot$boot.summary$cbar.intercept[i, 1] <- out$cint
+      predicted$x[1, ] <- out$x
+      predicted$y[i, ] <- out$y
     }
-    #end of bootstrap loop!
+    # end of bootstrap loop!
     
-    if(save == TRUE) {
+    if (save == TRUE) {
       boot$boot <- list(predicted = predicted)
+    } else {
+      boot$boot <- NULL
     }
-    else {boot$boot <- NULL}
-    ty <- apply(predicted$y, 2, quantile, probs = c(0, 0.025, 0.05, 0.1, 0.25, 0.5, 
-                                                    0.75, 0.9, 0.95, 0.975, 1), na.rm = TRUE)
+    ty <- apply(predicted$y, 2, quantile, 
+                probs = c(0, 0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975, 1), 
+                na.rm = TRUE)
     dimnames(ty) <- list(c(0, 0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975, 1), NULL)
     tx <- predicted$x
-    boot$boot.summary$predicted <- list(x = tx,y = ty)
-  }
-  
-  #The following else is if resamp=0
-  
-  else {
+    boot$boot.summary$predicted <- list(x = tx, y = ty)
+  } else { # The following else is if resamp=0
     boot <- NULL
     boot.summary <- NULL
   }
-  res <- list(real = real, boot = boot, max.distance = maxdist, call=deparse(match.call()))
-  if(corr){
+  res <- list(real = real, boot = boot, max.distance = maxdist, 
+              call = deparse(match.call()))
+  if (corr) {
     class(res) <- "Sncf"
-  }
-  else {
+  } else {
     class(res) <- "Sncf.cov"
   }
   
@@ -566,14 +563,17 @@ Sncf.srf <- function(x, y, z, w=NULL, avg=NULL, avg2=NULL, corr= TRUE, df = NULL
 #' @seealso \code{\link{Sncf.srf}}, \code{\link{plot.Sncf}}
 #' @keywords smooth regression
 #' @export
-##############################################################################################
-plot.Sncf.cov <- function(x, xmax = 0, ...){
-  ##############################################################################################
+################################################################################
+plot.Sncf.cov <- function(x, xmax = 0, ...) {
+  ##############################################################################
   xmax <- ifelse(xmax == 0, max(x$real$predicted$x), xmax)
   plot(x$real$predicted$x, x$real$predicted$y, xlim = c(0, xmax), 
        type = "l", xlab = "Distance", ylab = "Covariance")
   if (!is.null(x$boot$boot.summary)) {
-    polygon(c(x$boot$boot.summary$predicted$x,rev(x$boot$boot.summary$predicted$x)), c(x$boot$boot.summary$predicted$y["0.025",], rev(x$boot$boot.summary$predicted$y["0.975",])), col=gray(0.8), lty=0)
+    polygon(c(x$boot$boot.summary$predicted$x, rev(x$boot$boot.summary$predicted$x)), 
+            c(x$boot$boot.summary$predicted$y["0.025", ], 
+              rev(x$boot$boot.summary$predicted$y["0.975", ])), col = gray(0.8), 
+            lty = 0)
   }
   lines(x$real$predicted$x, x$real$predicted$y)
   lines(c(0, max(x$real$predicted$x)), c(0, 0))
