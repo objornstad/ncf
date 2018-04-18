@@ -58,124 +58,116 @@
 #' cc.offset(fit1)
 #' @keywords smooth regression
 #' @export
-###############################################################################################
-Sncf2D <- function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 1000, npoints = 300,
-                   save = FALSE, max.it=25, xmax= FALSE, na.rm = FALSE, jitter= FALSE, quiet=FALSE,
-                   angle=c(0,22.5,45,67.5,90,112.5,135,157.5)){
-  ##############################################################################################
-  #Sncf2D is the function to estimate the anisotropic nonparametric covariance function 
-  #(using a smoothing spline as an equivalent kernel) in 8 (or arbitrary) directions (North - Southeast) 
-  #through calculateing projected distances onto the different bearings (i.e. all data are used for each 
-  #direction = 0,22.5,45,67.5,90,112.5,135,157.5)
-  ############################################################################################
+################################################################################
+Sncf2D <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000, 
+                   npoints = 300, save = FALSE, max.it = 25, xmax = FALSE, 
+                   na.rm = FALSE, jitter = FALSE, quiet = FALSE, 
+                   angle = c(0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5)) {
+  ##############################################################################
+  # Sncf2D is the function to estimate the anisotropic nonparametric covariance function 
+  # (using a smoothing spline as an equivalent kernel) in 8 (or arbitrary) directions (North - Southeast) 
+  # through calculateing projected distances onto the different bearings (i.e. all data are used for each direction = 0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5)
+  ##############################################################################
   
-  #the following sets up the output:
+  # the following sets up the output:
+  real <- lapply(unlist(lapply(angle, as.name)), as.null)
+  names(real) <- unlist(lapply(angle, as.name))
   
-  real<-lapply(unlist(lapply(angle, as.name)),as.null)
-  names(real)<-unlist(lapply(angle, as.name))
-  
-  for(i in 1:length(angle)){
-    real[[i]]<-list(x.intercept = NA, e.intercept = NA, y.intercept = NA, 
-                    cbar.intercept = NA, predicted = list(x = matrix(NA, nrow = 1, 
-                                                                     ncol = npoints), y = matrix(NA, nrow = 1, ncol = npoints)))
+  for (i in 1:length(angle)) {
+    real[[i]] <- list(x.intercept = NA, e.intercept = NA, y.intercept = NA, 
+                      cbar.intercept = NA, 
+                      predicted = list(x = matrix(NA, nrow = 1, ncol = npoints), 
+                                       y = matrix(NA, nrow = 1, ncol = npoints)))
   }
   
-  real$cbar<-NA
+  real$cbar <- NA
   
-  if(resamp==0){
-    boot<-lapply(unlist(lapply(angle, as.name)),as.null)
-    names(boot)<-unlist(lapply(angle, as.name))
-  }
-  
-  else{
-    boot<-lapply(unlist(lapply(angle, as.name)),as.null)
-    names(boot)<-unlist(lapply(angle, as.name))
+  if (resamp == 0) {
+    boot <- lapply(unlist(lapply(angle, as.name)), as.null)
+    names(boot) <- unlist(lapply(angle, as.name))
+  } else {
+    boot <- lapply(unlist(lapply(angle, as.name)), as.null)
+    names(boot) <- unlist(lapply(angle, as.name))
     
-    for(i in 1:length(angle)){
-      boot[[i]]<-list(boot.summary=list(
-        cbar = matrix(NA, ncol=1, nrow=resamp),
-        x.intercept = matrix(NA, ncol=1, nrow=resamp),
-        e.intercept = matrix(NA, ncol=1, nrow=resamp),
-        y.intercept = matrix(NA, ncol=1, nrow=resamp),
-        cbar.intercept = matrix(NA, ncol=1, nrow=resamp)),
-        predicted= list(x = matrix(NA, nrow = 1, ncol = npoints),
-                        y = matrix(NA, nrow = resamp, ncol = npoints)))
+    for (i in 1:length(angle)) {
+      boot[[i]] <- list(boot.summary = list(
+        cbar = matrix(NA, ncol = 1, nrow = resamp),
+        x.intercept = matrix(NA, ncol = 1, nrow = resamp),
+        e.intercept = matrix(NA, ncol = 1, nrow = resamp),
+        y.intercept = matrix(NA, ncol = 1, nrow = resamp),
+        cbar.intercept = matrix(NA, ncol = 1, nrow = resamp)),
+        predicted = list(x = matrix(NA, nrow = 1, ncol = npoints), 
+                         y = matrix(NA, nrow = resamp, ncol = npoints)))
     }
   }
   
-  type <- charmatch(type, c("boot", "perm"), 
-                    nomatch = NA)
-  if(is.na(type))
+  type <- charmatch(type, c("boot", "perm"), nomatch = NA)
+  if (is.na(type))
     stop("method should be \"boot\", or \"perm\"")
   
   NAO <- FALSE
-  
-  #check for missing values
-  if(any(!is.finite(unlist(z)))) {
-    if(na.rm){
+  # check for missing values
+  if (any(!is.finite(unlist(z)))) {
+    if (na.rm) {
       warning("Missing values exist; Pairwise deletion will be used")
       NAO <- TRUE
-    }
-    else {
+    } else {
       stop("Missing values exist; use na.rm = TRUE for pariwise deletion")
     }
   }
   
-  if(is.null(w)){
-    #This generates the moran distances for cross-correlation
-    #the odd adding of zero is just to ensure that all vectors 
-    #are treated as numeric
+  if (is.null(w)) {
+    # This generates the moran distances for cross-correlation
+    # the odd adding of zero is just to ensure that all vectors 
+    # are treated as numeric
     n <- dim(z)[1]
     p <- dim(z)[2]
-    z <- as.matrix(z)+0
+    z <- as.matrix(z) + 0
     
-    moran <- cor2(t(z), circ=FALSE)
-  }
-  
-  else {
-    #This generates the moran distances for cross-correlation
-    #the odd adding of zero is just to ensure that all vectors 
-    #are treated as numeric
+    moran <- cor2(t(z), circ = FALSE)
+  } else {
+    # This generates the moran distances for cross-correlation
+    # the odd adding of zero is just to ensure that all vectors 
+    # are treated as numeric
     n <- dim(z)[1]
     p <- dim(z)[2]
-    z <- as.matrix(z)+0
-    w <- as.matrix(w)+0
+    z <- as.matrix(z) + 0
+    w <- as.matrix(w) + 0
     
-    moran <- cor2(t(z), t(w), circ=FALSE)
+    moran <- cor2(t(z), t(w), circ = FALSE)
   }
   
-  if(is.null(df)){
+  if (is.null(df)) {
     df <- sqrt(n)
   }
   
-  maxdist <- ifelse(!xmax,max(sqrt(outer(x,x, "-")^2+outer(y,y,"-")^2)),xmax)
+  maxdist <- ifelse(!xmax, max(sqrt(outer(x, x, "-")^2 + outer(y, y, "-")^2)), 
+                    xmax)
   xpoints <- seq(-maxdist, maxdist, length = npoints)
   
-  #loop over directions
+  # loop over directions
   ang <- (2*pi)*angle/360
-  for(d in 1:length(ang)){
-    #The next fits the spline function
-    #then generating geographic distances
-    y2 <- x * sin (ang[d]) + y * cos (ang[d])
+  for (d in 1:length(ang)) {
+    # The next fits the spline function
+    # then generating geographic distances
+    y2 <- x * sin(ang[d]) + y * cos(ang[d])
     
-    xdist <- outer(y2,y2,"-")
+    xdist <- outer(y2, y2, "-")
     
-    if(jitter == TRUE) {
-      #this is corrected to be
-      #xdist <- jitter(xdist)
-      xdist <- apply(xdist,2,jitter)
+    if (jitter == TRUE) {
+      # this is corrected to be
+      # xdist <- jitter(xdist)
+      xdist <- apply(xdist, 2, jitter)
     }
     
     mdist <- max(xdist)
     
-    if(is.null(w)){
-      triang <- col(xdist)!=row(xdist)
-    }
-    
-    else {
+    if (is.null(w)) {
+      triang <- col(xdist) != row(xdist)
+    } else {
       triang <- xdist
       triang[,] <- TRUE
-      triang <- triang==1
+      triang <- triang == 1
     }
     
     u <- xdist[triang]
@@ -186,58 +178,56 @@ Sncf2D <- function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 1000, npo
     v <- v[abs(u) <= maxdist]
     u <- u[abs(u) <= maxdist]
     
-    out=gather(u=u,v=v,w=w, moran=moran, df=df, xpoints=xpoints, filter=FALSE, fw=0)
+    out <- gather(u = u, v = v, w = w, moran = moran, df = df, xpoints = xpoints, 
+                  filter = FALSE, fw = 0)
     real$cbar <- mean(v)
-    if(is.null(w)){
+    if (is.null(w)) {
       real[[d]]$y.intercept <- out$yint
-    }
-    else{
+    } else {
       real[[d]]$y.intercept <-  mean(diag(moran))
     }
     
     real[[d]]$predicted <- list(x = out$x, y = out$y)
-    real[[d]]$predicted$y[abs(real[[d]]$predicted$x)>mdist] <- NA
-    real[[d]]$x.intercept <-out$xint
+    real[[d]]$predicted$y[abs(real[[d]]$predicted$x) > mdist] <- NA
+    real[[d]]$x.intercept <- out$xint
     real[[d]]$e.intercept <- out$eint
     real[[d]]$cbar.intercept <- out$cint
+    ## end of spline fit
     
-    
-    ##End of spline fit
-    
-    if(resamp != 0) {
-      #here is the bootstrapping/randomization
-      boot[[d]]$predicted$x[1,] <- xpoints
+    if (resamp != 0) {
+      # here is the bootstrapping/randomization
+      boot[[d]]$predicted$x[1, ] <- xpoints
       
-      for(i in 1:resamp) {
-        whn=pretty(c(1,resamp), n=10)
-        if(! quiet & any(i==whn)){cat(i, " of ", resamp, "(direction", d, "of ", length(ang),")\r")
-          flush.console()}
-        if(type == 1) {
+      for (i in 1:resamp) {
+        whn <- pretty(c(1, resamp), n = 10)
+        if (quiet & any(i == whn)) {
+          cat(i, " of ", resamp, "(direction", d, "of ", length(ang), ")\r")
+          flush.console()
+        }
+        if (type == 1) {
           trekkx <- sample(1:n, replace = TRUE)
           trekky <- trekkx
         }
         
-        if(type == 2) {
+        if (type == 2) {
           trekky <- sample(1:n, replace = FALSE)
           trekkx <- 1:n
         }
         
         xdistb <- xdist[trekkx, trekkx]
         
-        if(is.null(w)){
-          triang <- col(xdistb)!=row(xdistb)
-        }
-        
-        else {
+        if (is.null(w)) {
+          triang <- col(xdistb) != row(xdistb)
+        } else {
           triang <- xdistb
           triang[,] <- TRUE
-          triang <- triang==1
+          triang <- triang == 1
         }
         
         xdistb <- xdistb[triang]
         moranb <- moran[trekky, trekky][triang]
         
-        if(type == 1&is.null(w)) {
+        if (type == 1 & is.null(w)) {
           moranb <- moranb[!(xdistb == 0)]
           xdistb <- xdistb[!(xdistb == 0)]
         }
@@ -247,44 +237,43 @@ Sncf2D <- function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 1000, npo
         sel <- is.finite(v) & is.finite(u)
         u <- u[sel]
         v <- v[sel]
-        v <- v[u<=maxdist]
-        u <- u[u<=maxdist]
+        v <- v[u <= maxdist]
+        u <- u[u <= maxdist]
         
-        out=gather(u=u,v=v,w=w, moran=moranb, df=df, xpoints=xpoints, filter=FALSE, fw=0)
-        boot[[d]]$boot.summary$cbar[i,1] <- mean(v)		
+        out <- gather(u = u, v = v, w = w, moran = moranb, df = df, 
+                      xpoints = xpoints, filter = FALSE, fw = 0)
+        boot[[d]]$boot.summary$cbar[i, 1] <- mean(v)		
         
-        if(is.null(w)){
-          boot[[d]]$boot.summary$y.intercept[i,1] <- out$yint
+        if (is.null(w)) {
+          boot[[d]]$boot.summary$y.intercept[i, 1] <- out$yint
+        } else {
+          boot[[d]]$boot.summary$y.intercept[i, 1] <- mean(diag(moran[trekky, trekky]))
         }
-        else {
-          boot[[d]]$boot.summary$y.intercept[i,1] <- mean(diag(moran[trekky, trekky]))
-        }
         
-        boot[[d]]$predicted$y[i,] <- out$y
-        boot[[d]]$predicted$y[i,][abs(boot[[d]]$predicted$x[1,])>mdist] <- NA
-        boot[[d]]$boot.summary$x.intercept[i,1] <- out$xint
-        boot[[d]]$boot.summary$e.intercept[i,1] <- out$eint
-        boot[[d]]$boot.summary$cbar.intercept[i,1]  <- out$cint
+        boot[[d]]$predicted$y[i, ] <- out$y
+        boot[[d]]$predicted$y[i, ][abs(boot[[d]]$predicted$x[1, ]) > mdist] <- NA
+        boot[[d]]$boot.summary$x.intercept[i, 1] <- out$xint
+        boot[[d]]$boot.summary$e.intercept[i, 1] <- out$eint
+        boot[[d]]$boot.summary$cbar.intercept[i, 1]  <- out$cint
       }
+      ## end of bootstrap loop!
       
-      ##end of bootstrap loop!
-      
-      if(save == TRUE) {
+      if (save == TRUE) {
         boot[[d]]$boot <- list(predicted = boot[[d]]$predicted)
-      }
-      else {
+      } else {
         boot[[d]]$boot <- NULL
       }
       
-      ty <- apply(boot[[d]]$predicted$y, 2, quantile, probs = c(0, 0.025, 0.05, 0.1, 0.25, 0.5, 
-                                                                0.75, 0.9, 0.95, 0.975, 1), na.rm = TRUE)
+      ty <- apply(boot[[d]]$predicted$y, 2, quantile, 
+                  probs = c(0, 0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975, 1), 
+                  na.rm = TRUE)
       dimnames(ty) <- list(c(0, 0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975, 1), NULL)
       tx <- boot[[d]]$predicted$x
-      boot[[d]]$boot.summary$predicted <- list(x = tx,y = ty)
+      boot[[d]]$boot.summary$predicted <- list(x = tx, y = ty)
     }
-    
   }	
-  res <- list(real = real, boot = boot, max.distance = maxdist, angle=angle, call=deparse(match.call()))
+  res <- list(real = real, boot = boot, max.distance = maxdist, angle = angle, 
+              call = deparse(match.call()))
   class(res) <- "Sncf2D"
   res
 }
@@ -296,10 +285,12 @@ Sncf2D <- function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 1000, npo
 #' @return The function-call is printed to screen.
 #' @seealso \code{\link{Sncf2D}}
 #' @export
-###############################################################################################
-print.Sncf2D=function(x, ...){
-  ##############################################################################################
-  cat("This is an object of class Sncf2D produced by the call:\n\n", x$call, "\n\n Use summary() or plot() for inspection,  (or print.default() to see all the gory details).")}
+################################################################################
+print.Sncf2D <- function(x, ...) {
+  ##############################################################################
+  cat("This is an object of class Sncf2D produced by the call:\n\n", x$call, 
+      "\n\n Use summary() or plot() for inspection,  (or print.default() to see all the gory details).")
+}
 
 #' @title Plots anisotropic spatial correlation-functions
 #' @description `plot' method for class "Sncf2D".
@@ -312,33 +303,38 @@ print.Sncf2D=function(x, ...){
 #' @seealso \code{\link{Sncf2D}}, \code{\link{plot.Sncf}}
 #' @keywords smooth regression
 #' @export
-###############################################################################################
-plot.Sncf2D <- function(x, xmax = 0, ylim=c(-1,1), detail = FALSE, ...){
-  ##############################################################################################
-  #this is the generic plot function for Sncf2D objects
-  ##############################################################################################
-  L<-length(x$angle)
+################################################################################
+plot.Sncf2D <- function(x, xmax = 0, ylim = c(-1, 1), detail = FALSE, ...) {
+  ##############################################################################
+  # this is the generic plot function for Sncf2D objects
+  ##############################################################################
+  L <- length(x$angle)
   
   xmax <- ifelse(xmax == 0, x$max.distance, xmax)
-  plot(x$real[[1]]$predict$x, x$real[[1]]$predict$y, xlim = c(-xmax, xmax), ylim
-       = ylim, type = "n", xlab = "", ylab = "")
+  plot(x$real[[1]]$predict$x, x$real[[1]]$predict$y, xlim = c(-xmax, xmax), 
+       ylim = ylim, type = "n", xlab = "", ylab = "")
   lines(c(-max(x$real[[1]]$predict$x), max(x$real[[1]]$predict$x)), c(0, 0))
-  lines(c(-max(x$real[[1]]$predict$x), max(x$real[[1]]$predict$x)), c(x$real$cbar, x$real$cbar))
+  lines(c(-max(x$real[[1]]$predict$x), max(x$real[[1]]$predict$x)), 
+        c(x$real$cbar, x$real$cbar))
   
-  if(detail){
+  if (detail) {
+    par(mfrow = c(ceiling(sqrt(L)), ceiling(sqrt(L))))
     
-    par(mfrow=c(ceiling(sqrt(L)),ceiling(sqrt(L))))
-    
-    for(i in 1:L){
-      plot(x$real[[i]]$predict$x, x$real[[i]]$predict$y, xlim = c(-xmax, xmax), ylim
-           = ylim, type = "l", xlab = "Distance", ylab = "Correlation")
+    for (i in 1:L) {
+      plot(x$real[[i]]$predict$x, x$real[[i]]$predict$y, xlim = c(-xmax, xmax), 
+           ylim = ylim, type = "l", xlab = "Distance", ylab = "Correlation")
       
-      if(!is.null(x$boot[[i]]$boot.summary)){
-        polygon(c(x$boot[[i]]$boot.summary$predicted$x,rev(x$boot[[i]]$boot.summary$predicted$x)), c(x$boot[[i]]$boot.summary$predicted$y["0.025",], rev(x$boot[[i]]$boot.summary$predicted$y["0.975",])), col=gray(0.8), lty=0)
+      if (!is.null(x$boot[[i]]$boot.summary)) {
+        polygon(c(x$boot[[i]]$boot.summary$predicted$x, 
+                  rev(x$boot[[i]]$boot.summary$predicted$x)), 
+                c(x$boot[[i]]$boot.summary$predicted$y["0.025", ], 
+                  rev(x$boot[[i]]$boot.summary$predicted$y["0.975", ])), 
+                col = gray(0.8), lty = 0)
       }	
       lines(x$real[[i]]$predict$x, x$real[[i]]$predict$y)
       lines(c(-max(x$real[[i]]$predict$x), max(x$real[[i]]$predict$x)), c(0, 0))
-      lines(c(-max(x$real[[i]]$predict$x), max(x$real[[i]]$predict$x)), c(x$real$cbar, x$real$cbar))
+      lines(c(-max(x$real[[i]]$predict$x), max(x$real[[i]]$predict$x)), 
+            c(x$real$cbar, x$real$cbar))
     }
   }
 }
@@ -351,49 +347,50 @@ plot.Sncf2D <- function(x, xmax = 0, ylim=c(-1,1), detail = FALSE, ...){
 #' @seealso \code{\link{Sncf2D}}, \code{\link{cc.offset}}, \code{\link{summary.Sncf}}
 #' @keywords smooth regression
 #' @export
-###############################################################################################
-summary.Sncf2D<-function(object, ...){
-  ##############################################################################################
-  #this is the generic summary function for Sncf objects
-  ##############################################################################################
-  L<-length(object$angle)
+################################################################################
+summary.Sncf2D <- function(object, ...) {
+  ##############################################################################
+  # this is the generic summary function for Sncf objects
+  ##############################################################################
+  L <- length(object$angle)
   
-  xy <- matrix(NA, ncol=L, nrow=4)
+  xy <- matrix(NA, ncol = L, nrow = 4)
   dimnames(xy) <- list(c("x", "e", "cbar", "y"),
                        unlist(lapply(object$angle, as.name)))
-  xyd <- lapply(unlist(lapply(object$angle, as.name)),as.null)
-  names(xyd)<-unlist(lapply(object$angle, as.name))
+  xyd <- lapply(unlist(lapply(object$angle, as.name)), as.null)
+  names(xyd) <- unlist(lapply(object$angle, as.name))
   
-  for(i in 1:L){
-    xyd[[i]]<-matrix(NA, ncol=7, nrow=4)
+  for (i in 1:L) {
+    xyd[[i]] <- matrix(NA, ncol = 7, nrow = 4)
   }
   
   cbar <- round(object$real$cbar, 2)
-  
-  for(i in 1:L){
-    xy[1,i] <- round(object$real[[i]]$x.intercept, 2)
-    xy[2,i] <- round(object$real[[i]]$e.intercept, 2)
-    xy[3,i] <- round(object$real[[i]]$cbar.intercept, 2)
-    xy[4,i] <- round(object$real[[i]]$y.intercept, 2)
-    if(!is.null(object$boot[[i]]$boot.summary)){
-      yd <- apply(object$boot[[i]]$boot.summary$y.intercept, 2, quantile, probs = c(0, 0.025, 0.25, 0.5,
-                                                                                    0.75, 0.975, 1), na.rm= TRUE)
-      xd <- apply(object$boot[[i]]$boot.summary$x.intercept, 2, quantile, probs = c(0, 0.025, 0.25, 0.5,
-                                                                                    0.75, 0.975, 1), na.rm= TRUE)
-      ed <- apply(object$boot[[i]]$boot.summary$e.intercept, 2, quantile, probs = c(0, 0.025, 0.25, 0.5,
-                                                                                    0.75, 0.975, 1), na.rm= TRUE)
-      synchd <- quantile(object$boot[[i]]$boot.summary$cbar[,1], probs = c(0, 0.025, 0.25, 0.5,
-                                                                           0.75, 0.975, 1), na.rm= TRUE)
-      cbard <- quantile(object$boot[[i]]$boot.summary$cbar.intercept[,1], probs = c(0, 0.025, 0.25, 0.5,
-                                                                                    0.75, 0.975, 1), na.rm= TRUE)
+  for (i in 1:L) {
+    xy[1, i] <- round(object$real[[i]]$x.intercept, 2)
+    xy[2, i] <- round(object$real[[i]]$e.intercept, 2)
+    xy[3, i] <- round(object$real[[i]]$cbar.intercept, 2)
+    xy[4, i] <- round(object$real[[i]]$y.intercept, 2)
+    if (!is.null(object$boot[[i]]$boot.summary)) {
+      yd <- apply(object$boot[[i]]$boot.summary$y.intercept, 2, quantile, 
+                  probs = c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), na.rm = TRUE)
+      xd <- apply(object$boot[[i]]$boot.summary$x.intercept, 2, quantile, 
+                  probs = c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), na.rm = TRUE)
+      ed <- apply(object$boot[[i]]$boot.summary$e.intercept, 2, quantile, 
+                  probs = c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), na.rm = TRUE)
+      synchd <- quantile(object$boot[[i]]$boot.summary$cbar[, 1], 
+                         probs = c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), na.rm = TRUE)
+      cbard <- quantile(object$boot[[i]]$boot.summary$cbar.intercept[, 1], 
+                        probs = c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), na.rm = TRUE)
       xyd[[i]] <- cbind(xd, ed, yd, cbard)
-      dimnames(xyd[[i]]) <- list(c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), c("x", "e", "y", "cbar"))}
-    if(is.null(object$boot[[i]]$boot.summary)){
+      dimnames(xyd[[i]]) <- list(c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), 
+                                 c("x", "e", "y", "cbar"))}
+    if (is.null(object$boot[[i]]$boot.summary)) {
       synchd <- NULL
       xyd <- NULL	
     }
   }
-  res <- list(call = object$call, Regional.synch = object$real$cbar, Squantile = synchd, estimates = xy, quantiles = xyd)
+  res <- list(call = object$call, Regional.synch = object$real$cbar, Squantile = synchd, 
+              estimates = xy, quantiles = xyd)
   res
 }
 
@@ -408,44 +405,44 @@ summary.Sncf2D<-function(object, ...){
 #' @seealso \code{\link{Sncf2D}}, \code{\link{summary.Sncf2D}}, \code{\link{plot.cc.offset}}
 #' @keywords smooth regression
 #' @export
-###############################################################################################
-cc.offset<-function(object, xmax=NULL){
-  ##############################################################################################
-  #calculates offsets in Sncf2D cross-correltions
-  ##############################################################################################
+################################################################################
+cc.offset <- function(object, xmax = NULL) {
+  ##############################################################################
+  # calculates offsets in Sncf2D cross-correltions
+  ##############################################################################
+  L <- length(object$angle)
   
-  L<-length(object$angle)
-  
-  if(is.null(xmax)){
-    xmax<-object$max.distance
+  if (is.null(xmax)) {
+    xmax <- object$max.distance
   }
   
-  if(is.null(object$boot[[1]]$boot.summary)){
-    xy <- matrix(NA, ncol=3, nrow=L)
+  if (is.null(object$boot[[1]]$boot.summary)) {
+    xy <- matrix(NA, ncol = 3, nrow = L)
     dimnames(xy) <- list(unlist(lapply(object$angle, as.name)),
                          c("angle", "distance", "correlation"))
   }
-  if(!is.null(object$boot[[1]]$boot.summary)){
-    xy <- matrix(NA, ncol=7, nrow=L)
+  
+  if (!is.null(object$boot[[1]]$boot.summary)) {
+    xy <- matrix(NA, ncol = 7, nrow = L)
     dimnames(xy) <- list(unlist(lapply(object$angle, as.name)),
                          c("angle", "distance", "correlation", "dL", "dU", "cL", "cU"))
   }
   
-  xy[,1]<-object$angle
+  xy[, 1] <- object$angle
   
-  for(i in 1:L){
-    sel<-object$real[[i]]$predict$x>=0&object$real[[i]]$predict$x<xmax
-    D<-object$real[[i]]$predict$x[sel]
-    D2<-object$real[[i]]$predict$y[sel]
-    xy[i,2]<-na.omit(D[D2==max(D2, na.rm= TRUE)])[1]
-    xy[i,3]<-na.omit(D2[D2==max(D2, na.rm= TRUE)])[1]
-    if(!is.null(object$boot[[i]]$boot.summary)){
-      xy[i,4:5]<-range(object$boot[[i]]$boot.summary$predict$x[sel][(object$boot[[i]]$boot.summary$predict$y["0.975", sel]-max(D2, na.rm= TRUE))>0], na.rm= TRUE)
-      xy[i, 7]<-object$boot[[i]]$boot.summary$predict$y["0.975", sel][rev(order(na.omit(D2)))[1]]
-      xy[i, 6]<-object$boot[[i]]$boot.summary$predict$y["0.025", sel][rev(order(na.omit(D2)))[1]]
+  for (i in 1:L) {
+    sel <- object$real[[i]]$predict$x >= 0 & object$real[[i]]$predict$x < xmax
+    D <- object$real[[i]]$predict$x[sel]
+    D2 <- object$real[[i]]$predict$y[sel]
+    xy[i, 2] <- na.omit(D[D2 == max(D2, na.rm = TRUE)])[1]
+    xy[i, 3] <- na.omit(D2[D2 == max(D2, na.rm = TRUE)])[1]
+    if (!is.null(object$boot[[i]]$boot.summary)) {
+      xy[i, 4:5] <- range(object$boot[[i]]$boot.summary$predict$x[sel][(object$boot[[i]]$boot.summary$predict$y["0.975", sel] - max(D2, na.rm = TRUE)) > 0], na.rm = TRUE)
+      xy[i, 7] <- object$boot[[i]]$boot.summary$predict$y["0.975", sel][rev(order(na.omit(D2)))[1]]
+      xy[i, 6] <- object$boot[[i]]$boot.summary$predict$y["0.025", sel][rev(order(na.omit(D2)))[1]]
     }
   }
-  class(xy)<-"cc.offset"
+  class(xy) <- "cc.offset"
   return(xy)
 }
 
@@ -458,26 +455,30 @@ cc.offset<-function(object, xmax=NULL){
 #' @return A radial `symbol' plot results. The radius represents the distance to peak correlation (the mode) of the correlation function (in the positive direction). The size of the symbol represents the magnitude of the correlation at the mode for the given cardinal direction.
 #' @seealso \code{\link{cc.offset}}, \code{\link{Sncf2D}}, \code{\link{plot.Sncf2D}}
 #' @export
-###############################################################################################
-plot.cc.offset <- function(x, dmax=NULL, inches=NULL, ...){
-  ##############################################################################################
-  #this is the generic plot function for cc.offset objects
-  ##############################################################################################
-  theta <- 2*pi*x[,"angle"]/360
-  x2 <- x[,"distance"]*sin(theta)
-  y <- x[,"distance"]*cos(theta)
-  inc=inches
-  if(is.null(dmax)) dmax=max(abs(c(x2,y)))
-  if(is.null(inches)) inc=.1
-  #tmp<-rep(0, length(theta))
-  tmp<-x[,"correlation"]
-  axs=pretty(c(0, dmax), n=4)
-  yl=xl=c(-max(axs), max(axs))
-  symbols(x2,y, circles= ifelse(tmp>0,tmp,0), inches=inc, xlim=xl, ylim=yl, xlab="", ylab="", fg=1, bg=2, asp=1, xaxt="n", yaxt="n", bty="n")
-  symbols(rep(0,length(axs)), rep(0,length(axs)), circles=axs, inches=FALSE, xlab="", 
-          ylab="", xaxt="n", yaxt="n", bty="n", add=TRUE)	
-  lines(c(0,0), yl)
-  lines(yl, c(0,0))
-  text(axs[-1], rep(0,length(axs))[-1], axs[-1], cex=0.6, pos=1)
-  symbols(x2,y, circles= ifelse(tmp>0,tmp,0), inches=inc, xlim=xl, ylim=yl, xlab="", ylab="", fg=1, bg=2, asp=1, xaxt="n", yaxt="n", add=TRUE, bty="n")
+################################################################################
+plot.cc.offset <- function(x, dmax = NULL, inches = NULL, ...) {
+  ##############################################################################
+  # this is the generic plot function for cc.offset objects
+  ##############################################################################
+  theta <- 2*pi*x[, "angle"]/360
+  x2 <- x[, "distance"]*sin(theta)
+  y <- x[, "distance"]*cos(theta)
+  inc <- inches
+  if (is.null(dmax)) dmax <- max(abs(c(x2, y)))
+  if (is.null(inches)) inc <- .1
+  # tmp <- rep(0, length(theta))
+  tmp <- x[, "correlation"]
+  axs <- pretty(c(0, dmax), n = 4)
+  yl <- xl <- c(-max(axs), max(axs))
+  symbols(x2, y, circles = ifelse(tmp > 0, tmp, 0), inches = inc, xlim = xl, 
+          ylim = yl, xlab = "", ylab = "", fg = 1, bg = 2, asp = 1, xaxt = "n", 
+          yaxt = "n", bty = "n")
+  symbols(rep(0, length(axs)), rep(0, length(axs)), circles = axs, inches = FALSE, 
+          xlab = "", ylab = "", xaxt = "n", yaxt = "n", bty = "n", add = TRUE)	
+  lines(c(0, 0), yl)
+  lines(yl, c(0, 0))
+  text(axs[-1], rep(0, length(axs))[-1], axs[-1], cex = 0.6, pos = 1)
+  symbols(x2, y, circles = ifelse(tmp > 0, tmp, 0), inches = inc, xlim = xl, 
+          ylim = yl, xlab = "", ylab = "", fg = 1, bg = 2, asp = 1, xaxt = "n", 
+          yaxt = "n", add = TRUE, bty = "n")
 }
