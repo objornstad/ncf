@@ -468,31 +468,29 @@ correlog.nc<-function(x, y, z, w=NULL, increment, resamp = 1000, na.rm = FALSE, 
 #' @keywords spatial
 #' @export
 ##############################################################################################
-mantel.correlog<-function(dmat, zmat, wmat=NULL, increment, resamp = 1000, quiet=FALSE){
+mantel.correlog <- function(dmat, zmat, wmat = NULL, increment, resamp = 1000, quiet = FALSE) {
   ##############################################################################################
   
-  if(is.null(wmat)){
+  if (is.null(wmat)) {
     moran <- zmat[lower.tri(zmat)]
   }
   
   else {
-    moran <- (zmat-mean(zmat))*(wmat-mean(wmat))/(sd(zmat)*sd(wmat))
-    zero <- mean(diag(moran), na.rm= TRUE)
-    moran <- moran[row(moran)>col(moran)]
+    moran <- (zmat - mean(zmat))*(wmat - mean(wmat))/(sd(zmat)*sd(wmat))
+    zero <- mean(diag(moran), na.rm = TRUE)
+    moran <- moran[row(moran) > col(moran)]
   }
   
-  if(resamp != 0){
+  if (resamp != 0) {
     dmat2 <- dmat
     moran2 <- moran
   }
   
-  if(is.null(wmat)){
+  if (is.null(wmat)) {
     dmat <- dmat[lower.tri(dmat)]
+  } else {
+    dmat <- dmat[row(dmat) > col(dmat)]
   }
-  else {
-    dmat <- dmat[row(dmat)>col(dmat)]
-  }
-  
   
   dkl <- ceiling(dmat/increment)
   nlok <- sapply(split(moran, dkl), length)
@@ -502,57 +500,52 @@ mantel.correlog<-function(dmat, zmat, wmat=NULL, increment, resamp = 1000, quiet
   ly <- 1:length(dmean)
   x <- c(dmean[ly[moran < 0][1]], dmean[ly[moran < 0][1] - 1])
   y <- c(moran[ly[moran < 0][1] - 1], moran[ly[moran < 0][1]])
-  if(moran[1] < 0) {
+  if (moran[1] < 0) {
     tmp <- 0
-  }
-  else {
-    if(sum(moran<0)>0){
+  } else {
+    if (sum(moran < 0) > 0) {
       tmp <- lm(x ~ y)[[1]][1]
-    }
-    else{
+    } else{
       tmp <- NA
     }
   }
   
-  p<-NULL
+  p <- NULL
   
-  if(resamp != 0){
+  if (resamp != 0) {
     perm <- matrix(NA, ncol = length(moran), nrow = resamp)
     
-    n<-dim(zmat)[1]
-    for(i in 1:resamp){
-      trekk <-sample(1:n)
-      dma <- dmat2[trekk,trekk]
+    n <- dim(zmat)[1]
+    for (i in 1:resamp) {
+      trekk <- sample(1:n)
+      dma <- dmat2[trekk, trekk]
       mor <- moran2
       
-      if(is.null(wmat)){
+      if (is.null(wmat)) {
         dma <- dma[lower.tri(dma)]
-      }
-      else {
-        dma <- dma[row(dma)>col(dma)]
+      } else {
+        dma <- dma[row(dma) > col(dma)]
       }
       
-      dkl <- ceiling(dma/increment)	#generates the distance matrices
-      perm[i,] <- sapply(split(mor, dkl), mean, na.rm = TRUE)
+      dkl <- ceiling(dma/increment)	# generates the distance matrices
+      perm[i, ] <- sapply(split(mor, dkl), mean, na.rm = TRUE)
       
-      whn=pretty(c(1,resamp), n=10)
-      if(! quiet & any(i==whn)){
+      whn <- pretty(c(1, resamp), n = 10)
+      if (!quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
         flush.console()}
     }
     
-    p=(apply(moran<=t(perm),1,sum))/(resamp+1)
-    p=apply(cbind(p, 1-p), 1, min) + 1/(resamp+1)
+    p <- (apply(moran <= t(perm), 1, sum))/(resamp + 1)
+    p <- apply(cbind(p, 1 - p), 1, min) + 1/(resamp + 1)
   }
   
   res <- list(n = nlok, mean.of.class = dmean, correlation = moran,
-              x.intercept = tmp, p=p, call=deparse(match.call()))
+              x.intercept = tmp, p = p, call = deparse(match.call()))
   
-  if(!is.null(wmat)){
+  if (!is.null(wmat)) {
     res$corr0 <- zero
   }
   class(res) <- "correlog"
   res
 }
-
-

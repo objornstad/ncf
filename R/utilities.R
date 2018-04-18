@@ -296,4 +296,3 @@ ff.filter<-function(x){
   ny<-Re(fft(fo, inverse=TRUE)/length(x2))
   return(ny[1:n])
 }
-

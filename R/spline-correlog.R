@@ -323,4 +323,5 @@ summary.spline.correlog<-function(object, ...){
 ###############################################################################################
 print.spline.correlog<-function(x, ...){
   ##############################################################################################
-  cat("This is an object of class spline.correlog produced by the call:\n\n", x$call, "\n\n Use summary() or plot() for inspection,  (or print.default() to see all the gory details).")}
+  cat("This is an object of class spline.correlog produced by the call:\n\n", x$call, "\n\n Use summary() or plot() for inspection,  (or print.default() to see all the gory details).")
+}
