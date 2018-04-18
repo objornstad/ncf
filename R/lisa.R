@@ -32,67 +32,57 @@
 #' \dontrun{plot.lisa(fit1, negh.mean=FALSE)}
 #' @keywords spatial
 #' @export
-##############################################################################################
-lisa<-function(x, y, z, neigh, resamp=1000, latlon = FALSE, quiet=FALSE){
-  ##############################################################################################
-  #lisa is a function to estimate the local indicators
-  #of spatial association.
-  #######################################################################################
-  
-  if(!is.null(dim(z))){
+################################################################################
+lisa <- function(x, y, z, neigh, resamp = 1000, latlon = FALSE, quiet = FALSE) {
+  ##############################################################################
+  # lisa is a function to estimate the local indicators of spatial association.
+  ##############################################################################
+  if (!is.null(dim(z))) {
     stop("\n z is multivariate. Use lisa.nc()")
   }
   
   n <- length(z)
-  
-  #then generating geographic distances
-  
-  if(latlon){
-    #these are geographic distances from lat-lon coordinates
-    dmat <- gcdist(x,y)
+  # then generating geographic distances
+  if (latlon) {
+    # these are geographic distances from lat-lon coordinates
+    dmat <- gcdist(x, y)
+  } else{
+    dmat <- sqrt(outer(x, x, "-")^2 + outer(y, y, "-")^2)
   }
   
-  else{
-    dmat <- sqrt(outer(x,x, "-")^2+outer(y,y,"-")^2)
-  }
-  
-  zscal <- (scale(z, center = TRUE, scale = TRUE)[, 1])/(sqrt((n-1)/n))
-  
+  zscal <- (scale(z, center = TRUE, scale = TRUE)[, 1])/(sqrt((n - 1)/n))
   zx <- t(outer(zscal, zscal))
+  dkl <- ifelse(dmat > 0 & dmat < neigh, 1, NA)	# flaggs obs within the neigh
   
-  dkl <- ifelse(dmat>0&dmat<neigh,1,NA)	#flaggs obs within the neigh
+  # calculate mean value of z within neigh
+  negz <- dkl*z
+  diag(negz) <- z
+  zmean <- apply(negz, 2, mean, na.rm = TRUE)
   
-  #calculate mean value of z within neigh
-  negz=dkl*z
-  diag(negz)=z
-  zmean=apply(negz,2,mean, na.rm=TRUE)
+  nlok <- apply(dkl, 2, sum, na.rm = TRUE)
+  dmean <- apply(dmat*dkl, 2, mean, na.rm = TRUE)
+  moran <- apply(zx*dkl, 2, mean, na.rm = TRUE)
   
-  nlok <- apply(dkl, 2, sum, na.rm= TRUE)
-  dmean <- apply(dmat*dkl, 2, mean, na.rm= TRUE)
-  moran <- apply(zx*dkl, 2, mean, na.rm= TRUE)
-  
-  p<-NULL
-  
-  if(resamp>0){
-    perm<-matrix(NA, nrow=resamp, ncol=n)
+  p <- NULL
+  if (resamp > 0) {
+    perm <- matrix(NA, nrow = resamp, ncol = n)
     
-    for(i in 1:resamp){
-      whn=pretty(c(1,resamp), n=10)
-      if(! quiet & any(i==whn)){
+    for (i in 1:resamp) {
+      whn <- pretty(c(1, resamp), n = 10)
+      if (!quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
-        flush.console()}
+        flush.console()
+      }
       
-      
-      trekk<-sample(1:n)
-      zx2<-zx[trekk, trekk]
-      perm[i,]<-apply(zx2*dkl, 2, mean, na.rm= TRUE)
+      trekk <- sample(1:n)
+      zx2 <- zx[trekk, trekk]
+      perm[i, ] <- apply(zx2*dkl, 2, mean, na.rm = TRUE)
     }
-    p<-(apply(moran<t(perm),1,sum))/(resamp+1)
-    p<-apply(cbind(p, 1-p), 1, min) + 1/(resamp+1)
-    
-    
+    p <- (apply(moran < t(perm), 1, sum))/(resamp + 1)
+    p <- apply(cbind(p, 1 - p), 1, min) + 1/(resamp + 1)
   }
-  res <- list(correlation = moran, p=p, mean=zmean, dmean = dmean, n = nlok, z=z,coord=list(x=x, y=y), call=deparse(match.call()))
+  res <- list(correlation = moran, p = p, mean = zmean, dmean = dmean, n = nlok, 
+              z = z, coord = list(x = x, y = y), call = deparse(match.call()))
   
   class(res) <- "lisa"
   res
@@ -111,43 +101,46 @@ lisa<-function(x, y, z, neigh, resamp=1000, latlon = FALSE, quiet=FALSE){
 #' @seealso \code{\link{lisa}}, \code{\link{lisa.nc}}
 #' @keywords spatial
 #' @export
-##############################################################################################
-plot.lisa<-function(x, neigh.mean=FALSE, add=FALSE, inches=0.2, ...){##############################################################################################
-  if(neigh.mean){
+################################################################################
+plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
+  ##############################################################################
+  if (neigh.mean) {
     z <- x$mean
-  }
-  else{
-    z<-x$z
+  } else {
+    z <- x$z
   }
   
   x <- x$coord$x
   y <- x$coord$y
   
-  if(add==FALSE){
-    plot(x,y,type="n")
+  if (add == FALSE) {
+    plot(x, y, type = "n")
   }
   sel <- is.finite(z)
-  x <- split(x,z-mean(z, na.rm=TRUE)>0)
-  y <- split(y,z-mean(z, na.rm=TRUE)>0)
-  sel <- split(sel, z-mean(z, na.rm=TRUE)>0)
-  z2 <- split(z-mean(z, na.rm=TRUE),z-mean(z, na.rm=TRUE)>0)
+  x <- split(x,z - mean(z, na.rm = TRUE) > 0)
+  y <- split(y, z - mean(z, na.rm = TRUE) > 0)
+  sel <- split(sel, z - mean(z, na.rm = TRUE) > 0)
+  z2 <- split(z - mean(z, na.rm = TRUE), z - mean(z, na.rm = TRUE) > 0)
   
-  bgc<-rep(0, length(z))
-  bgc <- split(bgc,z-mean(z, na.rm=TRUE)>0)
+  bgc <- rep(0, length(z))
+  bgc <- split(bgc, z - mean(z, na.rm = TRUE) > 0)
   
-  if(!is.null(x$p)){
-    bgc<-rep(0, length(z))
-    bgc<-ifelse(x$p<0.025, 1, 0)
-    bgc[x$p<0.025 & z-mean(z, na.rm=TRUE)>0]<-2
-    bgc <- split(bgc,z-mean(z, na.rm=TRUE)>0)
+  if (!is.null(x$p)) {
+    bgc <- rep(0, length(z))
+    bgc <- ifelse(x$p < 0.025, 1, 0)
+    bgc[x$p < 0.025 & z - mean(z, na.rm = TRUE) > 0] <- 2
+    bgc <- split(bgc, z - mean(z, na.rm = TRUE) > 0)
   }
   
+  if (!is.null(length(z2[[1]][sel[[1]]]))) {
+    symbols(x[[1]][sel[[1]]], y[[1]][sel[[1]]], squares = -z2[[1]][sel[[1]]], 
+            inches = inches, add = TRUE, fg = 1, bg = bgc[[1]][sel[[1]]])
+  }
   
-  if(!is.null(length(z2[[1]][sel[[1]]]))){
-    symbols(x[[1]][sel[[1]]],y[[1]][sel[[1]]],squares=-z2[[1]][sel[[1]]], inches=inches, add= TRUE, fg=1, bg=bgc[[1]][sel[[1]]])}
-  
-  if(!is.null(length(z2[[1]][sel[[2]]]))){
-    symbols(x[[2]][sel[[2]]],y[[2]][sel[[2]]],circles=z2[[2]][sel[[2]]], inches=inches, add= TRUE, fg=2, bg=bgc[[2]][sel[[2]]])}
+  if (!is.null(length(z2[[1]][sel[[2]]]))) {
+    symbols(x[[2]][sel[[2]]], y[[2]][sel[[2]]], circles = z2[[2]][sel[[2]]], 
+            inches = inches, add = TRUE, fg = 2, bg = bgc[[2]][sel[[2]]])
+  }
 }
 
 #' @title Non-centered inidcators of spatial association
@@ -190,71 +183,64 @@ plot.lisa<-function(x, neigh.mean=FALSE, add=FALSE, inches=0.2, ...){###########
 #' \dontrun{plot.lisa.nc(fit1)}
 #' @keywords spatial
 #' @export
-##############################################################################################
-lisa.nc<-function(x, y, z, neigh, na.rm = FALSE, resamp=1000, latlon = FALSE, quiet=FALSE){
-  ##############################################################################################
-  
-  if(is.null(dim(z))){
+################################################################################
+lisa.nc <- function(x, y, z, neigh, na.rm = FALSE, resamp = 1000, latlon = FALSE, 
+                  quiet = FALSE) {
+  ##############################################################################
+  if (is.null(dim(z))) {
     stop("\n z is univariate. Use lisa()")
   }
   
   NAO <- FALSE
-  #check for missing values
-  if(any(!is.finite(unlist(z)))) {
-    if(na.rm){
+  # check for missing values
+  if (any(!is.finite(unlist(z)))) {
+    if (na.rm) {
       warning("Missing values exist; Pairwise deletion will be used")
       NAO <- TRUE
-    }
-    else {
+    } else {
       stop("Missing values exist; use na.rm = TRUE for pairwise deletion")
     }
   }
   n <- dim(z)[1]
   p <- dim(z)[2]
   
-  #then generating geographic distances
-  
-  if(latlon){
-    #these are geographic distances from lat-lon coordinates
+  # then generating geographic distances
+  if (latlon) {
+    # these are geographic distances from lat-lon coordinates
     dmat <- gcdist(x,y)
+  } else {
+    dmat <- sqrt(outer(x, x, "-")^2 + outer(y, y, "-")^2)
   }
   
-  else{
-    dmat <- sqrt(outer(x,x, "-")^2+outer(y,y,"-")^2)
-  }
+  z <- as.matrix(z) + 0
+  zx <- cor2(t(z), circ = FALSE)
   
-  z <- as.matrix(z)+0
+  dkl <- ifelse(dmat > 0 & dmat < neigh, 1, NA)	# flaggs obs within the neigh
+  nlok <- apply(dkl, 2, sum, na.rm = TRUE)
+  dmean <- apply(dmat*dkl, 2, mean, na.rm = TRUE)
+  moran <- apply(zx*dkl, 2, mean, na.rm = TRUE)
   
-  zx <- cor2(t(z), circ=FALSE)
-  
-  dkl <- ifelse(dmat>0&dmat<neigh,1,NA)	#flaggs obs within the neigh
-  nlok <- apply(dkl, 2, sum, na.rm= TRUE)
-  dmean <- apply(dmat*dkl, 2, mean, na.rm= TRUE)
-  moran <- apply(zx*dkl, 2, mean, na.rm= TRUE)
-  
-  p<-NULL
-  
-  if(resamp>0){
-    perm<-matrix(NA, nrow=resamp, ncol=n)
+  p <- NULL
+  if (resamp > 0) {
+    perm <- matrix(NA, nrow = resamp, ncol = n)
     
-    for(i in 1:resamp){
-      whn=pretty(c(1,resamp), n=10)
-      if(! quiet & any(i==whn)){
+    for (i in 1:resamp) {
+      whn <- pretty(c(1, resamp), n = 10)
+      if (!quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
-        flush.console()}
+        flush.console()
+      }
       
-      
-      trekk<-sample(1:n)
-      zx2<-zx[trekk, trekk]
-      perm[i,]<-apply(zx2*dkl, 2, mean, na.rm= TRUE)
+      trekk <- sample(1:n)
+      zx2 <- zx[trekk, trekk]
+      perm[i, ] <- apply(zx2*dkl, 2, mean, na.rm = TRUE)
     }
-    p<-(apply(moran<t(perm),1,sum))/(resamp+1)
-    p<-apply(cbind(p, 1-p), 1, min) + 1/(resamp+1)
+    p <- (apply(moran < t(perm), 1, sum))/(resamp + 1)
+    p <- apply(cbind(p, 1 - p), 1, min) + 1/(resamp + 1)
   }
   
-  
-  
-  res <- list(correlation = moran, p=p, n = nlok, dmean = dmean, coord=list(x=x, y=y), call=deparse(match.call()))
+  res <- list(correlation = moran, p = p, n = nlok, dmean = dmean, 
+              coord = list(x = x, y = y), call = deparse(match.call()))
   class(res) <- "lisa.nc"
   res
 }
@@ -272,39 +258,43 @@ lisa.nc<-function(x, y, z, neigh, na.rm = FALSE, resamp=1000, latlon = FALSE, qu
 #' @seealso \code{\link{lisa}}, \code{\link{lisa.nc}}
 #' @keywords spatial
 #' @export
-##############################################################################################
-plot.lisa.nc<-function(x, ctr = FALSE, add=FALSE, inches=0.2, ...){
-  ##############################################################################################
-  if(ctr){
-    z <- x$correlation-mean(x$correlation, na.rm= TRUE)}
-  else{z <- x$correlation}
+################################################################################
+plot.lisa.nc <- function(x, ctr = FALSE, add = FALSE, inches = 0.2, ...) {
+  ##############################################################################
+  if (ctr) {
+    z <- x$correlation - mean(x$correlation, na.rm = TRUE)
+  } else {
+    z <- x$correlation
+  }
   
   x <- x$coord$x
   y <- x$coord$y
   
-  if(add==FALSE){
-    plot(x,y,type="n")
+  if (add == FALSE) {
+    plot(x, y, type = "n")
   }
   sel <- is.finite(z)
-  x <- split(x,z>0)
-  y <- split(y,z>0)
-  sel <- split(sel, z>0)
-  z2 <- split(z,z>0)
+  x <- split(x, z > 0)
+  y <- split(y, z > 0)
+  sel <- split(sel, z > 0)
+  z2 <- split(z, z > 0)
   
-  bgc<-rep(0, length(z))
-  bgc <- split(bgc,z>0)
+  bgc <- rep(0, length(z))
+  bgc <- split(bgc, z > 0)
   
-  if(!is.null(x$p)){
-    bgc<-rep(0, length(z))
-    bgc<-ifelse(x$p<0.025, 1, 0)
-    bgc[x$p<0.025 & z >0]<-2
-    bgc <- split(bgc,z>0)
+  if (!is.null(x$p)) {
+    bgc <- rep(0, length(z))
+    bgc <- ifelse(x$p < 0.025, 1, 0)
+    bgc[x$p < 0.025 & z > 0] <- 2
+    bgc <- split(bgc, z > 0)
   }
   
+  if (!is.null(length(z2[[1]][sel[[1]]]))) {
+    symbols(x[[1]][sel[[1]]], y[[1]][sel[[1]]], squares = -z2[[1]][sel[[1]]], 
+            inches = inches, add = TRUE, fg = 1, bg = bgc[[1]][sel[[1]]])
+  }
   
-  if(!is.null(length(z2[[1]][sel[[1]]]))){
-    symbols(x[[1]][sel[[1]]],y[[1]][sel[[1]]],squares=-z2[[1]][sel[[1]]], inches=inches, add= TRUE, fg=1, bg=bgc[[1]][sel[[1]]])}
-  
-  if(!is.null(length(z2[[1]][sel[[2]]]))){
-    symbols(x[[2]][sel[[2]]],y[[2]][sel[[2]]],circles=z2[[2]][sel[[2]]], inches=inches, add= TRUE, fg=2, bg=bgc[[2]][sel[[2]]])}
+  if (!is.null(length(z2[[1]][sel[[2]]]))) {
+    symbols(x[[2]][sel[[2]]], y[[2]][sel[[2]]], circles = z2[[2]][sel[[2]]], 
+            inches = inches, add = TRUE, fg = 2, bg = bgc[[2]][sel[[2]]])}
 }
