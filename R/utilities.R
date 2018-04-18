@@ -23,27 +23,30 @@
 #' # plot data
 #' \dontrun{spatial.plot(x = x, y = y, z = z, ctr = FALSE)}
 #' @keywords spatial
-##############################################################################################
-spatial.plot<-function(x, y, z, ctr=TRUE, add=FALSE, inches=0.2, ...){
-  ##############################################################################################
-  if(ctr){
-    z <- z-mean(z, na.rm= TRUE)}
+################################################################################
+spatial.plot <- function(x, y, z, ctr = TRUE, add = FALSE, inches = 0.2, ...) {
+  ##############################################################################
+  if (ctr) {
+    z <- z - mean(z, na.rm = TRUE)
+  }
   
-  if(add==FALSE){
-    plot(x,y,type="n")
+  if (add == FALSE) {
+    plot(x, y, type = "n")
   }
   sel <- is.finite(z)
-  x <- split(x,z>0)
-  y <- split(y,z>0)
-  sel <- split(sel, z>0)
-  z2 <- split(z,z>0)
+  x <- split(x, z > 0)
+  y <- split(y, z > 0)
+  sel <- split(sel, z > 0)
+  z2 <- split(z, z > 0)
   
+  if (!is.null(length(z2[[1]][sel[[1]]]))) {
+    symbols(x[[1]][sel[[1]]], y[[1]][sel[[1]]], squares = -z2[[1]][sel[[1]]], 
+            inches = inches, add = TRUE, fg = 1, bg = 1)
+  }
   
-  if(!is.null(length(z2[[1]][sel[[1]]]))){
-    symbols(x[[1]][sel[[1]]],y[[1]][sel[[1]]],squares=-z2[[1]][sel[[1]]], inches=inches, add= TRUE, fg=1, bg=1)}
-  
-  if(!is.null(length(z2[[1]][sel[[2]]]))){
-    symbols(x[[2]][sel[[2]]],y[[2]][sel[[2]]],circles=z2[[2]][sel[[2]]], inches=inches, add= TRUE, fg=2, bg=2)}
+  if (!is.null(length(z2[[1]][sel[[2]]]))) {
+    symbols(x[[2]][sel[[2]]], y[[2]][sel[[2]]], circles = z2[[2]][sel[[2]]], 
+            inches = inches, add = TRUE, fg = 2, bg = 2)}
 }
 
 #' @title Simulate spatial data
@@ -60,18 +63,17 @@ spatial.plot<-function(x, y, z, ctr=TRUE, add=FALSE, inches=0.2, ...){
 #' @seealso \code{\link{mSynch}}
 #' @keywords smooth regression
 #' @export
-##############################################################################################
-rmvn.spa <- function(x, y, p, method = "exp", nugget = 1){
-  ##############################################################################################
-  #Function to generate spatially autocorrelated random normal variates using the 
-  #eigendecomposition method. Spatial covariance can follow either and exponential 
-  #or Gaussian model. 
-  ##############################################################################################
-  
+################################################################################
+rmvn.spa <- function(x, y, p, method = "exp", nugget = 1) {
+  ##############################################################################
+  # Function to generate spatially autocorrelated random normal variates using the 
+  # eigendecomposition method. Spatial covariance can follow either and exponential 
+  # or Gaussian model. 
+  ##############################################################################
   imeth <- charmatch(method, c("exp", "gaus"), nomatch = NA)
-  if(is.na(imeth)) stop("method should be \"exp\", or \"gaus\"")
+  if (is.na(imeth)) stop("method should be \"exp\", or \"gaus\"")
   
-  ch.fn<-function(n, mu, vmat, tol = 1e-007){
+  ch.fn <- function(n, mu, vmat, tol = 1e-007) {
     p <- ncol(vmat)
     vs <- svd(vmat)
     vsqrt <- t(vs$v %*% (t(vs$u) * sqrt(vs$d)))
@@ -85,13 +87,12 @@ rmvn.spa <- function(x, y, p, method = "exp", nugget = 1){
   z <- matrix(0, ncol = 1, nrow = n)
   tmpmat <- cbind(x + 0, y + 0)
   xy <- tmpmat[, 1:2] + 0
-  dmat <- sqrt(outer(x,x, "-")^2+outer(y,y,"-")^2)
-  if(imeth == 1) {
-    covmat <- nugget * exp( - dmat/p)
-  }
-  else {
-    if(imeth == 2) {
-      covmat <- nugget * exp( - (dmat/p)^2)
+  dmat <- sqrt(outer(x, x, "-")^2 + outer(y, y, "-")^2)
+  if (imeth == 1) {
+    covmat <- nugget * exp(-dmat/p)
+  } else {
+    if (imeth == 2) {
+      covmat <- nugget * exp(-(dmat/p)^2)
     }
   }
   z <- ch.fn(1, mu = rep(0, n), vmat = covmat)
@@ -111,13 +112,15 @@ rmvn.spa <- function(x, y, p, method = "exp", nugget = 1){
 #' @return A list is returned.
 #' @details An auxiliary function to ease  maintenance.
 #' @keywords misc
-gather=function(u,v,w, moran, df, xpoints, filter, fw){
-  cbar <- mean(v, na.rm= TRUE)
-  sobj=smooth.spline(u,v, df=df)
+gather <- function(u, v, w, moran, df, xpoints, filter, fw) {
+  cbar <- mean(v, na.rm = TRUE)
+  sobj <- smooth.spline(u, v, df = df)
   x <- xpoints
   y <- predict(sobj, x = x)$y
-  if(filter == TRUE) {
-    if(fw > 0){y[x > fw] <- 0}
+  if (filter == TRUE) {
+    if (fw > 0) {
+      y[x > fw] <- 0
+    }
     y <- ff.filter(y)
   }
   #if(is.null(w)){
@@ -127,30 +130,30 @@ gather=function(u,v,w, moran, df, xpoints, filter, fw){
   #	 yint <- mean(diag(moran), na.rm= TRUE)
   #	# yint <- ifelse(is.finite(mean(diag(moran), na.rm= TRUE)), mean(diag(moran), na.rm= TRUE),  y[1])
   #	}
-  x2=x[x>=0]
-  y2=y[x>=0]
-  konst=ifelse(y2[1]>0,1,-1)
-  xint=eint=cint=NA
-  wh=(1:length(x2))[y2<0][1]
-  int=c(x2[wh],x2[wh-1])
-  if(length(int)==2 & all(is.finite(int))){
+  x2 <- x[x >= 0]
+  y2 <- y[x >= 0]
+  konst <- ifelse(y2[1] > 0, 1, -1)
+  xint <- eint <- cint <- NA
+  wh <- (1:length(x2))[y2 < 0][1]
+  int <- c(x2[wh], x2[wh - 1])
+  if (length(int) == 2 & all(is.finite(int))) {
     #xi=nleqslv(0, fn=function(x) predict(sobj, x)$y)$x
-    xi=uniroot(f=function(x) predict(sobj, x)$y, interval=int)$root
-    xint=c(0,xi*konst, NA)[findInterval(xi, range(xpoints))+1]
+    xi <- uniroot(f = function(x) predict(sobj, x)$y, interval = int)$root
+    xint <- c(0, xi*konst, NA)[findInterval(xi, range(xpoints)) + 1]
   }
-  wh=(1:length(x2))[(y2-1/exp(1))<0][1]
-  int=c(x2[wh],x2[wh-1])
-  if(length(int)==2 & all(is.finite(int))){
-    ei=uniroot(f=function(x) {predict(sobj, x)$y-1/exp(1)}, interval=int)$root
-    eint=c(0,ei, NA)[findInterval(ei, range(xpoints))+1]
+  wh <- (1:length(x2))[(y2 - 1/exp(1)) < 0][1]
+  int <- c(x2[wh], x2[wh - 1])
+  if (length(int) == 2 & all(is.finite(int))) {
+    ei <- uniroot(f = function(x) { predict(sobj, x)$y - 1/exp(1) }, interval = int)$root
+    eint <- c(0, ei, NA)[findInterval(ei, range(xpoints)) + 1]
   }
-  wh=(1:length(x2))[(y2-cbar)<0][1]
-  int=c(x2[wh],x2[wh-1])
-  if(length(int)==2 & all(is.finite(int))){
-    ci=uniroot(f=function(x) {predict(sobj, x)$y-cbar}, interval=int)$root
-    cint=c(0,ci, NA)[findInterval(ci, range(xpoints))+1]
+  wh <- (1:length(x2))[(y2 - cbar) < 0][1]
+  int <- c(x2[wh], x2[wh - 1])
+  if (length(int) == 2 & all(is.finite(int))) {
+    ci <- uniroot(f = function(x) { predict(sobj, x)$y - cbar }, interval = int)$root
+    cint <- c(0, ci, NA)[findInterval(ci, range(xpoints)) + 1]
   }
-  list(x=x, y=y, yint=yint, cbar=cbar, xint=xint, eint=eint, cint=cint)
+  list(x = x, y = y, yint = yint, cbar = cbar, xint = xint, eint = eint, cint = cint)
 }
 
 #' @title Great-circle distance
@@ -159,10 +162,10 @@ gather=function(u,v,w, moran, df, xpoints, filter, fw){
 #' @param y vector of latitudes.
 #' @return The distance in km is returned
 #' @keywords misc
-##############################################################################################
-gcdist=function(x,y){
-  #vecotorized gcdist function
-  ##############################################################################################
+################################################################################
+gcdist <- function(x, y) {
+  # vecotorized gcdist function
+  ##############################################################################
   r <- 360/(2 * pi)
   lon <- x/r
   lat <- y/r
@@ -181,28 +184,29 @@ gcdist=function(x,y){
 #' @details Missing values are not allowed.
 #' @references Jammalamadaka, S. Rao and SenGupta, A. (2001). Topics in Circular Statistics, Section 8.2, World Scientific Press, Singapore.
 #' @keywords misc
-############################################################################################
-circ.cor2<-function (x, y=NULL){
-  #Fast vectorized circular correlation 
-  ############################################################################################
-  circ.mean<-function (x){
-    x=na.omit(x)
+################################################################################
+circ.cor2 <- function(x, y = NULL) {
+  ##############################################################################
+  # Fast vectorized circular correlation 
+  ##############################################################################
+  circ.mean <- function(x) {
+    x <- na.omit(x)
     sinr <- sum(sin(x))
     cosr <- sum(cos(x))
     circmean <- atan2(sinr, cosr)
     circmean
   }
   
-  if(is.vector(x) & is.vector(y)){
-    x=as.matrix(x)
-    y=as.matrix(y)
+  if (is.vector(x) & is.vector(y)) {
+    x <- as.matrix(x)
+    y <- as.matrix(y)
   }
   x.bar <- apply(x, 2, circ.mean)
   y.bar <- apply(y, 2, circ.mean)
   num <- tcrossprod(sin(t(x) - x.bar), sin(t(y) - y.bar))
   den <- sqrt(outer(
-    apply(t(sin(t(x) - x.bar))^2,2,sum),
-    apply(t(sin(t(y) - y.bar))^2, 2,sum), "*"))
+    apply(t(sin(t(x) - x.bar))^2, 2, sum),
+    apply(t(sin(t(y) - y.bar))^2, 2, sum), "*"))
   r <- num/den
   return(r)
 }
@@ -216,11 +220,11 @@ circ.cor2<-function (x, y=NULL){
 #' @details An auxilliary function to ease the maintenance.
 #' @references Jammalamadaka, S. Rao and SenGupta, A. (2001). Topics in Circular Statistics, Section 8.2, World Scientific Press, Singapore.
 #' @keywords misc
-############################################################################################
-cor2<-function(x, y = NULL, circ=FALSE){
-  ############################################################################################
-  circ.cor<-function (x, y){
-    circ.mean<-function (x){
+################################################################################
+cor2 <- function(x, y = NULL, circ = FALSE) {
+  ##############################################################################
+  circ.cor <- function(x, y) {
+    circ.mean <- function(x) {
       sinr <- sum(sin(x))
       cosr <- sum(cos(x))
       circmean <- atan2(sinr, cosr)
@@ -230,8 +234,8 @@ cor2<-function(x, y = NULL, circ=FALSE){
     x <- x[ok]
     y <- y[ok]
     n <- length(x)
-    r<-NA
-    if(n >= 2){
+    r <- NA
+    if (n >= 2) {
       x.bar <- circ.mean(x)
       y.bar <- circ.mean(y)
       num <- sum(sin(x - x.bar) * sin(y - y.bar))
@@ -247,28 +251,28 @@ cor2<-function(x, y = NULL, circ=FALSE){
     y <- as.matrix(y)
   if (!is.matrix(x) && is.null(y))
     stop("supply both x and y or a matrix-like x")
-  if(!circ){
-    cor<-cor(x=x, y=y, use="pairwise.complete.obs", method = "pearson")
+  if (!circ) {
+    cor <- cor(x = x, y = y, use = "pairwise.complete.obs", method = "pearson")
   }
   
-  if(circ){
-    if(is.null(y)){
-      y<-x
+  if (circ) {
+    if (is.null(y)) {
+      y <- x
     }
     
-    if(all(is.finite(x)&is.finite(y))){
-      cor<-circ.cor2(x,y)
+    if (all(is.finite(x) & is.finite(y))) {
+      cor <- circ.cor2(x, y)
     }
     
-    if(!all(is.finite(x)&is.finite(y))){	
+    if (!all(is.finite(x) & is.finite(y))) {	
       cat("Missing values with circular data: calculations may take some time.")
-      m<-dim(x)[2]
-      #this part (for circular correlations is likely to be SLOW (it's a double loop)
-      #I should use distm() from geosphere instead
+      m <- dim(x)[2]
+      # this part (for circular correlations is likely to be SLOW (it's a double loop)
+      # I should use distm() from geosphere instead
       cor <- matrix(NA, nrow = m, ncol = m)
-      for(i in 1:m) {
-        for(j in i:m) {
-          tmp <- circ.cor(as.vector(x[,i]), as.vector(y[,j]))
+      for (i in 1:m) {
+        for (j in i:m) {
+          tmp <- circ.cor(as.vector(x[, i]), as.vector(y[, j]))
           cor[j, i] <- tmp
           cor[i, j] <- tmp
         }
@@ -284,15 +288,15 @@ cor2<-function(x, y = NULL, circ=FALSE){
 #' @return A vector is returned whose Fourier-transform has no non-negative coeficients.
 #' @seealso \code{\link{Sncf}}
 #' @keywords misc
-############################################################################################
-ff.filter<-function(x){
-  ############################################################################################
-  #Fourier filter function
-  ############################################################################################
-  n<-length(x)
-  x2<-c(x, rev(x[-c(1, n)]))
-  fo<-Re(fft(x2))
-  fo[fo<0]<-0
-  ny<-Re(fft(fo, inverse=TRUE)/length(x2))
+################################################################################
+ff.filter <- function(x) {
+  ##############################################################################
+  # Fourier filter function
+  ##############################################################################
+  n <- length(x)
+  x2 <- c(x, rev(x[-c(1, n)]))
+  fo <- Re(fft(x2))
+  fo[fo < 0] <- 0
+  ny <- Re(fft(fo, inverse = TRUE)/length(x2))
   return(ny[1:n])
 }
