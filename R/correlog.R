@@ -127,7 +127,7 @@ correlog <- function(x, y, z, w = NULL, increment, resamp = 1000, latlon = FALSE
     dmat <- gcdist(x, y)
   } else{
     # these are geographic distances from euclidian coordinates
-    dmat <- sqrt(outer(x, x, "-")^2+outer(y, y, "-")^2)
+    dmat <- sqrt(outer(x, x, "-")^2 + outer(y, y, "-")^2)
   }
   
   if (resamp != 0) {
