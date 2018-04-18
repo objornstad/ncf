@@ -68,92 +68,78 @@
 #' summary(fit3)
 #' @keywords smooth spatial
 #' @export
-###############################################################################################
-spline.correlog<-function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 1000, npoints = 300, save = FALSE, 
-                          filter = FALSE, fw=0, max.it=25, xmax = FALSE, latlon = FALSE, na.rm = FALSE, quiet=FALSE){
-  ##############################################################################################
-  #spline.correlog is the function to estimate the spline correlogram discussed in 
-  #Bjornstad & Falck (2001, Evironmental and Ecological Statistics 8:53-70)
-  #Bjornstad et al. (1999, Trends in Ecology and Evolution 14:427-431)
-  #Bjornstad et al. (1999, Ecology 80:622-637)
-  ##############################################################################################
-  
-  multivar <- !is.null(dim(z))		#test whether z is univariate or multivariate
-  
+################################################################################
+spline.correlog <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000, 
+                            npoints = 300, save = FALSE, filter = FALSE, fw = 0, 
+                            max.it = 25, xmax = FALSE, latlon = FALSE, na.rm = FALSE, 
+                            quiet = FALSE) {
+  ##############################################################################
+  # spline.correlog is the function to estimate the spline correlogram discussed in 
+  # Bjornstad & Falck (2001, Evironmental and Ecological Statistics 8:53-70)
+  # Bjornstad et al. (1999, Trends in Ecology and Evolution 14:427-431)
+  # Bjornstad et al. (1999, Ecology 80:622-637)
+  ##############################################################################
+  multivar <- !is.null(dim(z)) # test whether z is univariate or multivariate
   NAO <- FALSE
-  
-  #check for missing values
-  if(any(!is.finite(unlist(z)))) {
-    if(na.rm){
+  # check for missing values
+  if (any(!is.finite(unlist(z)))) {
+    if (na.rm) {
       warning("Missing values exist; Pairwise deletion will be used")
       NAO <- TRUE
-    }
-    else {
+    } else {
       stop("Missing values exist; use na.rm = TRUE for pairwise deletion")
     }
   }
   
-  
-  #This generates the distance matrices
-  #first generating the moran distances
+  # This generates the distance matrices
+  # first generating the moran distances
   zx <- NULL
-  if(multivar == TRUE) {
+  if (multivar == TRUE) {
     n <- dim(z)[1]
     p <- dim(z)[2]
-    z <- as.matrix(z)+0
-    zscal <- (t(apply(z, 2, scale, center= TRUE, scale= TRUE)))/(sqrt((n-1)/n))
+    z <- as.matrix(z) + 0
+    zscal <- (t(apply(z, 2, scale, center = TRUE, scale = TRUE)))/(sqrt((n - 1)/n))
     
-    if(is.null(w)){
-      moran <- cor2(t(z), circ=FALSE)
-      moran <- moran - mean(moran[lower.tri(moran)], na.rm= TRUE)
+    if (is.null(w)) {
+      moran <- cor2(t(z), circ = FALSE)
+      moran <- moran - mean(moran[lower.tri(moran)], na.rm = TRUE)
+    } else {
+      w <- as.matrix(w) + 0
+      moran <- cor2(t(z), t(w), circ = FALSE)
+      moran <- moran - mean(moran, na.rm = TRUE)
     }
-    
-    else {
-      w <- as.matrix(w)+0
-      moran <- cor2(t(z), t(w), circ=FALSE)
-      moran <- moran - mean(moran, na.rm= TRUE)
-    }
-  }
-  else {
+  } else {
     n <- length(z)
-    z <- as.vector(z)+0
-    zscal <- (scale(z, center = TRUE, scale = TRUE)[, 1])/(sqrt((n-1)/n))
+    z <- as.vector(z) + 0
+    zscal <- (scale(z, center = TRUE, scale = TRUE)[, 1])/(sqrt((n - 1)/n))
     
-    if(is.null(w)){
+    if (is.null(w)) {
       moran <- t(outer(zscal, zscal))
-    }
-    
-    else {
-      wscal <- (scale(w, center = TRUE, scale = TRUE)[, 1])/(sqrt((n-1)/n))
-      zw <- c(zscal,wscal)
-      moran <- t(outer(zw, zw))[1:n,(n+1):(2*n)]
+    } else {
+      wscal <- (scale(w, center = TRUE, scale = TRUE)[, 1])/(sqrt((n - 1)/n))
+      zw <- c(zscal, wscal)
+      moran <- t(outer(zw, zw))[1:n, (n + 1):(2*n)]
     }
   }
   
-  
-  if(is.null(df)){
+  if (is.null(df)) {
     df <- sqrt(n)
   }
   
-  
-  #then generating geographic distances
-  if(latlon){
-    #these are geographic distances from lat-lon coordinates
-    xdist <- gcdist(x,y)
-  }
-  
-  else{
-    #these are geographic distances from euclidian coordinates
-    xdist <- sqrt(outer(x,x, "-")^2+outer(y,y,"-")^2)
+  # then generating geographic distances
+  if (latlon) {
+    # these are geographic distances from lat-lon coordinates
+    xdist <- gcdist(x, y)
+  } else {
+    # these are geographic distances from euclidian coordinates
+    xdist <- sqrt(outer(x, x, "-")^2 + outer(y, y, "-")^2)
   }
   maxdist <- ifelse(!xmax, max(na.omit(xdist)), xmax)
   
-  #The spline function
-  if(is.null(w)){
+  # The spline function
+  if (is.null(w)) {
     triang <- lower.tri(xdist)
-  }
-  
-  else {
+  } else {
     triang <- is.finite(xdist)
   }
   
@@ -163,35 +149,37 @@ spline.correlog<-function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 10
   u <- u[sel]
   v <- v[sel]
   
-  v <- v[u<=maxdist]	
-  u <- u[u<=maxdist]
+  v <- v[u <= maxdist]	
+  u <- u[u <= maxdist]
   
-  xpoints=seq(0, maxdist, length=npoints)
-  out=gather(u=u,v=v,w=w, moran=moran, df=df, xpoints=xpoints, filter=filter, fw=fw)
+  xpoints <- seq(0, maxdist, length = npoints)
+  out <- gather(u = u, v = v, w = w, moran = moran, df = df, xpoints = xpoints, 
+                filter = filter, fw = fw)
   real <- list(x.intercept = out$xint, e.intercept = out$eint, y.intercept = out$yint,
                predicted = list(x = matrix(out$x, nrow = 1),
                                 y = matrix(out$y, nrow = 1)))
   
-  #End of spline fit
+  # end of spline fit
   boot <- list(NULL)
   boot$boot.summary <- list(NULL)
-  if(resamp != 0) {
-    #here is the bootstrapping/randomization
+  if (resamp != 0) {
+    # here is the bootstrapping/randomization
     boot$boot.summary$x.intercept <- matrix(NA, nrow = resamp, ncol = 1)
     boot$boot.summary$e.intercept <- matrix(NA, nrow = resamp, ncol = 1)
     boot$boot.summary$y.intercept <- matrix(NA, nrow = resamp, ncol = 1)
-    predicted <- list(x = matrix(NA, nrow = 1, ncol = npoints), y = matrix(NA, nrow = resamp, ncol = npoints))
-    type <- charmatch(type, c("boot", "perm"), 
-                      nomatch = NA)
-    if(is.na(type))
+    predicted <- list(x = matrix(NA, nrow = 1, ncol = npoints), 
+                      y = matrix(NA, nrow = resamp, ncol = npoints))
+    type <- charmatch(type, c("boot", "perm"), nomatch = NA)
+    if (is.na(type))
       stop("method should be \"boot\", or \"perm\"")
-    for(i in 1:resamp) {
-      whn=pretty(c(1,resamp), n=10)
-      if(! quiet & any(i==whn)){
+    for (i in 1:resamp) {
+      whn <- pretty(c(1, resamp), n = 10)
+      if (!quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
-        flush.console()}
+        flush.console()
+      }
       
-      if(type == 1) {
+      if (type == 1) {
         trekkx <- sample(1:n, replace = TRUE)
         trekky <- trekkx
       }
@@ -201,17 +189,15 @@ spline.correlog<-function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 10
       #}
       xdistb <- xdist[trekkx, trekkx]
       
-      if(is.null(w)){
+      if (is.null(w)) {
         triang <- lower.tri(xdist)
-      }
-      
-      else {
+      } else {
         triang <- is.finite(xdist)
       }
       
       xdistb <- xdistb[triang]
       moranb <- moran[trekky, trekky][triang]
-      if(type == 1&is.null(w)) {
+      if (type == 1 & is.null(w)) {
         moranb <- moranb[!(xdistb == 0)]
         xdistb <- xdistb[!(xdistb == 0)]
       }
@@ -221,37 +207,38 @@ spline.correlog<-function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 10
       u <- u[sel]
       v <- v[sel]
       
-      v <- v[u<=maxdist]	
-      u <- u[u<=maxdist]
-      xpoints=seq(0, maxdist, length=npoints)
-      out=gather(u=u,v=v,w=w, moran=moranb, df=df, xpoints=xpoints, filter=filter, fw=fw)
+      v <- v[u <= maxdist]	
+      u <- u[u <= maxdist]
+      xpoints <- seq(0, maxdist, length = npoints)
+      out <- gather(u = u, v = v, w = w, moran = moranb, df = df, xpoints = xpoints, 
+                    filter = filter, fw = fw)
       
-      boot$boot.summary$y.intercept[i,1] <- out$yint
-      boot$boot.summary$x.intercept[i,1] <- out$xint
-      boot$boot.summary$e.intercept[i,1] <- out$eint
-      predicted$x[1,] <- out$x
-      predicted$y[i,] <- out$y
+      boot$boot.summary$y.intercept[i, 1] <- out$yint
+      boot$boot.summary$x.intercept[i, 1] <- out$xint
+      boot$boot.summary$e.intercept[i, 1] <- out$eint
+      predicted$x[1, ] <- out$x
+      predicted$y[i, ] <- out$y
       
     }
-    #end of bootstrap loop!
+    # end of bootstrap loop!
     
-    if(save == TRUE) {
+    if (save == TRUE) {
       boot$boot <- list(predicted = predicted)
+    } else {
+      boot$boot <- NULL
     }
-    else {boot$boot <- NULL}
-    ty <- apply(predicted$y, 2, quantile, probs = c(0, 0.025, 0.05, 0.1, 0.25, 0.5, 
-                                                    0.75, 0.9, 0.95, 0.975, 1), na.rm = TRUE)
+    ty <- apply(predicted$y, 2, quantile, 
+                probs = c(0, 0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975, 1), 
+                na.rm = TRUE)
     dimnames(ty) <- list(c(0, 0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975, 1), NULL)
     tx <- predicted$x
-    boot$boot.summary$predicted <- list(x = tx,y = ty)
-  }
-  
-  #The following else is if resamp=0
-  else {
+    boot$boot.summary$predicted <- list(x = tx, y = ty)
+  } else { # The following else is if resamp=0
     boot <- NULL
     boot.summary <- NULL
   }
-  res <- list(real = real, boot = boot, max.distance = maxdist, call=deparse(match.call()))
+  res <- list(real = real, boot = boot, max.distance = maxdist, 
+              call = deparse(match.call()))
   class(res) <- "spline.correlog"
   res
 }
@@ -266,16 +253,19 @@ spline.correlog<-function(x, y, z, w=NULL, df = NULL, type = "boot", resamp = 10
 #' @seealso \code{\link{spline.correlog}}, \code{\link{summary.spline.correlog}}
 #' @keywords smooth regression
 #' @export
-###############################################################################################
-plot.spline.correlog<-function(x, xmax = 0, ylim=c(-1,1), ...){
-  ##############################################################################################
-  #this is the generic plot function for spline.correlog objects
-  ##############################################################################################
+################################################################################
+plot.spline.correlog <- function(x, xmax = 0, ylim = c(-1, 1), ...) {
+  ##############################################################################
+  # this is the generic plot function for spline.correlog objects
+  ##############################################################################
   xmax <- ifelse(xmax == 0, x$max.distance, xmax)
-  plot(x$real$predicted$x, x$real$predicted$y, xlim = c(0, xmax), ylim
-       = ylim, type = "l", xlab = "Distance", ylab = "Correlation")
+  plot(x$real$predicted$x, x$real$predicted$y, xlim = c(0, xmax), ylim = ylim, 
+       type = "l", xlab = "Distance", ylab = "Correlation")
   if (!is.null(x$boot$boot.summary)) {
-    polygon(c(x$boot$boot.summary$predicted$x,rev(x$boot$boot.summary$predicted$x)), c(x$boot$boot.summary$predicted$y["0.025",], rev(x$boot$boot.summary$predicted$y["0.975",])), col=gray(0.8), lty=0)
+    polygon(c(x$boot$boot.summary$predicted$x, rev(x$boot$boot.summary$predicted$x)), 
+            c(x$boot$boot.summary$predicted$y["0.025", ], 
+              rev(x$boot$boot.summary$predicted$y["0.975", ])), 
+            col = gray(0.8), lty = 0)
   }
   lines(x$real$predicted$x, x$real$predicted$y)
   lines(c(0, max(x$real$predicted$x)), c(0, 0))
@@ -294,19 +284,19 @@ plot.spline.correlog<-function(x, xmax = 0, ylim=c(-1,1), ...){
 #' @seealso \code{\link{spline.correlog}}, \code{\link{plot.spline.correlog}}
 #' @keywords smooth regression
 #' @export
-###############################################################################################
-summary.spline.correlog<-function(object, ...){
-  ##############################################################################################
-  #this is the generic summary function for spline.correlog objects
-  ##############################################################################################
+################################################################################
+summary.spline.correlog <- function(object, ...) {
+  ##############################################################################
+  # this is the generic summary function for spline.correlog objects
+  ##############################################################################
   xy <- cbind(object$real$x.intercept, object$real$e.intercept, object$real$y.intercept)
   dimnames(xy) <- list(c("estimate"), c("x", "e", "y"))
-  yd <- apply(object$boot$boot.summary$y.intercept, 2, quantile, probs = c(0, 0.025, 0.25, 0.5,
-                                                                           0.75, 0.975, 1), na.rm= TRUE)
-  xd <- apply(object$boot$boot.summary$x.intercept, 2, quantile, probs = c(0, 0.025, 0.25, 0.5,
-                                                                           0.75, 0.975, 1), na.rm= TRUE)
-  ed <- apply(object$boot$boot.summary$e.intercept, 2, quantile, probs = c(0, 0.025, 0.25, 0.5,
-                                                                           0.75, 0.975, 1), na.rm= TRUE)
+  yd <- apply(object$boot$boot.summary$y.intercept, 2, quantile, 
+              probs = c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), na.rm = TRUE)
+  xd <- apply(object$boot$boot.summary$x.intercept, 2, quantile, 
+              probs = c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), na.rm = TRUE)
+  ed <- apply(object$boot$boot.summary$e.intercept, 2, quantile, 
+              probs = c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), na.rm = TRUE)
   xyd <- cbind(xd, ed, yd)
   dimnames(xyd) <- list(c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1), c("x", "e", "y"))
   res <- list(call = object$call, estimate = xy, quantiles = xyd)
@@ -320,8 +310,9 @@ summary.spline.correlog<-function(object, ...){
 #' @return The function-call is printed to screen.
 #' @seealso \code{\link{spline.correlog}}
 #' @export
-###############################################################################################
-print.spline.correlog<-function(x, ...){
-  ##############################################################################################
-  cat("This is an object of class spline.correlog produced by the call:\n\n", x$call, "\n\n Use summary() or plot() for inspection,  (or print.default() to see all the gory details).")
+################################################################################
+print.spline.correlog <- function(x, ...) {
+  ##############################################################################
+  cat("This is an object of class spline.correlog produced by the call:\n\n", x$call, 
+      "\n\n Use summary() or plot() for inspection,  (or print.default() to see all the gory details).")
 }
