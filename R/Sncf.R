@@ -160,7 +160,7 @@ Sncf <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
       stop("method should be \"boot\", or \"perm\"")
     for (i in 1:resamp) {
       whn <- pretty(c(1, resamp), n = 10)
-      if (!quiet & any(i == whn))	{
+      if (quiet & any(i == whn))	{
         cat(i, " of ", resamp, "\r")
         flush.console()
       }
@@ -481,7 +481,7 @@ Sncf.srf <- function(x, y, z, w = NULL, avg = NULL, avg2 = NULL, corr = TRUE,
       stop("method should be \"boot\", or \"perm\"")
     for (i in 1:resamp) {
       whn <- pretty(c(1, resamp), n = 10)
-      if (!quiet & any(i == whn))	{
+      if (quiet & any(i == whn))	{
         cat(i, " of ", resamp, "\r")
         flush.console()
       }
