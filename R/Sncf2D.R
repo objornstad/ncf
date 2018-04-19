@@ -308,14 +308,14 @@ plot.Sncf2D <- function(x, xmax = 0, ylim = c(-1, 1), detail = FALSE, ...) {
   ##############################################################################
   # this is the generic plot function for Sncf2D objects
   ##############################################################################
-  L <- length(x$angle)
   
   xmax <- ifelse(xmax == 0, x$max.distance, xmax)
   plot(x$real[[1]]$predict$x, x$real[[1]]$predict$y, xlim = c(-xmax, xmax), 
-       ylim = ylim, type = "n", xlab = "", ylab = "")
+       ylim = ylim, type = "n", xlab = "", ylab = "", ...)
   lines(c(-max(x$real[[1]]$predict$x), max(x$real[[1]]$predict$x)), c(0, 0))
   lines(c(-max(x$real[[1]]$predict$x), max(x$real[[1]]$predict$x)), 
         c(x$real$cbar, x$real$cbar))
+  L <- length(x$angle)
   for (i in 1:L) {
      lines(x$real[[i]]$predict$x, x$real[[i]]$predict$y)
   }
@@ -325,7 +325,7 @@ plot.Sncf2D <- function(x, xmax = 0, ylim = c(-1, 1), detail = FALSE, ...) {
     
     for (i in 1:L) {
       plot(x$real[[i]]$predict$x, x$real[[i]]$predict$y, xlim = c(-xmax, xmax), 
-           ylim = ylim, type = "l", xlab = "Distance", ylab = "Correlation")
+           ylim = ylim, type = "l", xlab = "Distance", ylab = "Correlation", ...)
       
       if (!is.null(x$boot[[i]]$boot.summary)) {
         xy <- na.omit(data.frame(x = c(x$boot[[i]]$boot.summary$predicted$x, 
