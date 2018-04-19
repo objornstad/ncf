@@ -114,10 +114,10 @@ plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
   y <- x$coord$y
   
   if (add == FALSE) {
-    plot(x, y, type = "n")
+    plot(x, y, type = "n", ...)
   }
   sel <- is.finite(z)
-  x <- split(x,z - mean(z, na.rm = TRUE) > 0)
+  x <- split(x, z - mean(z, na.rm = TRUE) > 0)
   y <- split(y, z - mean(z, na.rm = TRUE) > 0)
   sel <- split(sel, z - mean(z, na.rm = TRUE) > 0)
   z2 <- split(z - mean(z, na.rm = TRUE), z - mean(z, na.rm = TRUE) > 0)
