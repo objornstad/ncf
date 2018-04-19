@@ -283,8 +283,7 @@ plot.Sncf <- function(x, xmax = 0, ylim = c(-1, 1), add = FALSE, ...) {
 print.Sncf <- function(x, ...) {
   ##############################################################################
   cat("This is an object of class Sncf produced by the call:\n\n", x$call, 
-      "\n\n Use summary() or plot() for inspection,  
-      (or print.default() to see all the gory details).")
+      "\n\n Use summary() or plot() for inspection (or print.default() to see all the gory details).", ...)
 }
 
 #' @title Summarizing nonparametric spatial correlation-functions

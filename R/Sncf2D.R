@@ -66,7 +66,8 @@ Sncf2D <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
   ##############################################################################
   # Sncf2D is the function to estimate the anisotropic nonparametric covariance function 
   # (using a smoothing spline as an equivalent kernel) in 8 (or arbitrary) directions (North - Southeast) 
-  # through calculateing projected distances onto the different bearings (i.e. all data are used for each direction = 0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5)
+  # through calculateing projected distances onto the different bearings (i.e. all 
+  # data are used for each direction = 0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5)
   ##############################################################################
   
   # the following sets up the output:
@@ -289,7 +290,7 @@ Sncf2D <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
 print.Sncf2D <- function(x, ...) {
   ##############################################################################
   cat("This is an object of class Sncf2D produced by the call:\n\n", x$call, 
-      "\n\n Use summary() or plot() for inspection,  (or print.default() to see all the gory details).")
+      "\n\n Use summary() or plot() for inspection (or print.default() to see all the gory details).", ...)
 }
 
 #' @title Plots anisotropic spatial correlation-functions
@@ -308,7 +309,6 @@ plot.Sncf2D <- function(x, xmax = 0, ylim = c(-1, 1), detail = FALSE, ...) {
   ##############################################################################
   # this is the generic plot function for Sncf2D objects
   ##############################################################################
-  
   xmax <- ifelse(xmax == 0, x$max.distance, xmax)
   plot(x$real[[1]]$predict$x, x$real[[1]]$predict$y, xlim = c(-xmax, xmax), 
        ylim = ylim, type = "n", xlab = "", ylab = "", ...)

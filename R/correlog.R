@@ -272,7 +272,7 @@ plot.correlog <- function(x, ...) {
 #' @export
 ################################################################################
 correlog.nc <- function(x, y, z, w = NULL, increment, resamp = 1000, na.rm = FALSE, 
-                        latlon = FALSE, quiet = FALSE){
+                        latlon = FALSE, quiet = FALSE) {
   ##############################################################################
   # correlog.nc estimates the noncentred correlogram
   # and cross-correlogram. Bjornstad et al. (1999; Trends in Ecology and
@@ -296,7 +296,7 @@ correlog.nc <- function(x, y, z, w = NULL, increment, resamp = 1000, na.rm = FAL
   if (latlon) {
     # these are geographic distances from lat-lon coordinates
     dmat <- gcdist(x, y)
-  } else{
+  } else {
     # these are geographic distances from euclidian coordinates
     dmat <- sqrt(outer(x, x, "-")^2 + outer(y, y, "-")^2)
   }
