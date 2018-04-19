@@ -329,11 +329,10 @@ plot.Sncf2D <- function(x, xmax = 0, ylim = c(-1, 1), detail = FALSE, ...) {
       
       if (!is.null(x$boot[[i]]$boot.summary)) {
         xy <- na.omit(data.frame(x = c(x$boot[[i]]$boot.summary$predicted$x, 
-                  rev(x$boot[[i]]$boot.summary$predicted$x)), 
-                  y = c(x$boot[[i]]$boot.summary$predicted$y["0.025", ], 
-                  rev(x$boot[[i]]$boot.summary$predicted$y["0.975", ]))))
-        polygon(xy$x, xy$y, 
-                col = gray(0.8), lty = 0)
+                                       rev(x$boot[[i]]$boot.summary$predicted$x)), 
+                                 y = c(x$boot[[i]]$boot.summary$predicted$y["0.025", ], 
+                                       rev(x$boot[[i]]$boot.summary$predicted$y["0.975", ]))))
+        polygon(xy$x, xy$y, col = gray(0.8), lty = 0)
       }	
       lines(x$real[[i]]$predict$x, x$real[[i]]$predict$y)
       lines(c(-max(x$real[[i]]$predict$x), max(x$real[[i]]$predict$x)), c(0, 0))

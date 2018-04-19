@@ -209,8 +209,11 @@ plot.correlog <- function(x, ...) {
   # this is the generic plot function for correlog objects
   # sigificant values are represented by filled cirles
   ##############################################################################
-  plot(x$mean.of.class, x$correlation, ylab = 'correlation', 
-       xlab = 'distance (mean-of-class)')
+  args.default <- list(xlab = "distance (mean-of-class)", ylab = "correlation")
+  args.input <- list(...)
+  args <- c(args.default[!names(args.default) %in% names(args.input)], args.input)
+  
+  do.call(plot, c(list(x = x$mean.of.class, y = x$correlation), args))
   lines(x$mean.of.class, x$correlation)
   if (!is.null(x$p)) {
     points(x$mean.of.class[x$p < 0.025], x$correlation[x$p < 0.025], pch = 21, 
