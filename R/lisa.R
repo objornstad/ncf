@@ -271,7 +271,7 @@ plot.lisa.nc <- function(x, ctr = FALSE, add = FALSE, inches = 0.2, ...) {
   y <- x$coord$y
   
   if (add == FALSE) {
-    plot(x, y, type = "n")
+    plot(x, y, type = "n", ...)
   }
   sel <- is.finite(z)
   x <- split(x, z > 0)
