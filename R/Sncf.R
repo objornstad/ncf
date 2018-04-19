@@ -404,7 +404,6 @@ Sncf.srf <- function(x, y, z, w = NULL, avg = NULL, avg2 = NULL, corr = TRUE,
   # smoothing spline as an equivalent kernel) as discussed in 
   # Bjornstad et al. (1999; Trends in Ecology and Evolution 14:427-431)
   ##############################################################################
-  
   p <- dim(z)[2]
   n <- dim(z)[1]
   
@@ -571,9 +570,13 @@ Sncf.srf <- function(x, y, z, w = NULL, avg = NULL, avg2 = NULL, corr = TRUE,
 ################################################################################
 plot.Sncf.cov <- function(x, xmax = 0, ...) {
   ##############################################################################
+  args.default <- list(xlab = "Distance", ylab = "Covariance")
+  args.input <- list(...)
+  args <- c(args.default[!names(args.default) %in% names(args.input)], args.input)
+  
   xmax <- ifelse(xmax == 0, max(x$real$predicted$x), xmax)
-  plot(x$real$predicted$x, x$real$predicted$y, xlim = c(0, xmax), 
-       type = "l", xlab = "Distance", ylab = "Covariance")
+  do.call(plot, c(list(x = x$real$predicted$x, y = x$real$predicted$y, 
+                       xlim = c(0, xmax), type = "l"), args))
   if (!is.null(x$boot$boot.summary)) {
     polygon(c(x$boot$boot.summary$predicted$x, rev(x$boot$boot.summary$predicted$x)), 
             c(x$boot$boot.summary$predicted$y["0.025", ], 
