@@ -251,11 +251,15 @@ Sncf <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
 ################################################################################
 plot.Sncf <- function(x, xmax = 0, ylim = c(-1, 1), add = FALSE, ...) {
   ##############################################################################
+  args.default <- list(xlab = "Distance", ylab = "Correlation")
+  args.input <- list(...)
+  args <- c(args.default[!names(args.default) %in% names(args.input)], args.input)
+  
   xmax <- ifelse(xmax == 0, x$max.distance, xmax)
   cbar <- x$real$cbar
   if (!add) {
-    plot(x$real$predicted$x, x$real$predicted$y, xlim = c(0, xmax), 
-         ylim = ylim, type = "l", xlab = "Distance", ylab = "Correlation")
+    do.call(plot, c(list(x = x$real$predicted$x, y = x$real$predicted$y, 
+                         xlim = c(0, xmax), ylim = ylim, type = "l"), args))
   }
   if (!is.null(x$boot$boot.summary)) {
     polygon(c(x$boot$boot.summary$predicted$x, rev(x$boot$boot.summary$predicted$x)), 
