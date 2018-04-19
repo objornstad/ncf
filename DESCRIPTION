@@ -4,7 +4,7 @@ Date: 2018-04-17
 Title: Spatial Nonparametric Covariance Functions
 Authors@R: c(person(c("Ottar", "N."), "Bjornstad", role = c("aut", "cre"),
                      email = "onb1@psu.edu"), 
-                     person("Jun", "Cai", role = c("ctb"), 
+              person("Jun", "Cai", role = c("ctb"), 
                      email = "cai-j12@mails.tsinghua.edu.cn"))
 Author: Ottar N. Bjornstad [aut, cre], Jun Cai [ctb]
 Maintainer: Ottar N. Bjornstad <onb1@psu.edu>

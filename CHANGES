@@ -14,7 +14,7 @@
 1.1-7: Small changes to plot.lisa.nc, plot.lisa and spatial.plot.
        Bugs in correlog and correlog.nc when latlon=TRUE fixed
 
-1.1-6: Added a new function to calculate mantel.correlog()rams,
+1.1-6: Added a new function to calculate mantel.correlog() rams,
       updated lisa and lisa.nc, added a new spatial.plot() function.
       Compliant with new CRAN checks
 
@@ -45,7 +45,7 @@
 
        Correct some grammatical errors in the documentation.
 
-1.0-8: A function for partial Mante test added
+1.0-8: A function for partial Mantel test added
 
 1.0-7: Jitter argument included in Sncf.srf
 
@@ -63,7 +63,7 @@
        Deleted some old obsolete functions (oldSncf2D, inner.na)
 
 1.0-4: Two functions (spline.correlog.2d, plot.cc.offset)
-       and one data-seet (lbm) added
+       and one dataset (lbm) added
 
 1.0-3: cor2 auxilliary function changed in response to R-1.8
        changes in cor-syntax
@@ -87,7 +87,6 @@ October 11, 2002: m2d an alternative to Sncf2d incorporated in
 March 21, 2002: A couple of R/S+ inconsistencies corrected.
     (atan of S+ subsumes atan2 of R). library(modreg) is
     automatically called under R.
-
 
 March 17, 2002: A number of problems corrected to ensure
     S4 compliance. (functions now run under S-plus 6,
