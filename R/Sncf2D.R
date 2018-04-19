@@ -316,9 +316,9 @@ plot.Sncf2D <- function(x, xmax = 0, ylim = c(-1, 1), detail = FALSE, ...) {
   lines(c(-max(x$real[[1]]$predict$x), max(x$real[[1]]$predict$x)), c(0, 0))
   lines(c(-max(x$real[[1]]$predict$x), max(x$real[[1]]$predict$x)), 
         c(x$real$cbar, x$real$cbar))
-for(i in 1:L){
+  for (i in 1:L) {
      lines(x$real[[i]]$predict$x, x$real[[i]]$predict$y)
- }
+  }
 
   if (detail) {
     par(mfrow = c(ceiling(sqrt(L)), ceiling(sqrt(L))))
@@ -328,9 +328,9 @@ for(i in 1:L){
            ylim = ylim, type = "l", xlab = "Distance", ylab = "Correlation")
       
       if (!is.null(x$boot[[i]]$boot.summary)) {
-        xy=na.omit(data.frame(x=c(x$boot[[i]]$boot.summary$predicted$x, 
+        xy <- na.omit(data.frame(x = c(x$boot[[i]]$boot.summary$predicted$x, 
                   rev(x$boot[[i]]$boot.summary$predicted$x)), 
-                  y=c(x$boot[[i]]$boot.summary$predicted$y["0.025", ], 
+                  y = c(x$boot[[i]]$boot.summary$predicted$y["0.025", ], 
                   rev(x$boot[[i]]$boot.summary$predicted$y["0.975", ]))))
         polygon(xy$x, xy$y, 
                 col = gray(0.8), lty = 0)
@@ -476,13 +476,13 @@ plot.cc.offset <- function(x, dmax = NULL, inches = NULL, ...) {
   yl <- xl <- c(-max(axs), max(axs))
   symbols(x2, y, circles = ifelse(tmp > 0, tmp, 0), inches = inc, xlim = xl, 
           ylim = yl, xlab = "", ylab = "", fg = 1, bg = 2, asp = 1, xaxt = "n", 
-          yaxt = "n", bty = "n")
+          yaxt = "n", bty = "n", ...)
   symbols(rep(0, length(axs)), rep(0, length(axs)), circles = axs, inches = FALSE, 
-          xlab = "", ylab = "", xaxt = "n", yaxt = "n", bty = "n", add = TRUE)	
+          xlab = "", ylab = "", xaxt = "n", yaxt = "n", bty = "n", add = TRUE, ...)	
   lines(c(0, 0), yl)
   lines(yl, c(0, 0))
   text(axs[-1], rep(0, length(axs))[-1], axs[-1], cex = 0.6, pos = 1)
   symbols(x2, y, circles = ifelse(tmp > 0, tmp, 0), inches = inc, xlim = xl, 
           ylim = yl, xlab = "", ylab = "", fg = 1, bg = 2, asp = 1, xaxt = "n", 
-          yaxt = "n", add = TRUE, bty = "n")
+          yaxt = "n", add = TRUE, bty = "n", ...)
 }
