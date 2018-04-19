@@ -209,7 +209,8 @@ plot.correlog <- function(x, ...) {
   # this is the generic plot function for correlog objects
   # sigificant values are represented by filled cirles
   ##############################################################################
-  args.default <- list(xlab = "distance (mean-of-class)", ylab = "correlation")
+  args.default <- list(xlab = "distance (mean-of-class)", ylab = "correlation", 
+                       main = "Correlogram")
   args.input <- list(...)
   args <- c(args.default[!names(args.default) %in% names(args.input)], args.input)
   
@@ -219,7 +220,6 @@ plot.correlog <- function(x, ...) {
     points(x$mean.of.class[x$p < 0.025], x$correlation[x$p < 0.025], pch = 21, 
            bg = "black")
   }
-  title("Correlogram")
 }
 
 #' @title Non-cenetered spatial (cross-)correlogram
