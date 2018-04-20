@@ -31,7 +31,7 @@ spatial.plot <- function(x, y, z, ctr = TRUE, add = FALSE, inches = 0.2, ...) {
   }
   
   if (add == FALSE) {
-    plot(x, y, type = "n")
+    plot(x, y, type = "n", ...)
   }
   sel <- is.finite(z)
   x <- split(x, z > 0)

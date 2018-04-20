@@ -32,7 +32,8 @@ spline.correlog2D <- function(x, y, z, w = NULL, df = NULL, type = "boot",
   ##############################################################################
   # spline.correlog2D is the function to estimate the anisotropic nonparametric covariance function
   # (using a smoothing spline as an equivalent kernel) in 8 (or arbitrary) directions (North - Southeast) 
-  # through calculateing projected distances onto the different bearings (i.e. all data are used for each direction = 0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5)
+  # through calculateing projected distances onto the different bearings (i.e. all 
+  # data are used for each direction = 0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5)
   ##############################################################################
   
   # the following sets up the output:

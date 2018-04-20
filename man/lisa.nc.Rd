@@ -25,7 +25,7 @@ lisa.nc(x, y, z, neigh, na.rm = FALSE, resamp = 1000, latlon = FALSE,
 \item{quiet}{If TRUE, the counter is supressed during execution.}
 }
 \value{
-An object of class "lisa.nc" is returned, consisting of the following components:
+An object of class "lisa" is returned, consisting of the following components:
 \item{correlation}{the mean correlation within the neighborhood (neigh).}
 \item{p}{the permutation two-sided p-value for each distance-class.}
 \item{n}{the number of pairs within each neighborhood.}
@@ -61,7 +61,7 @@ fit1 <- lisa.nc(x = x, y = y, z = z, neigh = 3)
 Anselin, L. 1995. Local indicators of spatial association - LISA. Geographical Analysis 27:93-115. \url{https://doi.org/10.1111/j.1538-4632.1995.tb00338.x}
 }
 \seealso{
-\code{\link{lisa}}, \code{\link{plot.lisa.nc}}
+\code{\link{lisa}}
 }
 \author{
 Ottar N. Bjornstad \email{onb1@psu.edu}

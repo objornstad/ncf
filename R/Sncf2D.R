@@ -66,7 +66,8 @@ Sncf2D <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
   ##############################################################################
   # Sncf2D is the function to estimate the anisotropic nonparametric covariance function 
   # (using a smoothing spline as an equivalent kernel) in 8 (or arbitrary) directions (North - Southeast) 
-  # through calculateing projected distances onto the different bearings (i.e. all data are used for each direction = 0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5)
+  # through calculateing projected distances onto the different bearings (i.e. all 
+  # data are used for each direction = 0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5)
   ##############################################################################
   
   # the following sets up the output:
@@ -289,7 +290,7 @@ Sncf2D <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
 print.Sncf2D <- function(x, ...) {
   ##############################################################################
   cat("This is an object of class Sncf2D produced by the call:\n\n", x$call, 
-      "\n\n Use summary() or plot() for inspection,  (or print.default() to see all the gory details).")
+      "\n\n Use summary() or plot() for inspection (or print.default() to see all the gory details).", ...)
 }
 
 #' @title Plots anisotropic spatial correlation-functions
@@ -308,32 +309,30 @@ plot.Sncf2D <- function(x, xmax = 0, ylim = c(-1, 1), detail = FALSE, ...) {
   ##############################################################################
   # this is the generic plot function for Sncf2D objects
   ##############################################################################
-  L <- length(x$angle)
-  
   xmax <- ifelse(xmax == 0, x$max.distance, xmax)
   plot(x$real[[1]]$predict$x, x$real[[1]]$predict$y, xlim = c(-xmax, xmax), 
-       ylim = ylim, type = "n", xlab = "", ylab = "")
+       ylim = ylim, type = "n", xlab = "", ylab = "", ...)
   lines(c(-max(x$real[[1]]$predict$x), max(x$real[[1]]$predict$x)), c(0, 0))
   lines(c(-max(x$real[[1]]$predict$x), max(x$real[[1]]$predict$x)), 
         c(x$real$cbar, x$real$cbar))
-for(i in 1:L){
+  L <- length(x$angle)
+  for (i in 1:L) {
      lines(x$real[[i]]$predict$x, x$real[[i]]$predict$y)
- }
+  }
 
   if (detail) {
     par(mfrow = c(ceiling(sqrt(L)), ceiling(sqrt(L))))
     
     for (i in 1:L) {
       plot(x$real[[i]]$predict$x, x$real[[i]]$predict$y, xlim = c(-xmax, xmax), 
-           ylim = ylim, type = "l", xlab = "Distance", ylab = "Correlation")
+           ylim = ylim, type = "l", xlab = "Distance", ylab = "Correlation", ...)
       
       if (!is.null(x$boot[[i]]$boot.summary)) {
-        xy=na.omit(data.frame(x=c(x$boot[[i]]$boot.summary$predicted$x, 
-                  rev(x$boot[[i]]$boot.summary$predicted$x)), 
-                  y=c(x$boot[[i]]$boot.summary$predicted$y["0.025", ], 
-                  rev(x$boot[[i]]$boot.summary$predicted$y["0.975", ]))))
-        polygon(xy$x, xy$y, 
-                col = gray(0.8), lty = 0)
+        xy <- na.omit(data.frame(x = c(x$boot[[i]]$boot.summary$predicted$x, 
+                                       rev(x$boot[[i]]$boot.summary$predicted$x)), 
+                                 y = c(x$boot[[i]]$boot.summary$predicted$y["0.025", ], 
+                                       rev(x$boot[[i]]$boot.summary$predicted$y["0.975", ]))))
+        polygon(xy$x, xy$y, col = gray(0.8), lty = 0)
       }	
       lines(x$real[[i]]$predict$x, x$real[[i]]$predict$y)
       lines(c(-max(x$real[[i]]$predict$x), max(x$real[[i]]$predict$x)), c(0, 0))
@@ -476,13 +475,13 @@ plot.cc.offset <- function(x, dmax = NULL, inches = NULL, ...) {
   yl <- xl <- c(-max(axs), max(axs))
   symbols(x2, y, circles = ifelse(tmp > 0, tmp, 0), inches = inc, xlim = xl, 
           ylim = yl, xlab = "", ylab = "", fg = 1, bg = 2, asp = 1, xaxt = "n", 
-          yaxt = "n", bty = "n")
+          yaxt = "n", bty = "n", ...)
   symbols(rep(0, length(axs)), rep(0, length(axs)), circles = axs, inches = FALSE, 
-          xlab = "", ylab = "", xaxt = "n", yaxt = "n", bty = "n", add = TRUE)	
+          xlab = "", ylab = "", xaxt = "n", yaxt = "n", bty = "n", add = TRUE, ...)	
   lines(c(0, 0), yl)
   lines(yl, c(0, 0))
   text(axs[-1], rep(0, length(axs))[-1], axs[-1], cex = 0.6, pos = 1)
   symbols(x2, y, circles = ifelse(tmp > 0, tmp, 0), inches = inc, xlim = xl, 
           ylim = yl, xlab = "", ylab = "", fg = 1, bg = 2, asp = 1, xaxt = "n", 
-          yaxt = "n", add = TRUE, bty = "n")
+          yaxt = "n", add = TRUE, bty = "n", ...)
 }

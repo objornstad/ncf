@@ -258,9 +258,13 @@ plot.spline.correlog <- function(x, xmax = 0, ylim = c(-1, 1), ...) {
   ##############################################################################
   # this is the generic plot function for spline.correlog objects
   ##############################################################################
+  args.default <- list(xlab = "Distance", ylab = "Correlation")
+  args.input <- list(...)
+  args <- c(args.default[!names(args.default) %in% names(args.input)], args.input)
+  
   xmax <- ifelse(xmax == 0, x$max.distance, xmax)
-  plot(x$real$predicted$x, x$real$predicted$y, xlim = c(0, xmax), ylim = ylim, 
-       type = "l", xlab = "Distance", ylab = "Correlation")
+  do.call(plot, c(list(x = x$real$predicted$x, y = x$real$predicted$y, 
+                       xlim = c(0, xmax), ylim = ylim, type = "l"), args))
   if (!is.null(x$boot$boot.summary)) {
     polygon(c(x$boot$boot.summary$predicted$x, rev(x$boot$boot.summary$predicted$x)), 
             c(x$boot$boot.summary$predicted$y["0.025", ], 
@@ -314,5 +318,5 @@ summary.spline.correlog <- function(object, ...) {
 print.spline.correlog <- function(x, ...) {
   ##############################################################################
   cat("This is an object of class spline.correlog produced by the call:\n\n", x$call, 
-      "\n\n Use summary() or plot() for inspection,  (or print.default() to see all the gory details).")
+      "\n\n Use summary() or plot() for inspection (or print.default() to see all the gory details).", ...)
 }

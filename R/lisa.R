@@ -104,7 +104,7 @@ lisa <- function(x, y, z, neigh, resamp = 1000, latlon = FALSE, quiet = FALSE) {
 ################################################################################
 plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
   ##############################################################################
-  xx=x
+  xx <- x
   if (neigh.mean) {
     z <- xx$mean
   } else {
@@ -115,10 +115,10 @@ plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
   y <- xx$coord$y
   
   if (add == FALSE) {
-    plot(x, y, type = "n")
+    plot(x, y, type = "n", ...)
   }
   sel <- is.finite(z)
-  x <- split(x,z - mean(z, na.rm = TRUE) > 0)
+  x <- split(x, z - mean(z, na.rm = TRUE) > 0)
   y <- split(y, z - mean(z, na.rm = TRUE) > 0)
   sel <- split(sel, z - mean(z, na.rm = TRUE) > 0)
   z2 <- split(z - mean(z, na.rm = TRUE), z - mean(z, na.rm = TRUE) > 0)
@@ -133,11 +133,15 @@ plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
     bgc <- split(bgc, (z - mean(z, na.rm = TRUE)) > 0)
   }
   
- if(!is.null(length(z2[[1]][sel[[1]]]))){
-  symbols(x[[1]][sel[[1]]],y[[1]][sel[[1]]],circles=-z2[[1]][sel[[1]]], inches=inches, add= TRUE, fg=2, bg=bgc[[1]][sel[[1]]])}
-
-if(!is.null(length(z2[[1]][sel[[2]]]))){
-  symbols(x[[2]][sel[[2]]],y[[2]][sel[[2]]],squares=z2[[2]][sel[[2]]], inches=inches, add= TRUE, fg=1, bg=bgc[[2]][sel[[2]]])}
+  if (!is.null(length(z2[[1]][sel[[1]]]))) {
+    symbols(x[[1]][sel[[1]]], y[[1]][sel[[1]]], circles = -z2[[1]][sel[[1]]], 
+            inches = inches, add = TRUE, fg = 2, bg = bgc[[1]][sel[[1]]])
+  }
+  
+  if (!is.null(length(z2[[1]][sel[[2]]]))) {
+    symbols(x[[2]][sel[[2]]], y[[2]][sel[[2]]], squares = z2[[2]][sel[[2]]], 
+            inches = inches, add = TRUE, fg = 1, bg = bgc[[2]][sel[[2]]])
+  }
 }
 
 #' @title Non-centered inidcators of spatial association
@@ -163,7 +167,7 @@ if(!is.null(length(z2[[1]][sel[[2]]]))){
 #'   Missing values are allowed -- values are assumed missing at random, and pairwise complete observations will be used.
 #' @references Anselin, L. 1995. Local indicators of spatial association - LISA. Geographical Analysis 27:93-115. \url{https://doi.org/10.1111/j.1538-4632.1995.tb00338.x}
 #' @author Ottar N. Bjornstad \email{onb1@psu.edu}
-#' @seealso \code{\link{lisa}}}
+#' @seealso \code{\link{lisa}}
 #' @examples 
 #' # first generate some sample data
 #' x <- expand.grid(1:20, 1:5)[, 1]
@@ -241,4 +245,3 @@ lisa.nc <- function(x, y, z, neigh, na.rm = FALSE, resamp = 1000, latlon = FALSE
   class(res) <- "lisa"
   res
 }
-
