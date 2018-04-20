@@ -167,7 +167,7 @@ plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
 #'   Missing values are allowed -- values are assumed missing at random, and pairwise complete observations will be used.
 #' @references Anselin, L. 1995. Local indicators of spatial association - LISA. Geographical Analysis 27:93-115. \url{https://doi.org/10.1111/j.1538-4632.1995.tb00338.x}
 #' @author Ottar N. Bjornstad \email{onb1@psu.edu}
-#' @seealso \code{\link{lisa}}}
+#' @seealso \code{\link{lisa}}
 #' @examples 
 #' # first generate some sample data
 #' x <- expand.grid(1:20, 1:5)[, 1]
