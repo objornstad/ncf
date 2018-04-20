@@ -104,7 +104,7 @@ lisa <- function(x, y, z, neigh, resamp = 1000, latlon = FALSE, quiet = FALSE) {
 ################################################################################
 plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
   ##############################################################################
-  xx=x
+  xx <- x
   if (neigh.mean) {
     z <- xx$mean
   } else {
@@ -133,11 +133,15 @@ plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
     bgc <- split(bgc, (z - mean(z, na.rm = TRUE)) > 0)
   }
   
- if(!is.null(length(z2[[1]][sel[[1]]]))){
-  symbols(x[[1]][sel[[1]]],y[[1]][sel[[1]]],circles=-z2[[1]][sel[[1]]], inches=inches, add= TRUE, fg=2, bg=bgc[[1]][sel[[1]]])}
-
-if(!is.null(length(z2[[1]][sel[[2]]]))){
-  symbols(x[[2]][sel[[2]]],y[[2]][sel[[2]]],squares=z2[[2]][sel[[2]]], inches=inches, add= TRUE, fg=1, bg=bgc[[2]][sel[[2]]])}
+  if (!is.null(length(z2[[1]][sel[[1]]]))) {
+    symbols(x[[1]][sel[[1]]], y[[1]][sel[[1]]], circles = -z2[[1]][sel[[1]]], 
+            inches = inches, add = TRUE, fg = 2, bg = bgc[[1]][sel[[1]]])
+  }
+  
+  if (!is.null(length(z2[[1]][sel[[2]]]))) {
+    symbols(x[[2]][sel[[2]]], y[[2]][sel[[2]]], squares = z2[[2]][sel[[2]]], 
+            inches = inches, add = TRUE, fg = 1, bg = bgc[[2]][sel[[2]]])
+  }
 }
 
 #' @title Non-centered inidcators of spatial association
