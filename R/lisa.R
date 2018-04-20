@@ -104,14 +104,15 @@ lisa <- function(x, y, z, neigh, resamp = 1000, latlon = FALSE, quiet = FALSE) {
 ################################################################################
 plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
   ##############################################################################
+  xx=x
   if (neigh.mean) {
-    z <- x$mean
+    z <- xx$mean
   } else {
-    z <- x$z
+    z <- xx$z
   }
   
-  x <- x$coord$x
-  y <- x$coord$y
+  x <- xx$coord$x
+  y <- xx$coord$y
   
   if (add == FALSE) {
     plot(x, y, type = "n")
@@ -123,24 +124,20 @@ plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
   z2 <- split(z - mean(z, na.rm = TRUE), z - mean(z, na.rm = TRUE) > 0)
   
   bgc <- rep(0, length(z))
-  bgc <- split(bgc, z - mean(z, na.rm = TRUE) > 0)
+  bgc <- split(bgc, (z - mean(z, na.rm = TRUE)) > 0)
   
-  if (!is.null(x$p)) {
+  if (!is.null(xx$p)) {
     bgc <- rep(0, length(z))
-    bgc <- ifelse(x$p < 0.025, 1, 0)
-    bgc[x$p < 0.025 & z - mean(z, na.rm = TRUE) > 0] <- 2
-    bgc <- split(bgc, z - mean(z, na.rm = TRUE) > 0)
+    bgc <- ifelse(xx$p < 0.025, 2, 0)
+    bgc[xx$p < 0.025 & (z - mean(z, na.rm = TRUE)) > 0] <- 1
+    bgc <- split(bgc, (z - mean(z, na.rm = TRUE)) > 0)
   }
   
-  if (!is.null(length(z2[[1]][sel[[1]]]))) {
-    symbols(x[[1]][sel[[1]]], y[[1]][sel[[1]]], squares = -z2[[1]][sel[[1]]], 
-            inches = inches, add = TRUE, fg = 1, bg = bgc[[1]][sel[[1]]])
-  }
-  
-  if (!is.null(length(z2[[1]][sel[[2]]]))) {
-    symbols(x[[2]][sel[[2]]], y[[2]][sel[[2]]], circles = z2[[2]][sel[[2]]], 
-            inches = inches, add = TRUE, fg = 2, bg = bgc[[2]][sel[[2]]])
-  }
+ if(!is.null(length(z2[[1]][sel[[1]]]))){
+  symbols(x[[1]][sel[[1]]],y[[1]][sel[[1]]],circles=-z2[[1]][sel[[1]]], inches=inches, add= TRUE, fg=2, bg=bgc[[1]][sel[[1]]])}
+
+if(!is.null(length(z2[[1]][sel[[2]]]))){
+  symbols(x[[2]][sel[[2]]],y[[2]][sel[[2]]],squares=z2[[2]][sel[[2]]], inches=inches, add= TRUE, fg=1, bg=bgc[[2]][sel[[2]]])}
 }
 
 #' @title Non-centered inidcators of spatial association
@@ -153,7 +150,7 @@ plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
 #' @param latlon If TRUE, coordinates are latitude and longitude.
 #' @param na.rm If TRUE, NA's will be dealt with through pairwise deletion of missing values.
 #' @param quiet If TRUE, the counter is supressed during execution.
-#' @return An object of class "lisa.nc" is returned, consisting of the following components:
+#' @return An object of class "lisa" is returned, consisting of the following components:
 #' \item{correlation}{the mean correlation within the neighborhood (neigh).}
 #' \item{p}{the permutation two-sided p-value for each distance-class.}
 #' \item{n}{the number of pairs within each neighborhood.}
@@ -166,7 +163,7 @@ plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
 #'   Missing values are allowed -- values are assumed missing at random, and pairwise complete observations will be used.
 #' @references Anselin, L. 1995. Local indicators of spatial association - LISA. Geographical Analysis 27:93-115. \url{https://doi.org/10.1111/j.1538-4632.1995.tb00338.x}
 #' @author Ottar N. Bjornstad \email{onb1@psu.edu}
-#' @seealso \code{\link{lisa}}, \code{\link{plot.lisa.nc}}
+#' @seealso \code{\link{lisa}}}
 #' @examples 
 #' # first generate some sample data
 #' x <- expand.grid(1:20, 1:5)[, 1]
@@ -241,60 +238,7 @@ lisa.nc <- function(x, y, z, neigh, na.rm = FALSE, resamp = 1000, latlon = FALSE
   
   res <- list(correlation = moran, p = p, n = nlok, dmean = dmean, 
               coord = list(x = x, y = y), call = deparse(match.call()))
-  class(res) <- "lisa.nc"
+  class(res) <- "lisa"
   res
 }
 
-#' @title Plots multivariate local indicators of spatial association
-#' @description `plot' method for class "lisa.nc".
-#' @param x an object of class "lisa.nc", ususally, as a result of a call to \code{\link{lisa.nc}}.
-#' @param ctr If TRUE, correlations will be centered before plotting (zero-sized symbols represents the average correlation); if FALSE the observed correlations are used (zero-sized symbols represents zero within neghborhood correlation)
-#' @param add If TRUE, a lisa-plot will be added to a pre-existing plot.
-#' @param inches scales the size of the symbols
-#' @param \dots other arguments
-#' @return A bubble-plot of the multivariate LISA against spatial coordinates is produced. Negative (or below mean) within-neghborhood correlations are signified by squares. Positive (or above mean) values are signified by circles. 
-#' 
-#'   If a permutation test was performed, values significant at a nominal (two-sided) 5\%-level will be respresented by filled symbols and non-significant values by open symbols. Thus areas of significant positive (or above-average) correlation have  filled red circles and areas of significant negative (or below-average) correlation have filled black squares.
-#' @seealso \code{\link{lisa}}, \code{\link{lisa.nc}}
-#' @keywords spatial
-#' @export
-################################################################################
-plot.lisa.nc <- function(x, ctr = FALSE, add = FALSE, inches = 0.2, ...) {
-  ##############################################################################
-  if (ctr) {
-    z <- x$correlation - mean(x$correlation, na.rm = TRUE)
-  } else {
-    z <- x$correlation
-  }
-  
-  x <- x$coord$x
-  y <- x$coord$y
-  
-  if (add == FALSE) {
-    plot(x, y, type = "n")
-  }
-  sel <- is.finite(z)
-  x <- split(x, z > 0)
-  y <- split(y, z > 0)
-  sel <- split(sel, z > 0)
-  z2 <- split(z, z > 0)
-  
-  bgc <- rep(0, length(z))
-  bgc <- split(bgc, z > 0)
-  
-  if (!is.null(x$p)) {
-    bgc <- rep(0, length(z))
-    bgc <- ifelse(x$p < 0.025, 1, 0)
-    bgc[x$p < 0.025 & z > 0] <- 2
-    bgc <- split(bgc, z > 0)
-  }
-  
-  if (!is.null(length(z2[[1]][sel[[1]]]))) {
-    symbols(x[[1]][sel[[1]]], y[[1]][sel[[1]]], squares = -z2[[1]][sel[[1]]], 
-            inches = inches, add = TRUE, fg = 1, bg = bgc[[1]][sel[[1]]])
-  }
-  
-  if (!is.null(length(z2[[1]][sel[[2]]]))) {
-    symbols(x[[2]][sel[[2]]], y[[2]][sel[[2]]], circles = z2[[2]][sel[[2]]], 
-            inches = inches, add = TRUE, fg = 2, bg = bgc[[2]][sel[[2]]])}
-}
