@@ -23,6 +23,7 @@
 #' # plot data
 #' \dontrun{spatial.plot(x = x, y = y, z = z, ctr = FALSE)}
 #' @keywords spatial
+#' @export
 ################################################################################
 spatial.plot <- function(x, y, z, ctr = TRUE, add = FALSE, inches = 0.2, ...) {
   ##############################################################################
