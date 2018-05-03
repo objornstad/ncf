@@ -4,4 +4,5 @@
 #' @usage data(lbm)
 #' @references Bjornstad, O.N., Peltonen, M., Liebhold, A.M., and Baltensweiler, W. (2002) Waves of larch budmoth outbreaks in the European Alps. Science, 298, 1020-1023. \url{https://doi.org/10.1126/science.1075182}
 #' @keywords datasets
+#' export
 "lbm"
