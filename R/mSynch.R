@@ -119,7 +119,7 @@ mSynch <- function(x, y = NULL, resamp = 1000, na.rm = FALSE, circ = FALSE,
 #' \item{Squantile}{the quantile distribution from the resampling for the regional correlation.}
 #' @seealso \code{\link{mSynch}}
 #' @keywords smooth regression
-#' export
+#' @export
 ################################################################################
 "print.mSynch" <- function(x, verbose = FALSE, ...) {
   ##############################################################################
