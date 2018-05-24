@@ -24,6 +24,5 @@ If verbose is FALSE, a list summarizing the regional correlation is produced:
 \seealso{
 \code{\link{mSynch}}
 }
-\keyword{export}
 \keyword{regression}
 \keyword{smooth}
