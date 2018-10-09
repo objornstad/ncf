@@ -222,8 +222,8 @@ plot.correlog <- function(x, ...) {
   }
 }
 
-#' @title Non-cenetered spatial (cross-)correlogram
-#' @description \code{correlog.nc} is the function to estimate the non-centred (cross-)correlogram. The noncentred correlogram provides estimates of the spatial correlation for discrete distance classes. The function requires multiple observations at each location (use \code{\link{correlog}} otherwise).
+#' @title Non-centered spatial (cross-)correlogram
+#' @description \code{correlog.nc} is the function to estimate the non-centered (cross-)correlogram. The non-centred correlogram provides estimates of the spatial correlation for discrete distance classes. The function requires multiple observations at each location (use \code{\link{correlog}} otherwise).
 #' @param x vector of length n representing the x coordinates (or longitude; see latlon).
 #' @param y vector of length n representing the y coordinates (or latitude).
 #' @param z a matrix of dimension n x p representing p (>1) observation at each location.
