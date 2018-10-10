@@ -1,3 +1,5 @@
+1.2-6: Fixed stupid coding mistake in print.mSynch
+
 1.2-5: Final tune-up for complete compliance with github, Rstudio and devtools
 
 1.2-4: Fixed ... in plot-function

@@ -121,7 +121,7 @@ mSynch <- function(x, y = NULL, resamp = 1000, na.rm = FALSE, circ = FALSE,
 #' @keywords smooth regression
 #' @export
 ################################################################################
-"print.mSynch" <- function(x, verbose = FALSE, ...) {
+print.mSynch <- function(x, verbose = FALSE, ...) {
   ##############################################################################
   # this is the generic print function for mSynch objects
   #

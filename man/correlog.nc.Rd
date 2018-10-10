@@ -2,7 +2,7 @@
 % Please edit documentation in R/correlog.R
 \name{correlog.nc}
 \alias{correlog.nc}
-\title{Non-cenetered spatial (cross-)correlogram}
+\title{Non-centered spatial (cross-)correlogram}
 \usage{
 correlog.nc(x, y, z, w = NULL, increment, resamp = 1000, na.rm = FALSE,
   latlon = FALSE, quiet = FALSE)
@@ -36,7 +36,7 @@ An object of class "correlog" is returned, consisting of the following component
 \item{corr0}{If a cross-correlogram is calculated, corr0 gives the empirical within-patch cross-correlation.}
 }
 \description{
-\code{correlog.nc} is the function to estimate the non-centred (cross-)correlogram. The noncentred correlogram provides estimates of the spatial correlation for discrete distance classes. The function requires multiple observations at each location (use \code{\link{correlog}} otherwise).
+\code{correlog.nc} is the function to estimate the non-centered (cross-)correlogram. The non-centred correlogram provides estimates of the spatial correlation for discrete distance classes. The function requires multiple observations at each location (use \code{\link{correlog}} otherwise).
 }
 \details{
 The non-centred correlogram estimates spatial dependence at discrete distance  classes. The method corresponds to the modified correlogram of Koenig & Knops(1998), but augumented to potentially estimate the cross-correlogram). The function requires multiple observations at each location. Missing values is allowed in the multivariate case (pairwise deletion will be used).
