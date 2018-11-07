@@ -45,7 +45,7 @@
 #'   
 #'   Grenfell, B.T., Bjornstad, O.N., & Kappey, J. (2001) Travelling waves and spatial hierarchies in measles epidemics. Nature 414:716-723. \url{https://doi.org/10.1038/414716a}
 #' @author Ottar N. Bjornstad \email{onb1@psu.edu}
-#' @seealso \code{\link{summary.Sncf}}, \code{\link{plot.Sncf}}, \code{\link{Sncf2D}}, \code{\link{Sncf.srf}}
+#' @seealso \code{\link{Sncf2D}}, \code{\link{Sncf.srf}}
 #' @examples 
 #' # first generate some sample data
 #' x <- expand.grid(1:20, 1:5)[, 1]
@@ -245,7 +245,7 @@ Sncf <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
 #' @param add If TRUE the plot is added on to the previous graph.
 #' @param \dots other arguments
 #' @return A plot of the nonparametric spatial covariance function (with CI's if boostrapps are available)
-#' @seealso \code{\link{Sncf}}, \code{\link{plot.Sncf}}, \code{\link{Sncf.srf}}, \code{\link{summary.Sncf}}
+#' @seealso \code{\link{Sncf}}, \code{\link{Sncf.srf}}
 #' @keywords smooth regression
 #' @export
 ################################################################################

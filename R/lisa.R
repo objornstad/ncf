@@ -95,7 +95,7 @@ lisa <- function(x, y, z, neigh, resamp = 1000, latlon = FALSE, quiet = FALSE) {
 #' @param add If TRUE, a lisa-plot will be added to a pre-existing plot.
 #' @param inches scales the size of the symbols
 #' @param \dots other arguments
-#' @return A bubble-plot of observations against spatial coordinates is produced. Below mean values are signified by squares. Above mean values are signified by squares. 
+#' @return A bubble-plot of observations against spatial coordinates is produced. Below mean values are signified by circles. Above mean values are signified by squares. 
 #' 
 #'   If a permutation test was performed, observations for which the associated LISA statistic is positive and significant at a nominal (two-sided) 5\%-level will be respresented by filled symbols and non-significant values by open symbols. Thus spatial hot-spots are represented by red filled circles and cold-spots by black filled squares.
 #' @seealso \code{\link{lisa}}, \code{\link{lisa.nc}}
