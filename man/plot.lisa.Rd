@@ -4,7 +4,8 @@
 \alias{plot.lisa}
 \title{Plots local indicators of spatial association}
 \usage{
-\method{plot}{lisa}(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...)
+\method{plot}{lisa}(x, neigh.mean = FALSE, add = FALSE, inches = 0.2,
+  ...)
 }
 \arguments{
 \item{x}{an object of class "lisa", ususally, as a result of a call to \code{\link{lisa}}.}
@@ -18,9 +19,9 @@
 \item{\dots}{other arguments}
 }
 \value{
-A bubble-plot of observations against spatial coordinates is produced. Below mean values are signified by squares. Above mean values are signified by squares. 
+A bubble-plot of observations against spatial coordinates is produced. Above mean values are signified by red circles. Below mean values are signified by black squares. 
 
-  If a permutation test was performed, observations for which the associated LISA statistic is positive and significant at a nominal (two-sided) 5\%-level will be respresented by filled symbols and non-significant values by open symbols. Thus spatial hot-spots are represented by red filled circles and cold-spots by black filled squares.
+  If a permutation test was performed, observations for which the associated LISA statistic is significant at a nominal (two-sided) 5\%-level will be respresented by filled symbols and non-significant values by open symbols. Thus spatial hot-spots are represented by red filled circles and cold-spots by black filled squares.
 }
 \description{
 `plot' method for class "lisa".

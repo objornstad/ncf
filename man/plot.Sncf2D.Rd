@@ -4,7 +4,8 @@
 \alias{plot.Sncf2D}
 \title{Plots anisotropic spatial correlation-functions}
 \usage{
-\method{plot}{Sncf2D}(x, xmax = 0, ylim = c(-1, 1), detail = FALSE, ...)
+\method{plot}{Sncf2D}(x, xmax = 0, ylim = c(-1, 1), detail = FALSE,
+  ...)
 }
 \arguments{
 \item{x}{an object of class "Sncf2D", ususally, as a result of a call to \code{Sncf2D}.}

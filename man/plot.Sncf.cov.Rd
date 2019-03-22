@@ -4,12 +4,10 @@
 \alias{plot.Sncf.cov}
 \title{Plots nonparametric spatial covariance-functions}
 \usage{
-\method{plot}{Sncf.cov}(x, xmax = 0, ...)
+\method{plot}{Sncf.cov}(x, ...)
 }
 \arguments{
 \item{x}{an object of class "Sncf.cov", usually, as a result of a call to \code{Sncf.srf} (with \code{corr} = FALSE).}
-
-\item{xmax}{the maximal distance to be plotted on the x-axis. If set to zero the maximum distance in the data will be used.}
 
 \item{\dots}{other arguments}
 }

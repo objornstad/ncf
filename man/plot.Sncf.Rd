@@ -4,12 +4,10 @@
 \alias{plot.Sncf}
 \title{Plots nonparametric spatial correlation-functions}
 \usage{
-\method{plot}{Sncf}(x, xmax = 0, ylim = c(-1, 1), add = FALSE, ...)
+\method{plot}{Sncf}(x, ylim = c(-1, 1), add = FALSE, ...)
 }
 \arguments{
 \item{x}{an object of class "Sncf", usually, as a result of a call to \code{Sncf} (or \code{Sncf.srf}).}
-
-\item{xmax}{the maximal distance to be plotted on the x-axis. If set to zero the maximum distance in the data will be used.}
 
 \item{ylim}{limits for the y-axis (default: -1, 1).}
 
@@ -24,7 +22,7 @@ A plot of the nonparametric spatial covariance function (with CI's if boostrapps
 `plot' method for class "Sncf".
 }
 \seealso{
-\code{\link{Sncf}}, \code{\link{plot.Sncf}}, \code{\link{Sncf.srf}}, \code{\link{summary.Sncf}}
+\code{\link{Sncf}}, \code{\link{Sncf.srf}}
 }
 \keyword{regression}
 \keyword{smooth}

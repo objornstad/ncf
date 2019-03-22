@@ -5,9 +5,9 @@
 \title{Uni- and multivariate spline correlograms}
 \usage{
 spline.correlog(x, y, z, w = NULL, df = NULL, type = "boot",
-  resamp = 1000, npoints = 300, save = FALSE, filter = FALSE, fw = 0,
-  max.it = 25, xmax = FALSE, latlon = FALSE, na.rm = FALSE,
-  quiet = FALSE)
+  resamp = 1000, npoints = 300, save = FALSE, filter = FALSE,
+  fw = 0, max.it = 25, xmax = FALSE, latlon = FALSE,
+  na.rm = FALSE, quiet = FALSE)
 }
 \arguments{
 \item{x}{vector of length n representing the x coordinates (or longitude; see latlon).}

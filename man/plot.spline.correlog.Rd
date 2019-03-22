@@ -4,12 +4,10 @@
 \alias{plot.spline.correlog}
 \title{Plots spline correlograms}
 \usage{
-\method{plot}{spline.correlog}(x, xmax = 0, ylim = c(-1, 1), ...)
+\method{plot}{spline.correlog}(x, ylim = c(-1, 1), ...)
 }
 \arguments{
 \item{x}{an object of class "spline.correlog", usually, as a result of a call to \code{spline.correlog}.}
-
-\item{xmax}{the maximal distance to be plotted on the x-axis. If set to zero the maximum distance in the data will be used.}
 
 \item{ylim}{limits for the y-axis (default: -1, 1).}
 
