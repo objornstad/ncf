@@ -2,7 +2,7 @@
 % Please edit documentation in R/lisa.R
 \name{lisa}
 \alias{lisa}
-\title{Local inidcator of spatial association}
+\title{Local indicator of spatial association}
 \usage{
 lisa(x, y, z, neigh, resamp = 1000, latlon = FALSE, quiet = FALSE)
 }
@@ -47,7 +47,7 @@ z <- rmvn.spa(x = x, y = y, p = 2, method = "gaus")
 
 # lisa analysis
 fit1 <- lisa(x = x, y = y, z = z, neigh = 3, resamp = 500)
-\dontrun{plot(fit1, negh.mean=FALSE)}
+\dontrun{plot(fit1, neigh.mean=FALSE)}
 }
 \references{
 Anselin, L. 1995. Local indicators of spatial association - LISA. Geographical Analysis 27:93-115. \url{https://doi.org/10.1111/j.1538-4632.1995.tb00338.x}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/lisa.R
 \name{lisa.nc}
 \alias{lisa.nc}
-\title{Non-centered inidcators of spatial association}
+\title{Non-centered indicators of spatial association}
 \usage{
 lisa.nc(x, y, z, neigh, na.rm = FALSE, resamp = 1000, latlon = FALSE,
   quiet = FALSE)

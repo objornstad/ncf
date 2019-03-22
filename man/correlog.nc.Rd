@@ -4,8 +4,8 @@
 \alias{correlog.nc}
 \title{Non-centered spatial (cross-)correlogram}
 \usage{
-correlog.nc(x, y, z, w = NULL, increment, resamp = 1000, na.rm = FALSE,
-  latlon = FALSE, quiet = FALSE)
+correlog.nc(x, y, z, w = NULL, increment, resamp = 1000,
+  na.rm = FALSE, latlon = FALSE, quiet = FALSE)
 }
 \arguments{
 \item{x}{vector of length n representing the x coordinates (or longitude; see latlon).}
