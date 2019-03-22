@@ -5,9 +5,9 @@
 \title{Nonparametric (Cross-)Covariance Function from stationary random fields}
 \usage{
 Sncf.srf(x, y, z, w = NULL, avg = NULL, avg2 = NULL, corr = TRUE,
-  df = NULL, type = "boot", resamp = 0, npoints = 300, save = FALSE,
-  filter = FALSE, fw = 0, max.it = 25, xmax = FALSE, jitter = FALSE,
-  quiet = FALSE)
+  df = NULL, type = "boot", resamp = 0, npoints = 300,
+  save = FALSE, filter = FALSE, fw = 0, max.it = 25,
+  xmax = FALSE, jitter = FALSE, quiet = FALSE)
 }
 \arguments{
 \item{x}{vector of length n representing the x coordinates (or longitude; see latlon).}

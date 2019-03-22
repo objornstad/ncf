@@ -5,9 +5,9 @@
 \title{Nonparametric (cross-)correlation function for spatio-temporal data}
 \usage{
 Sncf(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
-  npoints = 300, save = FALSE, filter = FALSE, fw = 0, max.it = 25,
-  xmax = FALSE, na.rm = FALSE, latlon = FALSE, circ = FALSE,
-  quiet = FALSE)
+  npoints = 300, save = FALSE, filter = FALSE, fw = 0,
+  max.it = 25, xmax = FALSE, na.rm = FALSE, latlon = FALSE,
+  circ = FALSE, quiet = FALSE)
 }
 \arguments{
 \item{x}{vector of length n representing the x coordinates (or longitude; see latlon).}
@@ -105,7 +105,7 @@ Hall, P. & Patil, P. (1994) Properties of nonparametric estimators of autocovari
   Grenfell, B.T., Bjornstad, O.N., & Kappey, J. (2001) Travelling waves and spatial hierarchies in measles epidemics. Nature 414:716-723. \url{https://doi.org/10.1038/414716a}
 }
 \seealso{
-\code{\link{summary.Sncf}}, \code{\link{plot.Sncf}}, \code{\link{Sncf2D}}, \code{\link{Sncf.srf}}
+\code{\link{Sncf2D}}, \code{\link{Sncf.srf}}
 }
 \author{
 Ottar N. Bjornstad \email{onb1@psu.edu}
