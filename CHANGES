@@ -1,3 +1,5 @@
+1.2-8: Updated plot.lisa file. Fixed problem with xlim argument in plot.spline.correlog and plot.Sncf. Fixed error in treatment of 'quiet' argument
+
 1.2-7: Fixed error in plot.lisa help file.
 
 1.2-6: Fixed stupid coding mistake in print.mSynch
@@ -12,7 +14,7 @@
 
 1.2-1: New plot.cc.offset-function. Fixed a stupid double loop (and vectorized gcdist).
 	Vectorized spherical correlation function (added circ.cor2) to greatly speed calculations.
-	Prettied up the progress counters and turn defaut for quiet back to FALSE. Major under-the-hood re-code to ease maintenance.
+	Prettied up the progress counters and turn default for quiet back to FALSE. Major under-the-hood re-code to ease maintenance.
 
 1.1-8: Plotting functions for Spline.correlogs and Sncf changed 
        Default for 'quiet' switched to TRUE

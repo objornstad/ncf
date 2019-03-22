@@ -201,7 +201,7 @@ Sncf2D <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
       
       for (i in 1:resamp) {
         whn <- pretty(c(1, resamp), n = 10)
-        if (quiet & any(i == whn)) {
+        if (!quiet & any(i == whn)) {
           cat(i, " of ", resamp, "(direction", d, "of ", length(ang), ")\r")
           flush.console()
         }

@@ -1,4 +1,4 @@
-#' @title Local inidcator of spatial association
+#' @title Local indicator of spatial association
 #' @description \code{lisa} is a function to estimate the local indicators of spatial association. The function assumes univariate data at each location. For multivariate data use \code{\link{lisa.nc}}
 #' @param x vector of length n representing the x coordinates (or latitude; see latlon).
 #' @param y vector of length n representing the y coordinates (or longitude).
@@ -29,7 +29,7 @@
 #' 
 #' # lisa analysis
 #' fit1 <- lisa(x = x, y = y, z = z, neigh = 3, resamp = 500)
-#' \dontrun{plot(fit1, negh.mean=FALSE)}
+#' \dontrun{plot(fit1, neigh.mean=FALSE)}
 #' @keywords spatial
 #' @export
 ################################################################################
@@ -69,7 +69,7 @@ lisa <- function(x, y, z, neigh, resamp = 1000, latlon = FALSE, quiet = FALSE) {
     
     for (i in 1:resamp) {
       whn <- pretty(c(1, resamp), n = 10)
-      if (quiet & any(i == whn)) {
+      if (!quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
         flush.console()
       }
@@ -95,9 +95,9 @@ lisa <- function(x, y, z, neigh, resamp = 1000, latlon = FALSE, quiet = FALSE) {
 #' @param add If TRUE, a lisa-plot will be added to a pre-existing plot.
 #' @param inches scales the size of the symbols
 #' @param \dots other arguments
-#' @return A bubble-plot of observations against spatial coordinates is produced. Below mean values are signified by circles. Above mean values are signified by squares. 
+#' @return A bubble-plot of observations against spatial coordinates is produced. Above mean values are signified by red circles. Below mean values are signified by black squares. 
 #' 
-#'   If a permutation test was performed, observations for which the associated LISA statistic is positive and significant at a nominal (two-sided) 5\%-level will be respresented by filled symbols and non-significant values by open symbols. Thus spatial hot-spots are represented by red filled circles and cold-spots by black filled squares.
+#'   If a permutation test was performed, observations for which the associated LISA statistic is significant at a nominal (two-sided) 5\%-level will be respresented by filled symbols and non-significant values by open symbols. Thus spatial hot-spots are represented by red filled circles and cold-spots by black filled squares.
 #' @seealso \code{\link{lisa}}, \code{\link{lisa.nc}}
 #' @keywords spatial
 #' @export
@@ -128,23 +128,23 @@ plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
   
   if (!is.null(xx$p)) {
     bgc <- rep(0, length(z))
-    bgc <- ifelse(xx$p < 0.025, 2, 0)
-    bgc[xx$p < 0.025 & (z - mean(z, na.rm = TRUE)) > 0] <- 1
+    bgc <- ifelse(xx$p < 0.025, 1, 0)
+    bgc[xx$p < 0.025 & (z - mean(z, na.rm = TRUE)) > 0] <- 2
     bgc <- split(bgc, (z - mean(z, na.rm = TRUE)) > 0)
   }
   
   if (!is.null(length(z2[[1]][sel[[1]]]))) {
-    symbols(x[[1]][sel[[1]]], y[[1]][sel[[1]]], circles = -z2[[1]][sel[[1]]], 
-            inches = inches, add = TRUE, fg = 2, bg = bgc[[1]][sel[[1]]])
+    symbols(x[[1]][sel[[1]]], y[[1]][sel[[1]]], squares = -z2[[1]][sel[[1]]], 
+            inches = inches, add = TRUE, fg = 1, bg = bgc[[1]][sel[[1]]])
   }
   
   if (!is.null(length(z2[[1]][sel[[2]]]))) {
-    symbols(x[[2]][sel[[2]]], y[[2]][sel[[2]]], squares = z2[[2]][sel[[2]]], 
-            inches = inches, add = TRUE, fg = 1, bg = bgc[[2]][sel[[2]]])
+    symbols(x[[2]][sel[[2]]], y[[2]][sel[[2]]], circles = z2[[2]][sel[[2]]], 
+            inches = inches, add = TRUE, fg = 2, bg = bgc[[2]][sel[[2]]])
   }
 }
 
-#' @title Non-centered inidcators of spatial association
+#' @title Non-centered indicators of spatial association
 #' @description \code{lisa.nc} is a function to estimate the (noncentred) multivariate local indicators of spatial association. The function requires multiple observations at each location. For single observations at each location use \code{lisa}.
 #' @param x vector of length n representing the x coordinates (or latitude; see latlon).
 #' @param y vector of length n representing the y coordinates (or longitude).
@@ -227,7 +227,7 @@ lisa.nc <- function(x, y, z, neigh, na.rm = FALSE, resamp = 1000, latlon = FALSE
     
     for (i in 1:resamp) {
       whn <- pretty(c(1, resamp), n = 10)
-      if (quiet & any(i == whn)) {
+      if (!quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
         flush.console()
       }

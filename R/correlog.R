@@ -160,7 +160,7 @@ correlog <- function(x, y, z, w = NULL, increment, resamp = 1000, latlon = FALSE
     perm <- matrix(NA, ncol = length(moran), nrow = resamp)
     for (i in 1:resamp) {
       whn <- pretty(c(1, resamp), n = 10)
-      if (quiet & any(i == whn)) {
+      if (!quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
         flush.console()
       }
@@ -363,7 +363,7 @@ correlog.nc <- function(x, y, z, w = NULL, increment, resamp = 1000, na.rm = FAL
     
     for (i in 1:resamp) {
       whn <- pretty(c(1, resamp), n = 10)
-      if (quiet & any(i == whn)) {
+      if (!quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
         flush.console()
       }
@@ -509,7 +509,7 @@ mantel.correlog <- function(dmat, zmat, wmat = NULL, increment, resamp = 1000,
       perm[i, ] <- sapply(split(mor, dkl), mean, na.rm = TRUE)
       
       whn <- pretty(c(1, resamp), n = 10)
-      if (quiet & any(i == whn)) {
+      if (!quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
         flush.console()}
     }

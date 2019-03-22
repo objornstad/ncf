@@ -160,7 +160,7 @@ Sncf <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
       stop("method should be \"boot\", or \"perm\"")
     for (i in 1:resamp) {
       whn <- pretty(c(1, resamp), n = 10)
-      if (quiet & any(i == whn))	{
+      if (!quiet & any(i == whn))	{
         cat(i, " of ", resamp, "\r")
         flush.console()
       }
@@ -240,7 +240,6 @@ Sncf <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
 #' @title Plots nonparametric spatial correlation-functions
 #' @description `plot' method for class "Sncf".
 #' @param x an object of class "Sncf", usually, as a result of a call to \code{Sncf} (or \code{Sncf.srf}).
-#' @param xmax the maximal distance to be plotted on the x-axis. If set to zero the maximum distance in the data will be used.
 #' @param ylim limits for the y-axis (default: -1, 1).
 #' @param add If TRUE the plot is added on to the previous graph.
 #' @param \dots other arguments
@@ -249,17 +248,16 @@ Sncf <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
 #' @keywords smooth regression
 #' @export
 ################################################################################
-plot.Sncf <- function(x, xmax = 0, ylim = c(-1, 1), add = FALSE, ...) {
+plot.Sncf <- function(x, ylim = c(-1, 1), add = FALSE, ...) {
   ##############################################################################
   args.default <- list(xlab = "Distance", ylab = "Correlation")
   args.input <- list(...)
   args <- c(args.default[!names(args.default) %in% names(args.input)], args.input)
   
-  xmax <- ifelse(xmax == 0, x$max.distance, xmax)
   cbar <- x$real$cbar
   if (!add) {
     do.call(plot, c(list(x = x$real$predicted$x, y = x$real$predicted$y, 
-                         xlim = c(0, xmax), ylim = ylim, type = "l"), args))
+                         ylim = ylim, type = "l"), args))
   }
   if (!is.null(x$boot$boot.summary)) {
     polygon(c(x$boot$boot.summary$predicted$x, rev(x$boot$boot.summary$predicted$x)), 
@@ -483,7 +481,7 @@ Sncf.srf <- function(x, y, z, w = NULL, avg = NULL, avg2 = NULL, corr = TRUE,
       stop("method should be \"boot\", or \"perm\"")
     for (i in 1:resamp) {
       whn <- pretty(c(1, resamp), n = 10)
-      if (quiet & any(i == whn))	{
+      if (!quiet & any(i == whn))	{
         cat(i, " of ", resamp, "\r")
         flush.console()
       }
@@ -560,22 +558,20 @@ Sncf.srf <- function(x, y, z, w = NULL, avg = NULL, avg2 = NULL, corr = TRUE,
 #' @title Plots nonparametric spatial covariance-functions
 #' @description `plot' method for class "Sncf.cov".
 #' @param x an object of class "Sncf.cov", usually, as a result of a call to \code{Sncf.srf} (with \code{corr} = FALSE).
-#' @param xmax the maximal distance to be plotted on the x-axis. If set to zero the maximum distance in the data will be used.
 #' @param \dots other arguments
 #' @return A plot of the nonparametric spatial covariance function (with CI's if boostrapps are available)
 #' @seealso \code{\link{Sncf.srf}}, \code{\link{plot.Sncf}}
 #' @keywords smooth regression
 #' @export
 ################################################################################
-plot.Sncf.cov <- function(x, xmax = 0, ...) {
+plot.Sncf.cov <- function(x, ...) {
   ##############################################################################
   args.default <- list(xlab = "Distance", ylab = "Covariance")
   args.input <- list(...)
   args <- c(args.default[!names(args.default) %in% names(args.input)], args.input)
   
-  xmax <- ifelse(xmax == 0, max(x$real$predicted$x), xmax)
   do.call(plot, c(list(x = x$real$predicted$x, y = x$real$predicted$y, 
-                       xlim = c(0, xmax), type = "l"), args))
+                       type = "l"), args))
   if (!is.null(x$boot$boot.summary)) {
     polygon(c(x$boot$boot.summary$predicted$x, rev(x$boot$boot.summary$predicted$x)), 
             c(x$boot$boot.summary$predicted$y["0.025", ], 

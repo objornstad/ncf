@@ -174,7 +174,7 @@ spline.correlog <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp 
       stop("method should be \"boot\", or \"perm\"")
     for (i in 1:resamp) {
       whn <- pretty(c(1, resamp), n = 10)
-      if (quiet & any(i == whn)) {
+      if (!quiet & any(i == whn)) {
         cat(i, " of ", resamp, "\r")
         flush.console()
       }
@@ -246,7 +246,6 @@ spline.correlog <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp 
 #' @title Plots spline correlograms
 #' @description `plot' method for class "spline.correlog".
 #' @param x an object of class "spline.correlog", usually, as a result of a call to \code{spline.correlog}.
-#' @param xmax the maximal distance to be plotted on the x-axis. If set to zero the maximum distance in the data will be used.
 #' @param ylim limits for the y-axis (default: -1, 1).
 #' @param \dots other arguments
 #' @return A plot of the spline correlogram function against distance is produced. 95\% pointwise confidence (or null) envelopes are superimposed (if available).
@@ -254,7 +253,7 @@ spline.correlog <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp 
 #' @keywords smooth regression
 #' @export
 ################################################################################
-plot.spline.correlog <- function(x, xmax = 0, ylim = c(-1, 1), ...) {
+plot.spline.correlog <- function(x, ylim = c(-1, 1), ...) {
   ##############################################################################
   # this is the generic plot function for spline.correlog objects
   ##############################################################################
@@ -262,9 +261,8 @@ plot.spline.correlog <- function(x, xmax = 0, ylim = c(-1, 1), ...) {
   args.input <- list(...)
   args <- c(args.default[!names(args.default) %in% names(args.input)], args.input)
   
-  xmax <- ifelse(xmax == 0, x$max.distance, xmax)
   do.call(plot, c(list(x = x$real$predicted$x, y = x$real$predicted$y, 
-                       xlim = c(0, xmax), ylim = ylim, type = "l"), args))
+                       ylim = ylim, type = "l"), args))
   if (!is.null(x$boot$boot.summary)) {
     polygon(c(x$boot$boot.summary$predicted$x, rev(x$boot$boot.summary$predicted$x)), 
             c(x$boot$boot.summary$predicted$y["0.025", ], 

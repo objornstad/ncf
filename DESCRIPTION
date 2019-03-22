@@ -1,6 +1,6 @@
 Package: ncf
-Version: 1.2-7
-Date: 2018-11-7
+Version: 1.2-8
+Date: 2019-22-3
 Title: Spatial Covariance Functions
 Authors@R: c(person(c("Ottar", "N."), "Bjornstad", role = c("aut", "cre"),
                      email = "onb1@psu.edu"), 
@@ -17,5 +17,5 @@ License: GPL-3
 URL: http://ento.psu.edu/directory/onb1
 BugReports: https://github.com/objornstad/ncf/issues
 NeedsCompilation: no
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 Packaged: 2018-04-16 16:55:12 UTC; tonytsai
