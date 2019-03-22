@@ -1,6 +1,6 @@
 Package: ncf
 Version: 1.2-8
-Date: 2019-22-3
+Date: 2019-03-22
 Title: Spatial Covariance Functions
 Authors@R: c(person(c("Ottar", "N."), "Bjornstad", role = c("aut", "cre"),
                      email = "onb1@psu.edu"), 
