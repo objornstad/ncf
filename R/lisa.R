@@ -97,7 +97,7 @@ lisa <- function(x, y, z, neigh, resamp = 1000, latlon = FALSE, quiet = FALSE) {
 #' @param \dots other arguments
 #' @return A bubble-plot of observations against spatial coordinates is produced. Above mean values are signified by red circles. Below mean values are signified by black squares. 
 #' 
-#'   If a permutation test was performed, observations for which the associated LISA statistic is significant at a nominal (two-sided) 5\%-level will be respresented by filled symbols and non-significant values by open symbols. Thus spatial hot-spots are represented by red filled circles and cold-spots by black filled squares.
+#'   If a permutation test was performed, observations for which the associated LISA statistic is significant at a nominal (two-sided) 5\%-level will be represented by filled symbols and non-significant values by open symbols. Thus spatial hot-spots are represented by red filled circles and cold-spots by black filled squares.
 #' @seealso \code{\link{lisa}}, \code{\link{lisa.nc}}
 #' @keywords spatial
 #' @export
