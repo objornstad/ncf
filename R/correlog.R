@@ -1,5 +1,5 @@
 #' @title Uni- and multivariate spatial correlograms
-#' @description \code{correlog} is the function to estimate spatial (cross-)correlograms. Either univariate or multivariate (time seres) for each site can be used.
+#' @description \code{correlog} is the function to estimate spatial (cross-)correlograms. Either univariate or multivariate (time series) for each site can be used.
 #' @param x vector of length n representing the x coordinates (or longitude; see latlon).
 #' @param y vector of length n representing the y coordinates (or latitude).
 #' @param z vector of length n or matrix of dimension n x p representing p observation at each location.
