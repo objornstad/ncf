@@ -8,15 +8,15 @@
 #' @param type takes the value "boot" (default) to generate a bootstrap distribution or "perm" to generate a null distribution for the estimator
 #' @param resamp the number of resamples for the bootstrap or the null distribution.
 #' @param npoints the number of points at which to save the value for the spline function (and confidence envelope / null distribution).
-#' @param save If TRUE, the whole matrix of output from the resampling is saved (an resamp x npoints dimensional matrix).
-#' @param filter If TRUE, the Fourier filter method of Hall and coworkers is applied to ensure positive semidefiniteness of the estimator. (more work may be needed on this.)
+#' @param save If TRUE, the whole matrix of output from the resampling is saved (a resamp x npoints dimensional matrix).
+#' @param filter If TRUE, the Fourier filter method of Hall and coworkers is applied to ensure positive semi-definiteness of the estimator. (more work may be needed on this.)
 #' @param fw If filter is TRUE, it may be useful to truncate the function at some distance w sets the truncation distance. when set to zero no truncation is done.
 #' @param max.it the maximum iteration for the Newton method used to estimate the intercepts.
 #' @param xmax If FALSE, the max observed in the data is used. Otherwise all distances greater than xmax is omitted.
 #' @param na.rm If TRUE, NA's will be dealt with through pairwise deletion of missing values for each pair of time series -- it will dump if any one pair has less than two (temporally) overlapping observations.
 #' @param latlon If TRUE, coordinates are latitude and longitude.
 #' @param circ If TRUE, the observations are assumed to be angular (in radians), and circular correlation is used.
-#' @param quiet If TRUE, the counter is supressed during execution.
+#' @param quiet If TRUE, the counter is suppressed during execution.
 #' @return An object of class "Sncf" is returned, consisting of the following components: 
 #' \item{real}{the list of estimates from the data.}
 #' \item{$cbar}{the regional average correlation.}
@@ -33,17 +33,17 @@
 #' @details Missing values are allowed -- values are assumed missing at random. 
 #' 
 #'   The circ argument computes a circular version of the Pearson's product moment correlation (see \code{\link{cor2}}). This option is to calculate the 'nonparametric phase coherence function' (Grenfell et al. 2001)
-#' @references Hall, P. & Patil, P. (1994) Properties of nonparametric estimators of autocovariance for stationary random fields. Probability Theory and Related Fields, 99:399-424. \url{https://doi.org/10.1007/BF01199899}
+#' @references Hall, P. and Patil, P. (1994) Properties of nonparametric estimators of autocovariance for stationary random fields. Probability Theory and Related Fields, 99:399-424. <doi:10.1007/BF01199899>
 #' 
-#'   Hall, P., Fisher, N.I. & Hoffmann, B. (1994) On the nonparametric estimation of covariance functions. Annals of Statistics, 22:2115-2134. \url{https://doi.org/10.1214/aos/1176325774}
+#'   Hall, P., Fisher, N.I. and Hoffmann, B. (1994) On the nonparametric estimation of covariance functions. Annals of Statistics, 22:2115-2134 <doi:10.1214/aos/1176325774>.
 #'   
-#'   Bjornstad, O.N. & Falck, W. (2001) Nonparametric spatial covariance functions: estimation and testing. Environmental and Ecological Statistics, 8:53-70. \url{https://doi.org/10.1023/A:1009601932481}
+#'   Bjornstad, O.N. and Falck, W. (2001) Nonparametric spatial covariance functions: estimation and testing. Environmental and Ecological Statistics, 8:53-70 <doi:10.1023/A:1009601932481>.
 #'   
-#'   Bjornstad, O.N., Ims, R.A. & Lambin, X. (1999) Spatial population dynamics: Analysing patterns and processes of population synchrony. Trends in Ecology and Evolution, 11:427-431. \url{https://doi.org/10.1016/S0169-5347(99)01677-8}
+#'   Bjornstad, O.N., Ims, R.A. and Lambin, X. (1999) Spatial population dynamics: Analysing patterns and processes of population synchrony. Trends in Ecology and Evolution, 11:427-431 <doi:10.1016/S0169-5347(99)01677-8>.
 #'   
-#'   Bjornstad, O. N., and J. Bascompte. (2001) Synchrony and second order spatial correlation in host-parasitoid systems. Journal of Animal Ecology 70:924-933. \url{https://doi.org/10.1046/j.0021-8790.2001.00560.x}
+#'   Bjornstad, O. N., and J. Bascompte. (2001) Synchrony and second order spatial correlation in host-parasitoid systems. Journal of Animal Ecology 70:924-933 <doi:10.1046/j.0021-8790.2001.00560.x>.
 #'   
-#'   Grenfell, B.T., Bjornstad, O.N., & Kappey, J. (2001) Travelling waves and spatial hierarchies in measles epidemics. Nature 414:716-723. \url{https://doi.org/10.1038/414716a}
+#'   Grenfell, B.T., Bjornstad, O.N., & Kappey, J. (2001) Travelling waves and spatial hierarchies in measles epidemics. Nature 414:716-723. <doi:10.1038/414716a>
 #' @author Ottar N. Bjornstad \email{onb1@psu.edu}
 #' @seealso \code{\link{Sncf2D}}, \code{\link{Sncf.srf}}
 #' @examples 
@@ -238,12 +238,12 @@ Sncf <- function(x, y, z, w = NULL, df = NULL, type = "boot", resamp = 1000,
 }
 
 #' @title Plots nonparametric spatial correlation-functions
-#' @description `plot' method for class "Sncf".
+#' @description 'plot' method for class "Sncf".
 #' @param x an object of class "Sncf", usually, as a result of a call to \code{Sncf} (or \code{Sncf.srf}).
 #' @param ylim limits for the y-axis (default: -1, 1).
 #' @param add If TRUE the plot is added on to the previous graph.
 #' @param \dots other arguments
-#' @return A plot of the nonparametric spatial covariance function (with CI's if boostrapps are available)
+#' @return A plot of the nonparametric spatial covariance function (with CI's if bootstraps are available)
 #' @seealso \code{\link{Sncf}}, \code{\link{Sncf.srf}}
 #' @keywords smooth regression
 #' @export
@@ -260,18 +260,19 @@ plot.Sncf <- function(x, ylim = c(-1, 1), add = FALSE, ...) {
                          ylim = ylim, type = "l"), args))
   }
   if (!is.null(x$boot$boot.summary)) {
+    cl=ifelse(add, adjustcolor(gray(0.7), alpha.f=0.5), gray(0.6))
     polygon(c(x$boot$boot.summary$predicted$x, rev(x$boot$boot.summary$predicted$x)), 
             c(x$boot$boot.summary$predicted$y["0.025", ], 
-              rev(x$boot$boot.summary$predicted$y["0.975", ])), col = gray(0.8), 
+              rev(x$boot$boot.summary$predicted$y["0.975", ])), col = cl, 
             lty = 0)
   }
   lines(x$real$predicted$x, x$real$predicted$y)
   lines(c(0, max(x$real$predicted$x)), c(0, 0))
-  lines(c(0, max(x$real$predicted$x)), c(cbar, cbar))
+  lines(c(0, max(x$real$predicted$x)), c(cbar, cbar), col=gray(0.6))
 }
 
 #' @title Print function for Sncf objects
-#' @description `print' method for class "Sncf".
+#' @description 'print' method for class "Sncf".
 #' @param x an object of class "Sncf", usually, as a result of a call to \code{Sncf} or related).
 #' @param \dots other arguments
 #' @return The function-call is printed to screen.
@@ -285,7 +286,7 @@ print.Sncf <- function(x, ...) {
 }
 
 #' @title Summarizing nonparametric spatial correlation-functions
-#' @description `summary' method for class "Sncf".
+#' @description 'summary' method for class "Sncf".
 #' @param object an object of class "Sncf", usually, as a result of a call to \code{\link{Sncf}} (or \code{\link{Sncf.srf}}).
 #' @param \dots other arguments
 #' @return A list summarizing the nonparametric (cross-)covariance function is returned. 
@@ -341,7 +342,7 @@ summary.Sncf <- function(object, ...) {
 #' @param w an optional second matrix of dimension n x p for variable 2 (to estimate the spatial cross-correlation function).
 #' @param avg supplies the marginal expectation of the Markov random field; if TRUE, the sample mean (across the markovian field) is used.
 #' @param avg2 optionally supplies the marginal expectation of the Markov random field for optional variable 2; if TRUE, the sample mean is used.
-#' @param corr If TRUE, the covariance function is standardized by the marginal variance (across the markovian field) to return a correlation function (alternatively the covariance function is returned).
+#' @param corr If TRUE, the covariance function is standardized by the marginal variance (across the Markovian field) to return a correlation function (alternatively the covariance function is returned).
 #' @param df degrees of freedom for the spline. Default is sqrt(n).
 #' @param type takes the value "boot" (default) to generate a bootstrap distribution or "perm" to generate a null distribution for the estimator
 #' @param resamp the number of resamples for the bootstrap or the null distribution.
@@ -352,12 +353,12 @@ summary.Sncf <- function(object, ...) {
 #' @param max.it the maximum iteration for the Newton method used to estimate the intercepts.
 #' @param xmax If FALSE, the max observed in the data is used. Otherwise all distances greater than xmax is omitted.
 #' @param jitter If TRUE, jitters the distance matrix, to avoid problems associated with fitting the function to data on regular grids.
-#' @param quiet If TRUE, the counter is supressed during execution.
+#' @param quiet If TRUE, the counter is suppressed during execution.
 #' @return An object of class "Sncf" (or "Sncf.cov") is returned. See \code{\link{Sncf}} for details.
 #' @details If \code{corr = F}, an object of class "Sncf.cov" is returned. Otherwise the class is "Sncf".
 #' 
 #'   \code{Sncf.srf} is a function to estimate the nonparametric (cross-)covariance function (as discussed in Bjornstad and Bascompte 2001) for data from a fully stationary random fields. I have found it useful to estimate the (cross-)covariance functions in synthetic data.
-#' @references Bjornstad, O. N., and J. Bascompte. (2001) Synchrony and second order spatial correlation in host-parasitoid systems. Journal of Animal Ecology 70:924-933. \url{https://doi.org/10.1046/j.0021-8790.2001.00560.x}
+#' @references Bjornstad, O. N., and J. Bascompte. (2001) Synchrony and second order spatial correlation in host-parasitoid systems. Journal of Animal Ecology 70:924-933. <doi:10.1046/j.0021-8790.2001.00560.x>
 #' @author Ottar N. Bjornstad \email{onb1@psu.edu}
 #' @seealso \code{\link{Sncf}}, \code{\link{summary.Sncf}}, \code{\link{plot.Sncf}}, \code{\link{plot.Sncf.cov}}
 #' @examples 
@@ -556,10 +557,10 @@ Sncf.srf <- function(x, y, z, w = NULL, avg = NULL, avg2 = NULL, corr = TRUE,
 }
 
 #' @title Plots nonparametric spatial covariance-functions
-#' @description `plot' method for class "Sncf.cov".
+#' @description 'plot' method for class "Sncf.cov".
 #' @param x an object of class "Sncf.cov", usually, as a result of a call to \code{Sncf.srf} (with \code{corr} = FALSE).
 #' @param \dots other arguments
-#' @return A plot of the nonparametric spatial covariance function (with CI's if boostrapps are available)
+#' @return A plot of the nonparametric spatial covariance function (with CI's if bootstrapps are available)
 #' @seealso \code{\link{Sncf.srf}}, \code{\link{plot.Sncf}}
 #' @keywords smooth regression
 #' @export

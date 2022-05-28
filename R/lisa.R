@@ -6,7 +6,7 @@
 #' @param neigh neighborhood size.
 #' @param resamp number of resamples under the NULL to generate p-values
 #' @param latlon If TRUE, coordinates are latitude and longitude.
-#' @param quiet If TRUE, the counter is supressed during execution.
+#' @param quiet If TRUE, the counter is suppressed during execution.
 #' @return An object of class "lisa" is returned, consisting of the following components: 
 #' \item{correlation}{the autocorrelation within the neighborhood (neigh) of each observation measured using Moran's I.}
 #' \item{p}{the permutation two-sided p-value for each observation.}
@@ -16,7 +16,7 @@
 #' \item{z}{the original observations}
 #' \item{coord}{a list with the x and y coordinates.}
 #' @details This is the function to estimate the local indicators of spatial association modified form Anselin (1995). The statistic is the average autocorrelation within a neighborhood.
-#' @references Anselin, L. 1995. Local indicators of spatial association - LISA. Geographical Analysis 27:93-115. \url{https://doi.org/10.1111/j.1538-4632.1995.tb00338.x}
+#' @references Anselin, L. 1995. Local indicators of spatial association - LISA. Geographical Analysis 27:93-115. <doi:10.1111/j.1538-4632.1995.tb00338.x>
 #' @author Ottar N. Bjornstad \email{onb1@psu.edu}
 #' @seealso \code{\link{plot.lisa}} 
 #' @examples 
@@ -28,12 +28,12 @@
 #' z <- rmvn.spa(x = x, y = y, p = 2, method = "gaus")
 #' 
 #' # lisa analysis
-#' fit1 <- lisa(x = x, y = y, z = z, neigh = 3, resamp = 500)
+#' fit1 <- lisa(x = x, y = y, z = z, neigh = 3, resamp = 499)
 #' \dontrun{plot(fit1, neigh.mean=FALSE)}
 #' @keywords spatial
 #' @export
 ################################################################################
-lisa <- function(x, y, z, neigh, resamp = 1000, latlon = FALSE, quiet = FALSE) {
+lisa <- function(x, y, z, neigh, resamp = 999, latlon = FALSE, quiet = FALSE) {
   ##############################################################################
   # lisa is a function to estimate the local indicators of spatial association.
   ##############################################################################
@@ -90,7 +90,7 @@ lisa <- function(x, y, z, neigh, resamp = 1000, latlon = FALSE, quiet = FALSE) {
 
 #' @title Plots local indicators of spatial association
 #' @description `plot' method for class "lisa".
-#' @param x an object of class "lisa", ususally, as a result of a call to \code{\link{lisa}}.
+#' @param x an object of class "lisa", usually, as a result of a call to \code{\link{lisa}}.
 #' @param neigh.mean If TRUE, size of symbols represents average observation in each neighborhood; If FALSE, size of symbols represents the original observation
 #' @param add If TRUE, a lisa-plot will be added to a pre-existing plot.
 #' @param inches scales the size of the symbols
@@ -145,7 +145,7 @@ plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
 }
 
 #' @title Non-centered indicators of spatial association
-#' @description \code{lisa.nc} is a function to estimate the (noncentred) multivariate local indicators of spatial association. The function requires multiple observations at each location. For single observations at each location use \code{lisa}.
+#' @description \code{lisa.nc} is a function to estimate the (non-centred) multivariate local indicators of spatial association. The function requires multiple observations at each location. For single observations at each location use \code{lisa}.
 #' @param x vector of length n representing the x coordinates (or latitude; see latlon).
 #' @param y vector of length n representing the y coordinates (or longitude).
 #' @param z a matrix of dimension n x p representing p (>1) observation at each location.
@@ -153,7 +153,7 @@ plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
 #' @param resamp number of resamples under the NULL to generate p-values
 #' @param latlon If TRUE, coordinates are latitude and longitude.
 #' @param na.rm If TRUE, NA's will be dealt with through pairwise deletion of missing values.
-#' @param quiet If TRUE, the counter is supressed during execution.
+#' @param quiet If TRUE, the counter is suppressed during execution.
 #' @return An object of class "lisa" is returned, consisting of the following components:
 #' \item{correlation}{the mean correlation within the neighborhood (neigh).}
 #' \item{p}{the permutation two-sided p-value for each distance-class.}
@@ -165,7 +165,7 @@ plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
 #' a neighborhood. The function requires multiple observations at each location.
 #' 
 #'   Missing values are allowed -- values are assumed missing at random, and pairwise complete observations will be used.
-#' @references Anselin, L. 1995. Local indicators of spatial association - LISA. Geographical Analysis 27:93-115. \url{https://doi.org/10.1111/j.1538-4632.1995.tb00338.x}
+#' @references Anselin, L. 1995. Local indicators of spatial association - LISA. Geographical Analysis 27:93-115. <doi:10.1111/j.1538-4632.1995.tb00338.x>
 #' @author Ottar N. Bjornstad \email{onb1@psu.edu}
 #' @seealso \code{\link{lisa}}
 #' @examples 
@@ -185,7 +185,7 @@ plot.lisa <- function(x, neigh.mean = FALSE, add = FALSE, inches = 0.2, ...) {
 #' @keywords spatial
 #' @export
 ################################################################################
-lisa.nc <- function(x, y, z, neigh, na.rm = FALSE, resamp = 1000, latlon = FALSE, 
+lisa.nc <- function(x, y, z, neigh, na.rm = FALSE, resamp = 999, latlon = FALSE, 
                   quiet = FALSE) {
   ##############################################################################
   if (is.null(dim(z))) {

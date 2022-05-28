@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{rmvn.spa}
 \alias{rmvn.spa}
-\title{Simulate spatial data}
+\title{Simulate spatially correlated data}
 \usage{
 rmvn.spa(x, y, p, method = "exp", nugget = 1)
 }

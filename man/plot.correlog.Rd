@@ -14,7 +14,7 @@
 \value{
 A spatial or Mantel (cross-correlogram) is plotted. 
 
-  If a permutation test was performed, values significant at a nominal (two-sided) 5\%-level will be respresented by filled circles and non-significant values by open circles.
+  If a permutation test was performed, values significant at a nominal (two-sided) 5\%-level will be represented by filled circles and non-significant values by open circles.
 }
 \description{
 `plot' method for class "correlog".

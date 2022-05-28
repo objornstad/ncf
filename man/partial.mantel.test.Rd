@@ -4,8 +4,14 @@
 \alias{partial.mantel.test}
 \title{Partial Mantel test}
 \usage{
-partial.mantel.test(M1, M2, M3, resamp = 1000, method = "pearson",
-  quiet = FALSE)
+partial.mantel.test(
+  M1,
+  M2,
+  M3,
+  resamp = 999,
+  method = "pearson",
+  quiet = FALSE
+)
 }
 \arguments{
 \item{M1}{similarity/distance matrix 1}
@@ -18,7 +24,7 @@ partial.mantel.test(M1, M2, M3, resamp = 1000, method = "pearson",
 
 \item{method}{the method to be used for calculating the correlations.}
 
-\item{quiet}{If TRUE, the counter is supressed during execution.}
+\item{quiet}{If TRUE, the counter is suppressed during execution.}
 }
 \value{
 An object of class "partial.Mantel" is returned, consisting of a list with two components:
@@ -26,12 +32,12 @@ An object of class "partial.Mantel" is returned, consisting of a list with two c
 \item{p}{the vector of two-sided p-value under randomization (of M1).}
 }
 \description{
-A simple function to calculate permutation-based partial mantel tests for three matrices, the partial mantel test is calculated to test for relationships between M1 and M2 (M3) cotrolling for M3 (M2). syntax and logic follows Legendre and Legendre (1998) pp 557-558.
+A simple function to calculate permutation-based partial mantel tests for three matrices, the partial mantel test is calculated to test for relationships between M1 and M2 (M3) controlling for M3 (M2). syntax and logic follows Legendre and Legendre (1998) pp 557-558.
 }
 \details{
 Missing values are treated through pairwise deletion. 
 
-  The method must be one of pearson (default), spearman or kendall.
+  The method must be one of "pearson" (default), "spearman" or "kendall".
 }
 \examples{
 # first generate some sample data and dissimilarity matrices
@@ -42,7 +48,7 @@ M1 <- sqrt(outer(x, x, "-")^2)
 M2 <- sqrt(outer(y, y, "-")^2)
 M3 <- sqrt(outer(z, z, "-")^2)
 
-partial.mantel.test(M1 = M1, M2 = M2, M3 = M3, resamp = 500)
+partial.mantel.test(M1 = M1, M2 = M2, M3 = M3, resamp = 999)
 }
 \references{
 Legendre, P., and L. Legendre. 1998. Numerical Ecology, 2nd edition. Elsevier, Amsterdam

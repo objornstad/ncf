@@ -15,7 +15,7 @@
 A list summarizing the nonparametric covariance function in each cardinal direction results, each with the entires as in \code{\link{summary.Sncf}}.
 }
 \description{
-`summary' method for class "Sncf2D".
+Summary method for class "Sncf2D".
 }
 \seealso{
 \code{\link{Sncf2D}}, \code{\link{cc.offset}}, \code{\link{summary.Sncf}}

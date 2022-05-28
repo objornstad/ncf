@@ -3,14 +3,14 @@
 #' @param x vector of length n representing the x coordinates (or longitude; see latlon).
 #' @param y vector of length n representing the y coordinates (or latitude).
 #' @param z vector of length n or matrix of dimension n x p representing p observation at each location.
-#' @param w an optional second variable with idenitical dimension to z (to estimate cross-correlograms).
+#' @param w an optional second variable with identical dimension to z (to estimate cross-correlograms).
 #' @param increment increment for the uniformly distributed distance classes.
 #' @param resamp the number of permutations under the null to assess level of significance.
 #' @param latlon If TRUE, coordinates are latitude and longitude.
 #' @param na.rm If TRUE, NA's will be dealt with through pairwise deletion of missing values.
-#' @param quiet If TRUE, the counter is supressed during execution.
+#' @param quiet If TRUE, the counter is suppressed during execution.
 #' @return An object of class "correlog" is returned, consisting of the following components: 
-#' \item{correlation}{the value for the moran (or Mantel) similarity.}
+#' \item{correlation}{the value for the Moran (or Mantel) similarity.}
 #' \item{mean.of.class}{the actual average of the distances within each distance class.}
 #' \item{nlok}{the number of pairs within each distance class.}
 #' \item{x.intercept}{the interpolate x.intercept of Epperson (1993).}
@@ -18,16 +18,16 @@
 #' \item{corr0}{If a cross-correlogram is calculated, corr0 gives the empirical cross-correlation at distance zero.}
 #' @details The spatial (cross-)correlogram and Mantel (cross-)correlogram estimates the spatial dependence at discrete distance classes. 
 #' 
-#'  The regionwide similarity forms the reference line (the zero-line); the x-intercept is thus the distance at which object are no more similar than that expected by-chance-alone across the region.
+#'  The region-wide similarity forms the reference line (the zero-line); the x-intercept is thus the distance at which object are no more similar than that expected by-chance-alone across the region.
 #'  
 #'  If the data are univariate, the spatial dependence is measured by Moran's \emph{I}. If it is multivariate, it is measured by the \emph{centred} Mantel statistic. (Use \code{\link{correlog.nc}} if the non-centered multivariate correlogram is desired).
 #'  
 #'  Missing values are allowed -- values are assumed missing at random.
-#' @references Bjornstad, O.N., Ims, R.A. & Lambin, X. (1999) Spatial population dynamics: Analysing patterns and processes of population synchrony. Trends in Ecology and Evolution, 11, 427-431. \url{https://doi.org/10.1016/S0169-5347(99)01677-8}
+#' @references Bjornstad, O.N., Ims, R.A. & Lambin, X. (1999) Spatial population dynamics: Analysing patterns and processes of population synchrony. Trends in Ecology and Evolution, 11, 427-431. <doi:10.1016/S0169-5347(99)01677-8>
 #' 
-#'   Bjornstad, O.N. & Falck, W. (2001) Nonparametric spatial covariance functions: estimation and testing. Environmental and Ecological Statistics, 8:53-70. \url{https://doi.org/10.1023/A:1009601932481}
+#'   Bjornstad, O.N. & Falck, W. (2001) Nonparametric spatial covariance functions: estimation and testing. Environmental and Ecological Statistics, 8:53-70. <doi:10.1023/A:1009601932481>
 #'   
-#'   Epperson, B.K. (1993) Recent advances in correlation studies of spatial patterns of genetic variation. Evolutionary Biology, 27, 95-155. \url{https/doi.org/10.1007/978-1-4615-2878-4_4}
+#'   Epperson, B.K. (1993) Recent advances in correlation studies of spatial patterns of genetic variation. Evolutionary Biology, 27, 95-155. <doi:10.1007/978-1-4615-2878-4_4>
 #' @author Ottar N. Bjornstad \email{onb1@psu.edu}
 #' @seealso \code{\link{plot.correlog}}, \code{\link{spline.correlog}}, \code{\link{correlog.nc}}
 #' @examples 
@@ -60,12 +60,12 @@
 #' \dontrun{plot(fit3)}
 #' @keywords spatial
 #' @export
-#' @importFrom grDevices gray
+#' @importFrom grDevices gray adjustcolor
 #' @importFrom graphics lines par plot points polygon symbols text title
 #' @importFrom stats cor fft lm na.omit predict quantile rnorm sd smooth.spline uniroot var
 #' @importFrom utils flush.console
 ################################################################################
-correlog <- function(x, y, z, w = NULL, increment, resamp = 1000, latlon = FALSE, 
+correlog <- function(x, y, z, w = NULL, increment, resamp = 999, latlon = FALSE, 
                      na.rm = FALSE, quiet = FALSE) {
   ##############################################################################
   # correlog estimates the spatial correlogram (if z is univariate)
@@ -199,7 +199,7 @@ correlog <- function(x, y, z, w = NULL, increment, resamp = 1000, latlon = FALSE
 #' @param \dots other arguments
 #' @return A spatial or Mantel (cross-correlogram) is plotted. 
 #' 
-#'   If a permutation test was performed, values significant at a nominal (two-sided) 5\%-level will be respresented by filled circles and non-significant values by open circles.
+#'   If a permutation test was performed, values significant at a nominal (two-sided) 5\%-level will be represented by filled circles and non-significant values by open circles.
 #' @seealso \code{\link{correlog}}, \code{\link{correlog.nc}}
 #' @keywords spatial
 #' @export
@@ -207,7 +207,7 @@ correlog <- function(x, y, z, w = NULL, increment, resamp = 1000, latlon = FALSE
 plot.correlog <- function(x, ...) {
   ##############################################################################
   # this is the generic plot function for correlog objects
-  # sigificant values are represented by filled cirles
+  # significant values are represented by filled circles
   ##############################################################################
   args.default <- list(xlab = "distance (mean-of-class)", ylab = "correlation", 
                        main = "Correlogram")
@@ -223,29 +223,29 @@ plot.correlog <- function(x, ...) {
 }
 
 #' @title Non-centered spatial (cross-)correlogram
-#' @description \code{correlog.nc} is the function to estimate the non-centered (cross-)correlogram. The non-centred correlogram provides estimates of the spatial correlation for discrete distance classes. The function requires multiple observations at each location (use \code{\link{correlog}} otherwise).
+#' @description \code{correlog.nc} is the function to estimate the non-centered (cross-)correlogram. The non-centered correlogram provides estimates of the spatial correlation for discrete distance classes. The function requires multiple observations at each location (use \code{\link{correlog}} otherwise).
 #' @param x vector of length n representing the x coordinates (or longitude; see latlon).
 #' @param y vector of length n representing the y coordinates (or latitude).
 #' @param z a matrix of dimension n x p representing p (>1) observation at each location.
-#' @param w an optional second variable with idenitical dimension to z (to estimate cross-correlograms).
+#' @param w an optional second variable with identical dimension to z (to estimate cross-correlograms).
 #' @param increment increment for the uniformly distributed distance classes.
 #' @param resamp the number of permutations under the null to assess level of significance.
 #' @param latlon If TRUE, coordinates are latitude and longitude.
 #' @param na.rm If TRUE, NA's will be dealt with through pairwise deletion of missing values.
-#' @param quiet If TRUE, the counter is supressed during execution.
+#' @param quiet If TRUE, the counter is suppressed during execution.
 #' @return An object of class "correlog" is returned, consisting of the following components: 
-#' \item{correlation}{the value for the moran (or Mantel) similarity.}
+#' \item{correlation}{the value for the Moran (or Mantel) similarity.}
 #' \item{mean.of.class}{the actual average of the distances within each distance class.}
 #' \item{nlok}{the number of pairs within each distance class.}
 #' \item{x.intercept}{the interpolate x.intercept of Epperson (1993).}
 #' \item{p}{the permutation p-value for each distance-class.}
 #' \item{corr0}{If a cross-correlogram is calculated, corr0 gives the empirical within-patch cross-correlation.}
-#' @details The non-centred correlogram estimates spatial dependence at discrete distance  classes. The method corresponds to the modified correlogram of Koenig & Knops(1998), but augumented to potentially estimate the cross-correlogram). The function requires multiple observations at each location. Missing values is allowed in the multivariate case (pairwise deletion will be used).
+#' @details The non-centered correlogram estimates spatial dependence at discrete distance  classes. The method corresponds to the modified correlogram of Koenig & Knops(1998), but augmented to potentially estimate the cross-correlogram). The function requires multiple observations at each location. Missing values is allowed in the multivariate case (pairwise deletion will be used).
 #'   
 #'   Missing values are allowed -- values are assumed missing at random.
-#' @references Bjornstad, O.N., Ims, R.A. & Lambin, X. (1999) Spatial population dynamics: Analysing patterns and processes of population synchrony. Trends in Ecology and Evolution, 11, 427-431. \url{https://doi.org/10.1016/S0169-5347(99)01677-8}
+#' @references Bjornstad, O.N., Ims, R.A. & Lambin, X. (1999) Spatial population dynamics: Analysing patterns and processes of population synchrony. Trends in Ecology and Evolution, 11, 427-431. <doi:10.1016/S0169-5347(99)01677-8>
 #'   
-#'   Koenig, W.D. & Knops, J.M.H. (1998) Testing for spatial autocorrelation in ecological studies. Ecography, 21, 423-429. \url{https://doi.org/10.1111/j.1600-0587.1998.tb00407.x}
+#'   Koenig, W.D. & Knops, J.M.H. (1998) Testing for spatial autocorrelation in ecological studies. Ecography, 21, 423-429. <doi:10.1111/j.1600-0587.1998.tb00407.x>
 #' @author Ottar N. Bjornstad \email{onb1@psu.edu}
 #' @seealso \code{\link{plot.correlog}}, \code{\link{correlog}}
 #' @examples 
@@ -266,18 +266,18 @@ plot.correlog <- function(x, ...) {
 #'   )
 #' 
 #' # noncentered (Mantel) correlogram 
-#' fit1 <- correlog.nc(x = x, y = y, z = z, increment = 2, resamp = 500)
+#' fit1 <- correlog.nc(x = x, y = y, z = z, increment = 2, resamp = 499)
 #' \dontrun{plot(fit1)}
 #' @keywords spatial
 #' @export
 ################################################################################
-correlog.nc <- function(x, y, z, w = NULL, increment, resamp = 1000, na.rm = FALSE, 
+correlog.nc <- function(x, y, z, w = NULL, increment, resamp = 999, na.rm = FALSE, 
                         latlon = FALSE, quiet = FALSE) {
   ##############################################################################
-  # correlog.nc estimates the noncentred correlogram
+  # correlog.nc estimates the non-centered correlogram
   # and cross-correlogram. Bjornstad et al. (1999; Trends in Ecology and
   # Evolution 14:427-431)
-  # The function requires mulitple observations at each location (use
+  # The function requires multiple observations at each location (use
   # correlog otherwise).
   ##############################################################################
   NAO <- FALSE
@@ -402,9 +402,9 @@ correlog.nc <- function(x, y, z, w = NULL, increment, resamp = 1000, na.rm = FAL
 #' @param wmat an optional third matrix of similarities to calculate a Mantel cross-correlograms.
 #' @param increment increment for the uniformly distributed distance classes.
 #' @param resamp the number of permutations under the null to assess level of significance.
-#' @param quiet If TRUE, the counter is supressed during execution.
+#' @param quiet If TRUE, the counter is suppressed during execution.
 #' @return An object of class "correlog" is returned, consisting of the following components: 
-#' \item{correlation}{the value for the moran (or Mantel) similarity.}
+#' \item{correlation}{the value for the Moran (or Mantel) similarity.}
 #' \item{mean.of.class}{the actual average of the distances within each distance class.}
 #' \item{nlok}{the number of pairs within each distance class.}
 #' \item{x.intercept}{the interpolate x.intercept of Epperson (1993).}
@@ -447,7 +447,7 @@ correlog.nc <- function(x, y, z, w = NULL, increment, resamp = 1000, na.rm = FAL
 #' @keywords spatial
 #' @export
 ################################################################################
-mantel.correlog <- function(dmat, zmat, wmat = NULL, increment, resamp = 1000, 
+mantel.correlog <- function(dmat, zmat, wmat = NULL, increment, resamp = 999, 
                             quiet = FALSE) {
   if (is.null(wmat)) {
     moran <- zmat[lower.tri(zmat)]

@@ -5,14 +5,14 @@
 #' @param resamp the number of resamples for the bootstrap or the null distribution.
 #' @param na.rm If TRUE, NA's will be dealt with through pairwise deletion of missing values for each pair of time series -- it will dump if any one pair has less than two (temporally) overlapping observations.
 #' @param circ If TRUE, the observations are assumed to be angular (in radians), and circular correlation is used.
-#' @param quiet If TRUE, the counter is supressed during execution.
+#' @param quiet If TRUE, the counter is suppressed during execution.
 #' @return An object of class "mSynch" is returned, consisting of a list with two components: 
 #' \item{real}{the regional average correlation.}
 #' \item{boot}{a vector of bootstrap resamples.} 
 #' @details Missing values are allowed -- values are assumed missing at random. 
 #' 
 #'   The circ argument computes a circular version of the Pearson's product moment correlation (see \code{\link{cor2}}).
-#' @references Bjornstad, O.N., Ims, R.A. & Lambin, X. (1999) Spatial population dynamics: Analysing patterns and processes of population synchrony. Trends in Ecology and Evolution, 11, 427-431. \url{https://doi.org/10.1016/S0169-5347(99)01677-8}
+#' @references Bjornstad, O.N., Ims, R.A. & Lambin, X. (1999) Spatial population dynamics: Analysing patterns and processes of population synchrony. Trends in Ecology and Evolution, 11, 427-431. <doi:10.1016/S0169-5347(99)01677-8>
 #' @author Ottar N. Bjornstad \email{onb1@psu.edu}
 #' @seealso \code{\link{print.mSynch}}
 #' @examples 
@@ -31,10 +31,10 @@
 #' @keywords spatial
 #' @export
 ################################################################################
-mSynch <- function(x, y = NULL, resamp = 1000, na.rm = FALSE, circ = FALSE, 
+mSynch <- function(x, y = NULL, resamp = 999, na.rm = FALSE, circ = FALSE, 
                    quiet = FALSE) {
   ##############################################################################
-  # mSynch is a function to estimate the mean (cross-)correlation with bootstrapp 
+  # mSynch is a function to estimate the mean (cross-)correlation with bootstrap 
   # CI for one or two panels of spatiotemporal data
   ##############################################################################
   NAO <- FALSE

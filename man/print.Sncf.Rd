@@ -15,7 +15,7 @@
 The function-call is printed to screen.
 }
 \description{
-`print' method for class "Sncf".
+'print' method for class "Sncf".
 }
 \seealso{
 \code{\link{Sncf}}

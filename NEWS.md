@@ -1,0 +1,1 @@
+1.3-2 Fixed a bug in spline.correlog permutation code, minor change to plot.Sncf when add=TRUE. Minor update for compliance to new r-projects documentation standards.

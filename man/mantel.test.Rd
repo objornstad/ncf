@@ -4,8 +4,16 @@
 \alias{mantel.test}
 \title{Mantel Test}
 \usage{
-mantel.test(M1 = NULL, M2 = NULL, x = NULL, y = NULL, z = NULL,
-  resamp = 1000, latlon = FALSE, quiet = FALSE)
+mantel.test(
+  M1 = NULL,
+  M2 = NULL,
+  x = NULL,
+  y = NULL,
+  z = NULL,
+  resamp = 999,
+  latlon = FALSE,
+  quiet = FALSE
+)
 }
 \arguments{
 \item{M1}{similarity/distance matrix 1}
@@ -22,7 +30,7 @@ mantel.test(M1 = NULL, M2 = NULL, x = NULL, y = NULL, z = NULL,
 
 \item{latlon}{If TRUE, coordinates are latitude and longitude.}
 
-\item{quiet}{If TRUE, the counter is supressed during execution.}
+\item{quiet}{If TRUE, the counter is suppressed during execution.}
 }
 \value{
 An object of class "Mantel" is returned, consisting of a list with two components:
@@ -35,10 +43,10 @@ A simple function to do a permutation-based Mantel test. The data can either be 
 \details{
 Typical usages are
 \preformatted{
-mantel.test(M1, M2, x = NULL, y = NULL, z = NULL, resamp = 1000, 
+mantel.test(M1, M2, x = NULL, y = NULL, z = NULL, resamp = 999, 
             latlon = FALSE, quiet = FALSE)
 
-mantel.test(x, y, z, M1 = NULL, M2 = NULL, resamp = 1000, latlon = FALSE, 
+mantel.test(x, y, z, M1 = NULL, M2 = NULL, resamp = 999, latlon = FALSE, 
             quiet = FALSE)
 }
 
@@ -55,7 +63,7 @@ z <- cbind(
   )
 
 # the Mantel test
-mantel.test(x = x, y = y, z = z[, 1], resamp = 500)
+mantel.test(x = x, y = y, z = z[, 1], resamp = 999)
 }
 \author{
 Ottar N. Bjornstad \email{onb1@psu.edu}

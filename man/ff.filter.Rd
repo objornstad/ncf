@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{ff.filter}
 \alias{ff.filter}
-\title{Fourier filter for c'fns}
+\title{Fourier filter for correlation functions.}
 \usage{
 ff.filter(x)
 }
@@ -10,10 +10,10 @@ ff.filter(x)
 \item{x}{a vector.}
 }
 \value{
-A vector is returned whose Fourier-transform has no non-negative coeficients.
+A vector is returned whose Fourier-transform has no non-negative coefficients.
 }
 \description{
-Fourier filter to ensure positive semi-definite correlation fnctions.  Called by various functions.
+Fourier filter to ensure positive semi-definite correlation functions. Called by various functions.
 }
 \seealso{
 \code{\link{Sncf}}

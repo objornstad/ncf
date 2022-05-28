@@ -23,7 +23,7 @@ A list summarizing the nonparametric (cross-)covariance function is returned.
 \item{quantiles}{a matrix summarizing the quantiles in the bootstrap (or null) distributions of the benchmark statistics.}
 }
 \description{
-`summary' method for class "Sncf".
+'summary' method for class "Sncf".
 }
 \seealso{
 \code{\link{Sncf}}, \code{\link{plot.Sncf}}

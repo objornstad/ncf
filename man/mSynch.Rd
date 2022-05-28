@@ -4,8 +4,7 @@
 \alias{mSynch}
 \title{The mean (cross-)correlation (with bootstrapp CI) for a panel of spatiotemporal data}
 \usage{
-mSynch(x, y = NULL, resamp = 1000, na.rm = FALSE, circ = FALSE,
-  quiet = FALSE)
+mSynch(x, y = NULL, resamp = 999, na.rm = FALSE, circ = FALSE, quiet = FALSE)
 }
 \arguments{
 \item{x}{matrix of dimension n x p representing p observation at each location (i.e. each row is a time series).}
@@ -18,7 +17,7 @@ mSynch(x, y = NULL, resamp = 1000, na.rm = FALSE, circ = FALSE,
 
 \item{circ}{If TRUE, the observations are assumed to be angular (in radians), and circular correlation is used.}
 
-\item{quiet}{If TRUE, the counter is supressed during execution.}
+\item{quiet}{If TRUE, the counter is suppressed during execution.}
 }
 \value{
 An object of class "mSynch" is returned, consisting of a list with two components: 
@@ -48,7 +47,7 @@ fit1 <- mSynch(x = z, resamp = 500)
 print(fit1)
 }
 \references{
-Bjornstad, O.N., Ims, R.A. & Lambin, X. (1999) Spatial population dynamics: Analysing patterns and processes of population synchrony. Trends in Ecology and Evolution, 11, 427-431. \url{https://doi.org/10.1016/S0169-5347(99)01677-8}
+Bjornstad, O.N., Ims, R.A. & Lambin, X. (1999) Spatial population dynamics: Analysing patterns and processes of population synchrony. Trends in Ecology and Evolution, 11, 427-431. <doi:10.1016/S0169-5347(99)01677-8>
 }
 \seealso{
 \code{\link{print.mSynch}}

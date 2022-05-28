@@ -16,10 +16,10 @@
 \item{\dots}{other arguments}
 }
 \value{
-A plot of the nonparametric spatial covariance function (with CI's if boostrapps are available)
+A plot of the nonparametric spatial covariance function (with CI's if bootstraps are available)
 }
 \description{
-`plot' method for class "Sncf".
+'plot' method for class "Sncf".
 }
 \seealso{
 \code{\link{Sncf}}, \code{\link{Sncf.srf}}

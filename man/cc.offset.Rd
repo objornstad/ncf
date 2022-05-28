@@ -18,7 +18,7 @@ An matrix of class "cc.offset" is returned with columns:
 \item{correlation}{the correlation at the mode (with CI) for each of the cardinal angles.}
 }
 \description{
-Alternative `summary' method for class "Sncf2D".
+Alternative summary method for class "Sncf2D".
 }
 \seealso{
 \code{\link{Sncf2D}}, \code{\link{summary.Sncf2D}}, \code{\link{plot.cc.offset}}

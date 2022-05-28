@@ -50,7 +50,7 @@ spatial.plot <- function(x, y, z, ctr = TRUE, add = FALSE, inches = 0.2, ...) {
             inches = inches, add = TRUE, fg = 2, bg = 2)}
 }
 
-#' @title Simulate spatial data
+#' @title Simulate spatially correlated data
 #' @description Function to generate spatially autocorrelated random normal variates using the eigendecomposition method. Spatial covariance can follow either and exponential or Gaussian model.
 #' @param x vector of length n representing the x coordinates (or latitude; see latlon).
 #' @param y vector of length n representing the y coordinates (or longitude).
@@ -287,10 +287,10 @@ cor2 <- function(x, y = NULL, circ = FALSE) {
   return(cor)
 }
 
-#' @title Fourier filter for c'fns
-#' @description Fourier filter to ensure positive semi-definite correlation fnctions.  Called by various functions.
+#' @title Fourier filter for correlation functions.
+#' @description Fourier filter to ensure positive semi-definite correlation functions. Called by various functions.
 #' @param x a vector.
-#' @return A vector is returned whose Fourier-transform has no non-negative coeficients.
+#' @return A vector is returned whose Fourier-transform has no non-negative coefficients.
 #' @seealso \code{\link{Sncf}}
 #' @keywords misc
 #' @export

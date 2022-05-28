@@ -4,7 +4,7 @@
 #' @param y vector of length n representing the y coordinates.
 #' @param z vector of length n representing the observation at each location.
 #' @param w an optional second vector of length n for variable 2 (to estimate spatial or lagged cross-correlation functions).
-#' @param df degrees of freedom for the spline. Default is sqrt(n).
+#' @param df degrees-of-freedom for the spline. Default is sqrt(n).
 #' @param type takes the value "boot" (default) to generate a bootstrap distribution or "perm" to generate a null distribution for the estimator
 #' @param resamp the number of resamples for the bootstrap or the null distribution.
 #' @param npoints the number of points at which to save the value for the spline function (and confidence envelope / null distribution).
@@ -13,14 +13,13 @@
 #' @param xmax If FALSE, the max observed in the data is used. Otherwise all distances greater than xmax is omitted.
 #' @param na.rm If TRUE, NA's will be dealt with through pairwise deletion of missing values for each pair of time series -- it will dump if any one pair has less than two (temporally) overlapping observations.
 #' @param jitter If TRUE, jitters the distance matrix to avoid problems associated with fitting the function to data on regular grids.
-#' @param quiet If TRUE, the counter is supressed during execution.
+#' @param quiet If TRUE, the counter is suppressed during execution.
 #' @param angle specifies number of cardinal directions and angles for which to calculate correlation functions. Default are 8 directions between 0 and 180.
 #' @return An object of class "Sncf2D" is returned. See \code{\link{Sncf2D}} for details.
 #' @details see \code{\link{Sncf2D}}
-#' @note The function to estimate the UNIvariate anisotropic nonparametric (cross-)correlation function in arbitrary directions. In particular it was developed to calculate the univariate lagged cross-correlation function used in (Humston et al. 2005). Note that this 2D spline correlogram does the anisotopic analysis NOT by doing the angle-with-tolerance-wedge-style of Oden and Sokal (1986) but by projecting the the spatial coordinates of all locations on a sequence of cardinal angles (a la Sncf2D). Hence, all data points are used every time, it is only their relative distances that are changed. For example \{0, 0\} and \{0, 10\} are distance zero in the zero-degree direction but at distance 10 in the 90-degree direction.
-#' @references Oden, N.L. and Sokal, R.R. 1986. Directional autocorrelation: an extension of spatial correlograms to two dimensions. Systematic Zoology 35: 608-617. \url{https://doi.org/10.2307/2413120}
-#' 
-#'   Humston, R., Mortensen, D. and Bjornstad, O.N. 2005. Anthropogenic forcing on the spatial dynamics of an agricultural weed: the case of the common sunflower. Journal of Applied Ecology 42: 863-872. \url{https://doi.org/10.1111/j.1365-2664.2005.01066.x}
+#' @note The function to estimate the UNIvariate anisotropic nonparametric (cross-)correlation function in arbitrary directions. In particular it was developed to calculate the univariate lagged cross-correlation function used in (Humston et al. 2005). Note that this 2D spline correlogram does the anisotropic analysis NOT by doing the angle-with-tolerance-wedge-style of Oden and Sokal (1986) but by projecting the the spatial coordinates of all locations on a sequence of cardinal angles (a la Sncf2D). Hence, all data points are used every time, it is only their relative distances that are changed. For example \{0, 0\} and \{0, 10\} are distance zero in the zero-degree direction but at distance 10 in the 90-degree direction.
+#' @references Oden, N.L. and Sokal, R.R. 1986. Directional autocorrelation: an extension of spatial correlograms to two dimensions. Systematic Zoology 35: 608-617. <doi:10.2307/2413120>
+#'   @references Humston, R., Mortensen, D. and Bjornstad, O.N. 2005. Anthropogenic forcing on the spatial dynamics of an agricultural weed: the case of the common sunflower. Journal of Applied Ecology 42: 863-872. <doi:10.1111/j.1365-2664.2005.01066.x>
 #' @seealso \code{\link{Sncf2D}}
 #' @keywords smooth regression
 #' @export

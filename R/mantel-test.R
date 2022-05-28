@@ -7,16 +7,16 @@
 #' @param z matrix of dimension n x p representing p observation at each location.
 #' @param resamp the number of resamples for the null distribution.
 #' @param latlon If TRUE, coordinates are latitude and longitude.
-#' @param quiet If TRUE, the counter is supressed during execution.
+#' @param quiet If TRUE, the counter is suppressed during execution.
 #' @return An object of class "Mantel" is returned, consisting of a list with two components:
 #' \item{correlation}{the value for the Mantel correlation.}
 #' \item{p}{the randomization-based two-sided p-value.}
 #' @details Typical usages are
 #' \preformatted{
-#' mantel.test(M1, M2, x = NULL, y = NULL, z = NULL, resamp = 1000, 
+#' mantel.test(M1, M2, x = NULL, y = NULL, z = NULL, resamp = 999, 
 #'             latlon = FALSE, quiet = FALSE)
 #' 
-#' mantel.test(x, y, z, M1 = NULL, M2 = NULL, resamp = 1000, latlon = FALSE, 
+#' mantel.test(x, y, z, M1 = NULL, M2 = NULL, resamp = 999, latlon = FALSE, 
 #'             quiet = FALSE)
 #' }
 #' 
@@ -33,12 +33,12 @@
 #'   )
 #' 
 #' # the Mantel test
-#' mantel.test(x = x, y = y, z = z[, 1], resamp = 500)
+#' mantel.test(x = x, y = y, z = z[, 1], resamp = 999)
 #' @keywords spatial
 #' @export
 ################################################################################
 mantel.test <- function(M1 = NULL, M2 = NULL, x = NULL, y = NULL, z = NULL, 
-                        resamp = 1000, latlon = FALSE, quiet = FALSE) {
+                        resamp = 999, latlon = FALSE, quiet = FALSE) {
   ##############################################################################
   # mantel.test is a function to calculate the mantel test for two matrices,
   # or for {x, y, z} data.
@@ -115,19 +115,19 @@ mantel.test <- function(M1 = NULL, M2 = NULL, x = NULL, y = NULL, z = NULL,
 }
 
 #' @title Partial Mantel test
-#' @description A simple function to calculate permutation-based partial mantel tests for three matrices, the partial mantel test is calculated to test for relationships between M1 and M2 (M3) cotrolling for M3 (M2). syntax and logic follows Legendre and Legendre (1998) pp 557-558.
+#' @description A simple function to calculate permutation-based partial mantel tests for three matrices, the partial mantel test is calculated to test for relationships between M1 and M2 (M3) controlling for M3 (M2). syntax and logic follows Legendre and Legendre (1998) pp 557-558.
 #' @param M1 similarity/distance matrix 1
 #' @param M2 similarity/distance matrix 2
 #' @param M3 similarity/distance matrix 3
 #' @param resamp the number of resamples for the null distribution.
 #' @param method the method to be used for calculating the correlations.
-#' @param quiet If TRUE, the counter is supressed during execution.
+#' @param quiet If TRUE, the counter is suppressed during execution.
 #' @return An object of class "partial.Mantel" is returned, consisting of a list with two components:
 #' \item{MantelR}{the vector of observed Mantel and partial Mantel correlations.}
 #' \item{p}{the vector of two-sided p-value under randomization (of M1).}
 #' @details Missing values are treated through pairwise deletion. 
 #' 
-#'   The method must be one of pearson (default), spearman or kendall.
+#'   The method must be one of "pearson" (default), "spearman" or "kendall".
 #' @references Legendre, P., and L. Legendre. 1998. Numerical Ecology, 2nd edition. Elsevier, Amsterdam
 #' @author Ottar N. Bjornstad \email{onb1@psu.edu}
 #' @seealso \code{\link{mantel.test}}
@@ -140,15 +140,15 @@ mantel.test <- function(M1 = NULL, M2 = NULL, x = NULL, y = NULL, z = NULL,
 #' M2 <- sqrt(outer(y, y, "-")^2)
 #' M3 <- sqrt(outer(z, z, "-")^2)
 #' 
-#' partial.mantel.test(M1 = M1, M2 = M2, M3 = M3, resamp = 500)
+#' partial.mantel.test(M1 = M1, M2 = M2, M3 = M3, resamp = 999)
 #' @keywords spatial
 #' @export
 ################################################################################
-partial.mantel.test <- function(M1, M2, M3, resamp = 1000, method = 'pearson', 
+partial.mantel.test <- function(M1, M2, M3, resamp = 999, method = 'pearson', 
                                 quiet = FALSE) {
   ##############################################################################
   # partial.mantel.tets is a simple function to calculate Mantel and partial mantel tests for three matrices,
-  # the partial mantel test is calculated to test for relationships between M1 and M2 (or M3) cotrolling for M3 (M2).
+  # the partial mantel test is calculated to test for relationships between M1 and M2 (or M3) controlling for M3 (M2).
   # syntax and logic follows Legendre & Legendre (1998) pp 557-558
   ##############################################################################
   # check for missing values
