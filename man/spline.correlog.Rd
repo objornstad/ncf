@@ -63,7 +63,7 @@ An object of class "spline.correlog" is returned, consisting of the following co
 \item{$e.intercept}{the lowest value at which the function 1/e.}
 \item{$y.intercept}{the extrapolated value at x=0 (nugget).}
 \item{$predicted$x}{the x-axes for the fitted covariance function.}
-\item{$predcited$y}{the values for the covariance function.}
+\item{$predicted$y}{the values for the covariance function.}
 \item{boot}{a list with the analogous output from the bootstrap or null distribution.} 
 \item{$summary}{gives the full vector of output for the x.intercept, y.intercept, e.intercept, and a quantile summary for the resampling distribution.}
 \item{$boot}{If save=TRUE, the full raw matrices from the resampling is saved.}
